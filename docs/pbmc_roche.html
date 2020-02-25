@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Almut Lütge" />
+
+
+<title>pbmc_roche</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">pbmc_roche</h1>
+<h4 class="author">Almut Lütge</h4>
+<h4 class="date">24 Februar 2020</h4>
+
+</div>
+
+
+<div id="pbmc-dataset-roche" class="section level2">
+<h2>Pbmc dataset Roche</h2>
+<p>This datset has been prepared by Roche. It contains pbmc from 4 different sample. Sample are derived from the same patient, have been processed in the same way and have been sequenced together. Experimental differnces are due to different storage conditions. One sample was sequenced from fresh cells, the other ones have been ored in different media and frozen for a week.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">suppressPackageStartupMessages</span>({
+    <span class="kw">library</span>(plotly)
+  <span class="kw">library</span>(readr)
+  <span class="kw">library</span>(stringr)
+  <span class="kw">library</span>(edgeR)
+  <span class="kw">library</span>(pheatmap)
+  <span class="kw">library</span>(purrr)
+  <span class="kw">library</span>(scater)
+  <span class="kw">library</span>(dplyr)
+  <span class="kw">library</span>(reshape2)
+  <span class="kw">library</span>(ggplot2)
+  <span class="kw">library</span>(cowplot)
+  <span class="kw">library</span>(Matrix)
+  <span class="kw">library</span>(scran)
+  <span class="kw">library</span>(Seurat)
+  <span class="kw">library</span>(sctransform)
+  <span class="kw">library</span>(readxl)
+  <span class="kw">library</span>(DropletUtils)
+  <span class="kw">library</span>(LSD)
+  <span class="kw">library</span>(CellMixS)
+  <span class="kw">library</span>(tibble)
+    <span class="kw">library</span>(here)
+    <span class="kw">library</span>(scDblFinder)
+})
+
+seed &lt;-<span class="st"> </span><span class="dv">1000</span></code></pre></div>
+<div id="data" class="section level3">
+<h3>data</h3>
+<p>Load data Raw reads were mappe dwith Cellranger v2 against ensembl hg38</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">out_path &lt;-<span class="st"> </span>here::<span class="kw">here</span>(<span class="st">&quot;out&quot;</span>)
+data_path &lt;-<span class="st"> &quot;/home/Shared_taupo/data/seq/calini_scrnaseq/PBMC_technical_effects/&quot;</span>
+fastqdirs &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;CR038&quot;</span>, <span class="st">&quot;CR039&quot;</span>, <span class="st">&quot;CR040&quot;</span>, <span class="st">&quot;CR041&quot;</span>)
+sce &lt;-<span class="st"> </span>DropletUtils::<span class="kw">read10xCounts</span>(<span class="dt">samples=</span><span class="kw">paste0</span>(data_path, <span class="st">&quot;PBMC_data/&quot;</span>, fastqdirs))
+
+<span class="co"># Add metadata</span>
+meta &lt;-<span class="st"> </span><span class="kw">read_excel</span>(<span class="kw">paste0</span>(data_path, <span class="st">&quot;EXP_CR005 Samples ID.xlsx&quot;</span>))
+sce$batch &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;.*data/&quot;</span>,<span class="st">&quot;&quot;</span>, sce$Sample)
+sce$mean_reads_per_cell_cr &lt;-<span class="st"> </span>meta$<span class="st">`</span><span class="dt">Mean reads/cell</span><span class="st">`</span>[<span class="kw">match</span>(sce$Sample, meta$<span class="st">`</span><span class="dt">Sample ID</span><span class="st">`</span>)]
+sce$info &lt;-<span class="st"> </span>meta$<span class="st">`</span><span class="dt">Characteristics</span><span class="st">`</span>[<span class="kw">match</span>(sce$Sample, meta$<span class="st">`</span><span class="dt">Sample ID</span><span class="st">`</span>)]
+<span class="kw">colnames</span>(sce) &lt;-<span class="st"> </span><span class="kw">paste0</span>(sce$batch, <span class="st">&quot;.&quot;</span>, sce$Barcode)
+<span class="kw">rownames</span>(sce) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">rowData</span>(sce)$ID, <span class="st">&quot;.&quot;</span>, <span class="kw">rowData</span>(sce)$Symbol)
+
+sce$batch &lt;-<span class="st"> </span><span class="kw">factor</span>(sce$batch)
+
+<span class="kw">table</span>(sce$batch)</code></pre></div>
+<pre><code>## 
+## CR038 CR039 CR040 CR041 
+##  3696  3612  2347  1994</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(sce)</code></pre></div>
+<pre><code>## [1] 19883 11649</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(<span class="kw">colData</span>(sce))</code></pre></div>
+<pre><code>## [1] 11649     5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(<span class="kw">rowData</span>(sce))</code></pre></div>
+<pre><code>## [1] 19883     2</code></pre>
+</div>
+<div id="calculate-qc" class="section level3">
+<h3>Calculate QC</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#remove genes without any counts</span>
+keep_features &lt;-<span class="st"> </span><span class="kw">rowSums</span>(<span class="kw">counts</span>(sce) &gt;<span class="st"> </span><span class="dv">0</span>) &gt;<span class="st"> </span><span class="dv">0</span>
+sce &lt;-<span class="st"> </span>sce[keep_features, ]
+<span class="kw">dim</span>(sce)</code></pre></div>
+<pre><code>## [1] 15269 11649</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># # Mitochondrial genes</span>
+is.mito &lt;-<span class="st"> </span><span class="kw">grepl</span>(<span class="st">&quot;MT-&quot;</span>, <span class="kw">rownames</span>(sce))
+<span class="kw">summary</span>(is.mito)</code></pre></div>
+<pre><code>##    Mode   FALSE    TRUE 
+## logical   15256      13</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mito &lt;-<span class="st"> </span><span class="kw">rownames</span>(sce)[is.mito]
+
+sce &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(sce, <span class="dt">feature_controls =</span> <span class="kw">list</span>(<span class="dt">Mt =</span> mito))</code></pre></div>
+<pre><code>## Warning: &#39;calculateQCMetrics&#39; is deprecated.
+## Use &#39;perCellQCMetrics&#39; or &#39;perFeatureQCMetrics&#39; instead.</code></pre>
+</div>
+</div>
+<div id="filtering" class="section level2">
+<h2>Filtering</h2>
+<div id="find-outlier" class="section level3">
+<h3>Find outlier</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># # Plot filters</span>
+plotFilters &lt;-<span class="st"> </span>function( sce, <span class="dt">var=</span><span class="st">&quot;log10_total_counts&quot;</span>, <span class="dt">split_by=</span><span class="st">&quot;batch&quot;</span>, <span class="dt">nrow=</span><span class="ot">NULL</span>,
+                         <span class="dt">nmads=</span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">5</span>), <span class="dt">lt=</span><span class="kw">c</span>(<span class="st">&quot;dashed&quot;</span>,<span class="st">&quot;dotted&quot;</span>,<span class="st">&quot;dotdash&quot;</span>), <span class="dt">xscale=</span><span class="st">&quot;free&quot;</span> ){
+  CD &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">colData</span>(sce))
+  if(!(var %in%<span class="st"> </span><span class="kw">colnames</span>(CD))) <span class="kw">stop</span>(<span class="kw">paste</span>(<span class="st">&quot;`var`&quot;</span>,var,<span class="st">&quot;is not in `colData(sce)`!&quot;</span>))
+  if(!<span class="kw">is.null</span>(split_by) &amp;&amp;<span class="st"> </span>!(split_by %in%<span class="st"> </span><span class="kw">colnames</span>(CD))){
+    <span class="kw">stop</span>(<span class="kw">paste</span>(<span class="st">&quot;`split_by`&quot;</span>,split_by,<span class="st">&quot;is not in `colData(sce)`!&quot;</span>))
+  }
+  <span class="kw">library</span>(ggplot2)
+  <span class="kw">library</span>(cowplot)
+  d &lt;-<span class="st"> </span>CD[,var,drop=F]
+  if(!<span class="kw">is.null</span>(split_by)) d$dataset &lt;-<span class="st"> </span>CD[[split_by]]
+  p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(d, <span class="kw">aes_string</span>(<span class="dt">x=</span>var)) +<span class="st"> </span><span class="kw">geom_histogram</span>(<span class="dt">color=</span><span class="st">&quot;darkblue&quot;</span>, <span class="dt">bins=</span><span class="dv">30</span>)
+  if(xscale!=<span class="st">&quot;free&quot;</span>){
+    if(xscale!=<span class="st">&quot;fixed&quot;</span>){
+      if(xscale&gt;<span class="dv">1</span> &amp;&amp;<span class="st"> </span>xscale%%<span class="dv">1</span>==<span class="dv">0</span>){
+        xq &lt;-<span class="st"> </span><span class="kw">.tmads</span>(d[[var]], xscale)
+        xr &lt;-<span class="st"> </span><span class="kw">range</span>(d[[var]],<span class="dt">na.rm=</span>T)
+        xq &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">max</span>(xq[<span class="dv">1</span>],xr[<span class="dv">1</span>]), <span class="kw">min</span>(xq[<span class="dv">2</span>],xr[<span class="dv">2</span>]))
+      }else{
+        if(xscale&lt;=<span class="dv">1</span> &amp;<span class="st"> </span>xscale&gt;<span class="dv">0</span>){
+          xscale &lt;-<span class="st"> </span>(<span class="dv">1</span>-xscale)/<span class="dv">2</span>
+          xq &lt;-<span class="st"> </span><span class="kw">quantile</span>(d[[var]], <span class="dt">probs=</span><span class="kw">c</span>(xscale,<span class="dv">1</span>-xscale), <span class="dt">na.rm=</span>T)
+        }else{
+          <span class="kw">stop</span>(<span class="st">&quot;Wrong `xscale` value!&quot;</span>)
+        }
+      }
+      p &lt;-<span class="st"> </span>p +<span class="st"> </span><span class="kw">xlim</span>(xq[<span class="dv">1</span>], xq[<span class="dv">2</span>])
+    }
+  }
+  if(!<span class="kw">is.null</span>(split_by)){
+    if(<span class="kw">is.null</span>(nrow)) nrow &lt;-<span class="st"> </span><span class="kw">ceiling</span>(<span class="kw">length</span>(<span class="kw">unique</span>(d$dataset))/<span class="dv">3</span>)
+    p &lt;-<span class="st"> </span>p +<span class="st"> </span><span class="kw">facet_wrap</span>(~dataset, <span class="dt">scales=</span><span class="kw">ifelse</span>(xscale==<span class="st">&quot;free&quot;</span>,<span class="st">&quot;free&quot;</span>,<span class="st">&quot;free_y&quot;</span>), <span class="dt">nrow=</span>nrow)
+    for(ds in <span class="kw">unique</span>(d$dataset)){
+      for(i in <span class="dv">1</span>:<span class="kw">length</span>(nmads)){
+        ma &lt;-<span class="st"> </span><span class="kw">.tmads</span>(d[<span class="kw">which</span>(d$dataset==ds),var], nmads[i])
+        df2 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">xint=</span><span class="kw">as.numeric</span>(ma), <span class="dt">dataset=</span><span class="kw">rep</span>(ds,<span class="dv">2</span>))
+        p &lt;-<span class="st"> </span>p +<span class="st"> </span><span class="kw">geom_vline</span>(<span class="dt">data=</span>df2, <span class="kw">aes</span>(<span class="dt">xintercept=</span>xint), <span class="dt">linetype=</span>lt[i])
+      }
+    }
+  }else{
+    for(i in <span class="dv">1</span>:<span class="kw">length</span>(nmads)){
+      df2 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">xint=</span><span class="kw">as.numeric</span>(<span class="kw">.tmads</span>(d[[var]], nmads[i])))
+      p &lt;-<span class="st"> </span>p +<span class="st"> </span><span class="kw">geom_vline</span>(<span class="dt">data=</span>df2, <span class="kw">aes</span>(<span class="dt">xintercept=</span>xint), <span class="dt">linetype=</span>lt[i])
+    }
+  }
+  p
+}
+.tmads &lt;-<span class="st"> </span>function(x, <span class="dt">nbmads=</span><span class="fl">2.5</span>){
+  x2 &lt;-<span class="st"> </span>nbmads*<span class="kw">median</span>(<span class="kw">abs</span>(x-<span class="kw">median</span>(x)))
+  <span class="kw">median</span>(x)+<span class="kw">c</span>(-x2,x2)
+}
+<span class="kw">plotFilters</span>(sce)</code></pre></div>
+<p><img src="../docs/pbmc_roche_files/figure-html/filter cells-1.svg" width="1152" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotFilters</span>(sce, <span class="st">&quot;log10_total_features_by_counts&quot;</span>)</code></pre></div>
+<p><img src="../docs/pbmc_roche_files/figure-html/filter cells-2.svg" width="1152" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotFilters</span>(sce, <span class="st">&quot;pct_counts_Mt&quot;</span>, <span class="dt">xscale=</span><span class="fl">0.98</span>)</code></pre></div>
+<pre><code>## Warning: Removed 234 rows containing non-finite values (stat_bin).</code></pre>
+<pre><code>## Warning: Removed 8 rows containing missing values (geom_bar).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_vline).
+
+## Warning: Removed 1 rows containing missing values (geom_vline).
+
+## Warning: Removed 1 rows containing missing values (geom_vline).
+
+## Warning: Removed 1 rows containing missing values (geom_vline).
+
+## Warning: Removed 1 rows containing missing values (geom_vline).
+
+## Warning: Removed 1 rows containing missing values (geom_vline).
+
+## Warning: Removed 1 rows containing missing values (geom_vline).
+
+## Warning: Removed 1 rows containing missing values (geom_vline).</code></pre>
+<p><img src="../docs/pbmc_roche_files/figure-html/filter cells-3.svg" width="1152" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Find outlier</span>
+outlierPlot &lt;-<span class="st"> </span>function(cd, feature, <span class="dt">aph=</span><span class="ot">NULL</span>, <span class="dt">logScale=</span><span class="ot">FALSE</span>, <span class="dt">show.legend=</span><span class="ot">TRUE</span>){
+  if(<span class="kw">is.null</span>(aph)) aph &lt;-<span class="st"> </span><span class="kw">paste0</span>(feature, <span class="st">&quot;_drop&quot;</span>)
+  if(!(aph %in%<span class="st"> </span><span class="kw">colnames</span>(cd))) aph &lt;-<span class="st"> </span><span class="ot">NULL</span>
+  p &lt;-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">as.data.frame</span>(cd), <span class="kw">aes_string</span>(<span class="dt">x =</span> feature, <span class="dt">alpha =</span> aph)) +
+<span class="st">    </span><span class="kw">geom_histogram</span>(<span class="dt">show.legend=</span>show.legend)
+  if(!<span class="kw">is.null</span>(aph)) p &lt;-<span class="st"> </span>p +<span class="st"> </span><span class="kw">scale_alpha_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&quot;TRUE&quot;</span> =<span class="st"> </span><span class="fl">0.4</span>, <span class="st">&quot;FALSE&quot;</span> =<span class="st"> </span><span class="dv">1</span>))
+  if(logScale) p &lt;-<span class="st"> </span>p +<span class="st"> </span><span class="kw">scale_x_log10</span>()
+  p
+}
+plQCplot &lt;-<span class="st"> </span>function(cd, <span class="dt">show.legend=</span><span class="ot">TRUE</span>){
+  ps &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">split</span>(cd,cd$batch), <span class="dt">sl=</span>show.legend, <span class="dt">FUN=</span>function(x,sl){
+    <span class="kw">list</span>( <span class="kw">outlierPlot</span>( x, <span class="st">&quot;total_counts&quot;</span>, <span class="dt">logScale=</span>T, <span class="dt">show.legend=</span>sl),
+          <span class="kw">outlierPlot</span>( x, <span class="st">&quot;total_features_by_counts&quot;</span>, <span class="st">&quot;total_features_drop&quot;</span>,
+                       <span class="dt">logScale=</span>T, <span class="dt">show.legend=</span>sl),
+          <span class="kw">outlierPlot</span>( x, <span class="st">&quot;pct_counts_Mt&quot;</span>, <span class="st">&quot;mito_drop&quot;</span>, <span class="dt">show.legend=</span>sl)
+    )
+  })
+  <span class="kw">plot_grid</span>( <span class="dt">plotlist =</span> <span class="kw">do.call</span>(c, ps),
+             <span class="dt">labels=</span><span class="kw">rep</span>(<span class="kw">basename</span>(<span class="kw">names</span>(ps)), <span class="dt">each=</span><span class="kw">length</span>(ps[[<span class="dv">1</span>]])),
+             <span class="dt">ncol=</span><span class="kw">length</span>(ps[[<span class="dv">1</span>]]),
+             <span class="dt">label_x=</span><span class="fl">0.5</span> )
+}
+
+
+<span class="co">#Filtering</span>
+sce$total_counts_drop &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce$total_counts, <span class="dt">nmads =</span> <span class="fl">2.5</span>,
+                                   <span class="dt">type =</span> <span class="st">&quot;both&quot;</span>, <span class="dt">log =</span> <span class="ot">TRUE</span>, <span class="dt">batch=</span>sce$batch)
+sce$total_features_drop &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce$total_features_by_counts, <span class="dt">nmads =</span> <span class="fl">2.5</span>,
+                                     <span class="dt">type =</span> <span class="st">&quot;both&quot;</span>, <span class="dt">log =</span> <span class="ot">TRUE</span>, <span class="dt">batch=</span>sce$batch)
+sce$mito_drop &lt;-<span class="st"> </span>sce$pct_counts_Mt &gt;<span class="st"> </span><span class="dv">5</span> &amp;
+<span class="st">  </span><span class="kw">isOutlier</span>(sce$pct_counts_Mt, <span class="dt">nmads =</span> <span class="fl">2.5</span>, <span class="dt">type =</span> <span class="st">&quot;higher&quot;</span>, <span class="dt">batch=</span>sce$batch)
+
+sce$isOutlier &lt;-<span class="st"> </span>sce$total_counts_drop |<span class="st"> </span>sce$total_features_drop |<span class="st"> </span>sce$mito_drop
+
+<span class="co"># quality plot</span>
+<span class="kw">plQCplot</span>(<span class="kw">colData</span>(sce), <span class="dt">show.legend=</span><span class="ot">FALSE</span>)</code></pre></div>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="../docs/pbmc_roche_files/figure-html/filter cells-4.svg" width="1152" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="kw">colData</span>(sce) %&gt;%<span class="st"> </span>as.data.frame, <span class="kw">aes</span>(<span class="dt">x=</span>total_features_by_counts, <span class="dt">y=</span>total_counts, <span class="dt">colour=</span>pct_counts_Mt)) +<span class="st"> </span><span class="kw">geom_point</span>() +<span class="st"> </span><span class="kw">facet_wrap</span>(~Sample) +<span class="kw">geom_density_2d</span>(<span class="dt">col=</span><span class="st">&quot;white&quot;</span>) +<span class="st"> </span><span class="kw">scale_x_sqrt</span>() +<span class="st"> </span><span class="kw">scale_y_sqrt</span>()</code></pre></div>
+<p><img src="../docs/pbmc_roche_files/figure-html/filter cells-5.svg" width="1152" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="kw">colData</span>(sce) %&gt;%<span class="st"> </span>as.data.frame, <span class="kw">aes</span>(<span class="dt">x=</span>total_features_by_counts, <span class="dt">y=</span>pct_counts_Mt)) +<span class="st"> </span><span class="kw">geom_point</span>() +<span class="st"> </span><span class="kw">facet_wrap</span>(~Sample) +<span class="kw">geom_density_2d</span>(<span class="dt">col=</span><span class="st">&quot;white&quot;</span>)</code></pre></div>
+<p><img src="../docs/pbmc_roche_files/figure-html/filter cells-6.svg" width="1152" /></p>
+</div>
+<div id="check-thresholds" class="section level3">
+<h3>Check thresholds</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Check outlier</span>
+mets &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;total_counts_drop&quot;</span>,<span class="st">&quot;total_features_drop&quot;</span>,<span class="st">&quot;mito_drop&quot;</span>)
+<span class="kw">sapply</span>(mets, <span class="dt">FUN=</span>function(x){ <span class="kw">sapply</span>(mets, <span class="dt">y=</span>x, function(x,y){ <span class="kw">sum</span>(sce[[x]] &amp;<span class="st"> </span>sce[[y]]) }) })</code></pre></div>
+<pre><code>##                     total_counts_drop total_features_drop mito_drop
+## total_counts_drop                 416                 386        96
+## total_features_drop               386                 975       120
+## mito_drop                          96                 120       437</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nbcells &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">table</span>(sce$batch),<span class="kw">table</span>(sce$batch[!sce$isOutlier]))
+<span class="kw">colnames</span>(nbcells) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;cells total&quot;</span>,<span class="st">&quot;cells after filtering&quot;</span>)
+nbcells</code></pre></div>
+<pre><code>##       cells total cells after filtering
+## CR038        3696                  3289
+## CR039        3612                  3180
+## CR040        2347                  2081
+## CR041        1994                  1788</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">layout</span>(<span class="kw">matrix</span>(<span class="dv">1</span>:<span class="dv">2</span>,<span class="dt">nrow=</span><span class="dv">1</span>))
+LSD::<span class="kw">heatscatter</span>( sce$total_counts, sce$total_features_by_counts, <span class="dt">xlab=</span><span class="st">&quot;Total counts&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Non-zero features&quot;</span>, <span class="dt">main=</span><span class="st">&quot;&quot;</span>,<span class="dt">log=</span><span class="st">&quot;xy&quot;</span>)
+w &lt;-<span class="st"> </span><span class="kw">which</span>(!sce$isOutlier)
+LSD::<span class="kw">heatscatter</span>( sce$total_counts[w], sce$total_features_by_counts[w], <span class="dt">xlab=</span><span class="st">&quot;Total counts&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Non-zero features&quot;</span>, <span class="dt">main=</span><span class="st">&quot;Filtered cells&quot;</span>,<span class="dt">log=</span><span class="st">&quot;xy&quot;</span>)</code></pre></div>
+<p><img src="../docs/pbmc_roche_files/figure-html/threshholds-1.svg" width="1152" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># summary of cells kept</span>
+cct &lt;-<span class="st"> </span><span class="kw">table</span>(sce$isOutlier, sce$batch)
+<span class="kw">row.names</span>(cct) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Kept&quot;</span>, <span class="st">&quot;Filtered out&quot;</span>)
+cct</code></pre></div>
+<pre><code>##               
+##                CR038 CR039 CR040 CR041
+##   Kept          3289  3180  2081  1788
+##   Filtered out   407   432   266   206</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># drop outlier cells</span>
+sce &lt;-<span class="st"> </span>sce[,!sce$isOutlier]
+<span class="co"># require count &gt; 1 in at least 20 cells</span>
+sce &lt;-<span class="st"> </span>sce[<span class="kw">which</span>(<span class="kw">rowSums</span>(<span class="kw">counts</span>(sce)&gt;<span class="dv">1</span>)&gt;=<span class="dv">20</span>),]
+<span class="kw">dim</span>(sce)</code></pre></div>
+<pre><code>## [1]  4756 10338</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plQCplot</span>(<span class="kw">colData</span>(sce), <span class="dt">show.legend=</span><span class="ot">FALSE</span>)</code></pre></div>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="../docs/pbmc_roche_files/figure-html/threshholds-2.svg" width="1152" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(sce$batch)</code></pre></div>
+<pre><code>## 
+## CR038 CR039 CR040 CR041 
+##  3289  3180  2081  1788</code></pre>
+</div>
+</div>
+<div id="remove-doublets" class="section level2">
+<h2>Remove doublets</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span><span class="kw">scDblFinder</span>(sce, <span class="dt">samples=</span><span class="st">&quot;batch&quot;</span>, <span class="dt">BPPARAM=</span><span class="kw">MulticoreParam</span>(<span class="dv">2</span>))
+<span class="kw">table</span>(sce$scDblFinder.class)</code></pre></div>
+<pre><code>## 
+## doublet singlet 
+##     243   10095</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>sce[,!sce$scDblFinder.class %in%<span class="st"> &quot;doublet&quot;</span>]</code></pre></div>
+</div>
+<div id="normalization" class="section level2">
+<h2>Normalization</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Scater</span>
+<span class="kw">set.seed</span>(<span class="dv">1000</span>)
+clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce, <span class="dt">use.ranks=</span><span class="ot">FALSE</span>)
+<span class="kw">table</span>(clusters)</code></pre></div>
+<pre><code>## clusters
+##    1    2    3    4    5    6    7    8    9   10   11 
+##  671  920  930 1107 2303 1250 2014  214  463  121  102</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce, <span class="dt">min.mean=</span><span class="fl">0.1</span>, <span class="dt">cluster=</span>clusters) ##cluster information added
+sce &lt;-<span class="st"> </span>scater::<span class="kw">normalize</span>(sce)</code></pre></div>
+<pre><code>## Warning: &#39;normalizeSCE&#39; is deprecated.
+## Use &#39;logNormCounts&#39; instead.
+## See help(&quot;Deprecated&quot;)</code></pre>
+<pre><code>## Warning: &#39;centreSizeFactors&#39; is deprecated.
+## See help(&quot;Deprecated&quot;)</code></pre>
+</div>
+<div id="integration" class="section level2">
+<h2>Integration</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create SeuratObject</span>
+seurat &lt;-<span class="st"> </span><span class="kw">as.Seurat</span>(sce)
+<span class="co"># normalize, find variable genes, and scale</span>
+sl &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">unique</span>(<span class="kw">as.character</span>(seurat@meta.data$batch)), <span class="dt">FUN=</span>function(x){
+  x &lt;-<span class="st"> </span><span class="kw">subset</span>(seurat, <span class="dt">cells=</span><span class="kw">which</span>(seurat@meta.data$batch==x))
+  x &lt;-<span class="st"> </span><span class="kw">ScaleData</span>(x)
+  x &lt;-<span class="st"> </span><span class="kw">FindVariableFeatures</span>(x, <span class="dt">verbose=</span>F)
+  <span class="co"># use non-standardized variance</span>
+  v &lt;-<span class="st"> </span>x@assays$RNA@meta.features[[<span class="st">&quot;vst.variance&quot;</span>]]
+  <span class="kw">VariableFeatures</span>(x) &lt;-<span class="st"> </span><span class="kw">row.names</span>(x@assays$RNA@meta.features)[<span class="kw">order</span>(v, <span class="dt">decreasing=</span><span class="ot">TRUE</span>)[<span class="dv">1</span>:<span class="dv">500</span>]]
+  x
+})</code></pre></div>
+<pre><code>## Centering and scaling data matrix
+## Centering and scaling data matrix
+## Centering and scaling data matrix
+## Centering and scaling data matrix</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># find anchors &amp; integrate</span>
+anchors &lt;-<span class="st"> </span><span class="kw">FindIntegrationAnchors</span>(sl)</code></pre></div>
+<pre><code>## Computing 2000 integration features</code></pre>
+<pre><code>## Scaling features for provided objects</code></pre>
+<pre><code>## Finding all pairwise anchors</code></pre>
+<pre><code>## Running CCA</code></pre>
+<pre><code>## Merging objects</code></pre>
+<pre><code>## Finding neighborhoods</code></pre>
+<pre><code>## Finding anchors</code></pre>
+<pre><code>##  Found 9908 anchors</code></pre>
+<pre><code>## Filtering anchors</code></pre>
+<pre><code>##  Retained 5488 anchors</code></pre>
+<pre><code>## Extracting within-dataset neighbors</code></pre>
+<pre><code>## Running CCA</code></pre>
+<pre><code>## Merging objects</code></pre>
+<pre><code>## Finding neighborhoods</code></pre>
+<pre><code>## Finding anchors</code></pre>
+<pre><code>##  Found 7727 anchors</code></pre>
+<pre><code>## Filtering anchors</code></pre>
+<pre><code>##  Retained 5111 anchors</code></pre>
+<pre><code>## Extracting within-dataset neighbors</code></pre>
+<pre><code>## Running CCA</code></pre>
+<pre><code>## Merging objects</code></pre>
+<pre><code>## Finding neighborhoods</code></pre>
+<pre><code>## Finding anchors</code></pre>
+<pre><code>##  Found 7811 anchors</code></pre>
+<pre><code>## Filtering anchors</code></pre>
+<pre><code>##  Retained 5155 anchors</code></pre>
+<pre><code>## Extracting within-dataset neighbors</code></pre>
+<pre><code>## Running CCA</code></pre>
+<pre><code>## Merging objects</code></pre>
+<pre><code>## Finding neighborhoods</code></pre>
+<pre><code>## Finding anchors</code></pre>
+<pre><code>##  Found 6940 anchors</code></pre>
+<pre><code>## Filtering anchors</code></pre>
+<pre><code>##  Retained 4736 anchors</code></pre>
+<pre><code>## Extracting within-dataset neighbors</code></pre>
+<pre><code>## Running CCA</code></pre>
+<pre><code>## Merging objects</code></pre>
+<pre><code>## Finding neighborhoods</code></pre>
+<pre><code>## Finding anchors</code></pre>
+<pre><code>##  Found 6894 anchors</code></pre>
+<pre><code>## Filtering anchors</code></pre>
+<pre><code>##  Retained 4803 anchors</code></pre>
+<pre><code>## Extracting within-dataset neighbors</code></pre>
+<pre><code>## Running CCA</code></pre>
+<pre><code>## Merging objects</code></pre>
+<pre><code>## Finding neighborhoods</code></pre>
+<pre><code>## Finding anchors</code></pre>
+<pre><code>##  Found 6191 anchors</code></pre>
+<pre><code>## Filtering anchors</code></pre>
+<pre><code>##  Retained 4223 anchors</code></pre>
+<pre><code>## Extracting within-dataset neighbors</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">seurat &lt;-<span class="st"> </span><span class="kw">IntegrateData</span>(<span class="dt">anchorset =</span> anchors, <span class="dt">dims =</span> <span class="kw">seq_len</span>(<span class="dv">30</span>),
+                        <span class="dt">features.to.integrate =</span> <span class="kw">rownames</span>(sce))</code></pre></div>
+<pre><code>## Merging dataset 4 into 2</code></pre>
+<pre><code>## Extracting anchors for merged samples</code></pre>
+<pre><code>## Finding integration vectors</code></pre>
+<pre><code>## Finding integration vector weights</code></pre>
+<pre><code>## Integrating data</code></pre>
+<pre><code>## Merging dataset 3 into 1</code></pre>
+<pre><code>## Extracting anchors for merged samples</code></pre>
+<pre><code>## Finding integration vectors</code></pre>
+<pre><code>## Finding integration vector weights</code></pre>
+<pre><code>## Integrating data</code></pre>
+<pre><code>## Merging dataset 2 4 into 1 3</code></pre>
+<pre><code>## Extracting anchors for merged samples</code></pre>
+<pre><code>## Finding integration vectors</code></pre>
+<pre><code>## Finding integration vector weights</code></pre>
+<pre><code>## Integrating data</code></pre>
+<pre><code>## Warning: Adding a command log without an assay associated with it</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># scale integrated data</span>
+<span class="kw">DefaultAssay</span>(<span class="dt">object=</span>seurat) &lt;-<span class="st"> &quot;integrated&quot;</span>
+seurat &lt;-<span class="st"> </span><span class="kw">ScaleData</span>(seurat, <span class="dt">verbose=</span>F)</code></pre></div>
+</div>
+<div id="dimension-reduction" class="section level1">
+<h1>Dimension reduction</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">seurat &lt;-<span class="st"> </span><span class="kw">RunPCA</span>(<span class="dt">object =</span> seurat, <span class="dt">npcs =</span> <span class="dv">30</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
+seurat &lt;-<span class="st"> </span><span class="kw">RunTSNE</span>(<span class="dt">object =</span> seurat, <span class="dt">perplexity =</span> <span class="dv">30</span>,<span class="dt">reduction =</span> <span class="st">&quot;pca&quot;</span>, <span class="dt">dims =</span> <span class="kw">seq_len</span>(<span class="dv">20</span>),
+                  <span class="dt">seed.use =</span> seed, <span class="dt">do.fast =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
+seurat &lt;-<span class="st"> </span><span class="kw">RunUMAP</span>(<span class="dt">object =</span> seurat, <span class="dt">reduction =</span> <span class="st">&quot;pca&quot;</span>, <span class="dt">dims =</span> <span class="kw">seq_len</span>(<span class="dv">20</span>),
+                  <span class="dt">seed.use =</span> seed, <span class="dt">verbose =</span> <span class="ot">FALSE</span>, <span class="dt">n.neighbors =</span> <span class="dv">30</span>, <span class="dt">min.dist =</span> <span class="fl">0.5</span>)</code></pre></div>
+<pre><code>## Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
+## To use Python UMAP via reticulate, set umap.method to &#39;umap-learn&#39; and metric to &#39;correlation&#39;
+## This message will be shown once per session</code></pre>
+</div>
+<div id="clustering" class="section level1">
+<h1>Clustering</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">seurat &lt;-<span class="st"> </span><span class="kw">FindNeighbors</span>(<span class="dt">object =</span> seurat, <span class="dt">reduction =</span> <span class="st">&quot;pca&quot;</span>, <span class="dt">dims =</span> <span class="kw">seq_len</span>(<span class="dv">20</span>), <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
+for (res in <span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.4</span>, <span class="fl">0.8</span>, <span class="dv">1</span>, <span class="fl">1.2</span>, <span class="dv">2</span>))
+  seurat &lt;-<span class="st"> </span><span class="kw">FindClusters</span>(<span class="dt">object =</span> seurat, <span class="dt">resolution =</span> res, <span class="dt">random.seed =</span> seed, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
+seurat &lt;-<span class="st"> </span><span class="kw">SetIdent</span>(seurat, <span class="dt">value=</span><span class="st">&quot;integrated_snn_res.0.2&quot;</span>)
+seurat@meta.data$cluster &lt;-<span class="st"> </span>seurat$integrated_snn_res<span class="fl">.0.2</span></code></pre></div>
+</div>
+<div id="convert-seurat-to-sce" class="section level1">
+<h1>Convert seurat to sce</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span><span class="kw">as.SingleCellExperiment</span>(seurat)
+
+<span class="co"># Save data</span>
+<span class="kw">saveRDS</span>(sce, <span class="dt">file =</span> <span class="kw">paste0</span>(out_path, <span class="st">&quot;/sce_pbmc_roche.rds&quot;</span>))</code></pre></div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
