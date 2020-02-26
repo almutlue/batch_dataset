@@ -28,6 +28,16 @@ Dataset collection to characterize and simulate batch effects.
 
 ## Media batch
 + [pbmc_roche](pbmc_roche.html)
-+ [pbmc_pat_med](pbmc_pat_med.html)
-+ [csf_media](simulation_csf_media.html)
++ [pbmc2_med](pbmc_pat_med.html)
++ [csf_media](csf_pat_med.html)
+
+## Protocol batch
++ [hca_protocols](hca.html)
++ [csf_patient](csf_pat_med.html)
++ [CellBench](cellbench.html)
+
+## Patient batch
++ [pbmcc2_pat](pbmc_pat_med.html)
++ [Khan_patients](khan.html)
++ [Pancreas_patients](pancreas.html)
 
