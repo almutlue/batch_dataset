@@ -304,7 +304,10 @@ seurat@meta.data$cluster <- seurat$integrated_snn_res.0.2
 
 # Convert seurat to sce
 ```{r saving}
+sce <- sce[, colnames(seurat)]
+counts <- assays(sce)[["counts"]]
 sce <- as.SingleCellExperiment(seurat)
+assays(sce)[["counts"]] <- counts
 
 # Save data
 saveRDS(sce, file = paste0(out_path, "/sce_pbmc_pat_med.rds"))
