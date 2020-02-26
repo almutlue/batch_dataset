@@ -1,0 +1,316 @@
+---
+title: "pbmc_pat_med"
+author: "Almut Lütge"
+date: "24 Februar 2020"
+output:
+  html_document:
+    self_contained: no
+    lib_dir: '../docs/site_libs'
+    code_folding: show
+    theme: journal
+    highlight: tango
+    number_sections: no
+    toc: yes
+    toc_depth: 3
+    toc_float: true
+    collapsed: no
+    smooth_scroll: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Pbmc_pat_med
+
+ScRNA seq data from Calini representing PBMCs from 2 individuals (male age 60,52) in different storing conditions:
+- fresh
+- fixed with MetOH
+- stored in 15% DMSO
+
+```{r libraries}
+suppressPackageStartupMessages({
+    library(plotly)
+  library(readr)
+  library(stringr)
+  library(edgeR)
+  library(pheatmap)
+  library(purrr)
+  library(scater)
+  library(dplyr)
+  library(reshape2)
+  library(ggplot2)
+  library(cowplot)
+  library(Matrix)
+  library(scran)
+  library(Seurat)
+  library(sctransform)
+  library(readxl)
+  library(DropletUtils)
+  library(LSD)
+  library(CellMixS)
+  library(tibble)
+    library(here)
+    library(scDblFinder)
+})
+
+seed <- 1000
+```
+
+### data
+Load data
+Raw reads were mapped with Cellranger v3 against ensembl hg38
+```{r data}
+out_path <- here::here("out")
+data_path <-"/home/Shared_s3it/_home_Shared_taupo_data_seq/calini_scrnaseq/FGCZ_human"
+samples <- list.files(data_path, pattern="CR05", full.names = TRUE)
+without <- c(paste0(data_path, "/CR052"),paste0(data_path, "/CR059"))
+samples<-samples[!samples %in% without]
+names(samples) <- basename(samples)
+samples <- paste0(samples, "/outs/filtered_feature_bc_matrix")
+samples <- samples[file.exists(paste0(samples, "/matrix.mtx.gz"))]
+sce <- DropletUtils::read10xCounts(samples=samples)
+
+# Add metadata
+meta <- read_excel(paste0(data_path, "/20190312 NovaSeqRun Samples Characteristics.xlsx"))
+sample_id <- gsub(".*human/","", sce$Sample)
+sce$sample_id <- gsub("/outs.*","", sample_id)
+sce$info <- meta$`Sample Name`[match(sce$sample_id, meta$`Sequencing ID`)]
+
+##Add patient id
+sce$patient <- ifelse(grepl("D301089", sce$Sample), "pat1", "pat2")
+sce$media <- ifelse(grepl("Fresh", sce$Sample), "fresh", ifelse(grepl("DMSO", sce$Sample), "DMSO", "MetOH"))
+
+colnames(sce) <- paste0(sce$sample_id, ".", sce$Barcode)
+rownames(sce) <- paste0(rowData(sce)$ID, ".", rowData(sce)$Symbol)
+
+sce$patient <- factor(sce$patient)
+sce$media <- factor(sce$media)
+
+table(sce$patient)
+table(sce$media)
+dim(sce)
+dim(colData(sce))
+dim(rowData(sce))
+```
+
+
+### Calculate QC
+```{r qc}
+#remove genes without any counts
+keep_features <- rowSums(counts(sce) > 0) > 0
+sce <- sce[keep_features, ]
+dim(sce)
+
+# # Mitochondrial genes
+is.mito <- grepl("MT-", rownames(sce))
+summary(is.mito)
+mito <- rownames(sce)[is.mito]
+
+sce <- calculateQCMetrics(sce, feature_controls = list(Mt = mito))
+
+```
+
+## Filtering 
+### Find outlier
+```{r filter cells, fig.height = 10, fig.width = 12}
+# # Plot filters
+plotFilters <- function( sce, var="log10_total_counts", split_by="sample_id", nrow=NULL,
+                         nmads=c(2,3,5), lt=c("dashed","dotted","dotdash"), xscale="free" ){
+  CD <- as.data.frame(colData(sce))
+  if(!(var %in% colnames(CD))) stop(paste("`var`",var,"is not in `colData(sce)`!"))
+  if(!is.null(split_by) && !(split_by %in% colnames(CD))){
+    stop(paste("`split_by`",split_by,"is not in `colData(sce)`!"))
+  }
+  library(ggplot2)
+  library(cowplot)
+  d <- CD[,var,drop=F]
+  if(!is.null(split_by)) d$dataset <- CD[[split_by]]
+  p <- ggplot(d, aes_string(x=var)) + geom_histogram(color="darkblue", bins=30)
+  if(xscale!="free"){
+    if(xscale!="fixed"){
+      if(xscale>1 && xscale%%1==0){
+        xq <- .tmads(d[[var]], xscale)
+        xr <- range(d[[var]],na.rm=T)
+        xq <- c(max(xq[1],xr[1]), min(xq[2],xr[2]))
+      }else{
+        if(xscale<=1 & xscale>0){
+          xscale <- (1-xscale)/2
+          xq <- quantile(d[[var]], probs=c(xscale,1-xscale), na.rm=T)
+        }else{
+          stop("Wrong `xscale` value!")
+        }
+      }
+      p <- p + xlim(xq[1], xq[2])
+    }
+  }
+  if(!is.null(split_by)){
+    if(is.null(nrow)) nrow <- ceiling(length(unique(d$dataset))/3)
+    p <- p + facet_wrap(~dataset, scales=ifelse(xscale=="free","free","free_y"), nrow=nrow)
+    for(ds in unique(d$dataset)){
+      for(i in 1:length(nmads)){
+        ma <- .tmads(d[which(d$dataset==ds),var], nmads[i])
+        df2 <- data.frame(xint=as.numeric(ma), dataset=rep(ds,2))
+        p <- p + geom_vline(data=df2, aes(xintercept=xint), linetype=lt[i])
+      }
+    }
+  }else{
+    for(i in 1:length(nmads)){
+      df2 <- data.frame(xint=as.numeric(.tmads(d[[var]], nmads[i])))
+      p <- p + geom_vline(data=df2, aes(xintercept=xint), linetype=lt[i])
+    }
+  }
+  p
+}
+.tmads <- function(x, nbmads=2.5){
+  x2 <- nbmads*median(abs(x-median(x)))
+  median(x)+c(-x2,x2)
+}
+plotFilters(sce)
+plotFilters(sce, "log10_total_features_by_counts")
+plotFilters(sce, "pct_counts_Mt", xscale=0.98)
+
+# Find outlier
+outlierPlot <- function(cd, feature, aph=NULL, logScale=FALSE, show.legend=TRUE){
+  if(is.null(aph)) aph <- paste0(feature, "_drop")
+  if(!(aph %in% colnames(cd))) aph <- NULL
+  p <-  ggplot(as.data.frame(cd), aes_string(x = feature, alpha = aph)) +
+    geom_histogram(show.legend=show.legend)
+  if(!is.null(aph)) p <- p + scale_alpha_manual(values = c("TRUE" = 0.4, "FALSE" = 1))
+  if(logScale) p <- p + scale_x_log10()
+  p
+}
+plQCplot <- function(cd, show.legend=TRUE){
+  ps <- lapply(split(cd,cd$sample_id), sl=show.legend, FUN=function(x,sl){
+    list( outlierPlot( x, "total_counts", logScale=T, show.legend=sl),
+          outlierPlot( x, "total_features_by_counts", "total_features_drop",
+                       logScale=T, show.legend=sl),
+          outlierPlot( x, "pct_counts_Mt", "mito_drop", show.legend=sl)
+    )
+  })
+  plot_grid( plotlist = do.call(c, ps),
+             labels=rep(basename(names(ps)), each=length(ps[[1]])),
+             ncol=length(ps[[1]]),
+             label_x=0.5 )
+}
+
+
+#Filtering
+sce$total_counts_drop <- isOutlier(sce$total_counts, nmads = 2.5,
+                                   type = "both", log = TRUE, batch=sce$sample_id)
+sce$total_features_drop <- isOutlier(sce$total_features_by_counts, nmads = 2.5,
+                                     type = "both", log = TRUE, batch=sce$sample_id)
+sce$mito_drop <- sce$pct_counts_Mt > 5 &
+  isOutlier(sce$pct_counts_Mt, nmads = 2.5, type = "higher", batch=sce$sample_id)
+
+sce$isOutlier <- sce$total_counts_drop | sce$total_features_drop | sce$mito_drop
+
+# quality plot
+plQCplot(colData(sce), show.legend=FALSE)
+
+ggplot(colData(sce) %>% as.data.frame, aes(x=total_features_by_counts, y=total_counts, colour=pct_counts_Mt)) + geom_point() + facet_wrap(~Sample) +geom_density_2d(col="white") + scale_x_sqrt() + scale_y_sqrt()
+
+ggplot(colData(sce) %>% as.data.frame, aes(x=total_features_by_counts, y=pct_counts_Mt)) + geom_point() + facet_wrap(~Sample) +geom_density_2d(col="white")
+
+```
+
+### Check thresholds
+```{r threshholds, fig.width = 12, fig.height = 5}
+# Check outlier
+mets <- c("total_counts_drop","total_features_drop","mito_drop")
+sapply(mets, FUN=function(x){ sapply(mets, y=x, function(x,y){ sum(sce[[x]] & sce[[y]]) }) })
+nbcells <- cbind(table(sce$sample_id),table(sce$sample_id[!sce$isOutlier]))
+colnames(nbcells) <- c("cells total","cells after filtering")
+nbcells
+layout(matrix(1:2,nrow=1))
+LSD::heatscatter( sce$total_counts, sce$total_features_by_counts, xlab="Total counts", ylab="Non-zero features", main="",log="xy")
+w <- which(!sce$isOutlier)
+LSD::heatscatter( sce$total_counts[w], sce$total_features_by_counts[w], xlab="Total counts", ylab="Non-zero features", main="Filtered cells",log="xy")
+# summary of cells kept
+cct <- table(sce$isOutlier, sce$sample_id)
+row.names(cct) <- c("Kept", "Filtered out")
+cct
+# drop outlier cells
+sce <- sce[,!sce$isOutlier]
+# require count > 1 in at least 20 cells
+sce <- sce[which(rowSums(counts(sce)>1)>=20),]
+dim(sce)
+plQCplot(colData(sce), show.legend=FALSE)
+table(sce$sample_id)
+
+#remove sample with bad qc
+sce <- sce[,!sce$sample_id %in% "CR057"]
+```
+
+## Remove doublets
+```{r remove doublets}
+sce <- scDblFinder(sce, samples="sample_id", BPPARAM=MulticoreParam(2))
+table(sce$scDblFinder.class)
+sce <- sce[,!sce$scDblFinder.class %in% "doublet"]
+```
+
+
+## Normalization
+```{r normalization}
+# Scater
+set.seed(1000)
+clusters <- quickCluster(sce, use.ranks=FALSE)
+table(clusters)
+sce <- computeSumFactors(sce, min.mean=0.1, cluster=clusters) ##cluster information added
+sce <- scater::normalize(sce)
+```
+
+## Integration
+```{r integration}
+# create SeuratObject
+seurat <- as.Seurat(sce)
+# normalize, find variable genes, and scale
+sl <- lapply(unique(as.character(seurat@meta.data$sample_id)), FUN=function(x){
+  x <- subset(seurat, cells=which(seurat@meta.data$sample_id==x))
+  x <- ScaleData(x)
+  x <- FindVariableFeatures(x, verbose=F)
+  # use non-standardized variance
+  v <- x@assays$RNA@meta.features[["vst.variance"]]
+  VariableFeatures(x) <- row.names(x@assays$RNA@meta.features)[order(v, decreasing=TRUE)[1:500]]
+  x
+})
+
+# find anchors & integrate
+anchors <- FindIntegrationAnchors(sl)
+seurat <- IntegrateData(anchorset = anchors, dims = seq_len(30),
+                        features.to.integrate = rownames(sce))
+# scale integrated data
+DefaultAssay(object=seurat) <- "integrated"
+seurat <- ScaleData(seurat, verbose=F)
+```
+
+# Dimension reduction
+```{r dimred}
+seurat <- RunPCA(object = seurat, npcs = 30, verbose = FALSE)
+seurat <- RunTSNE(object = seurat, perplexity = 30,reduction = "pca", dims = seq_len(20),
+                  seed.use = seed, do.fast = TRUE, verbose = FALSE)
+seurat <- RunUMAP(object = seurat, reduction = "pca", dims = seq_len(20),
+                  seed.use = seed, verbose = FALSE, n.neighbors = 30, min.dist = 0.5)
+```
+
+# Clustering
+```{r clustering}
+seurat <- FindNeighbors(object = seurat, reduction = "pca", dims = seq_len(20), verbose = FALSE)
+for (res in c(0.1, 0.2, 0.4, 0.8, 1, 1.2, 2))
+  seurat <- FindClusters(object = seurat, resolution = res, random.seed = seed, verbose = FALSE)
+seurat <- SetIdent(seurat, value="integrated_snn_res.0.2")
+seurat@meta.data$cluster <- seurat$integrated_snn_res.0.2
+```
+
+# Convert seurat to sce
+```{r saving}
+sce <- as.SingleCellExperiment(seurat)
+
+# Save data
+saveRDS(sce, file = paste0(out_path, "/sce_pbmc_pat_med.rds"))
+```
+
+```{r session info}
+sessionInfo()
+```
+
