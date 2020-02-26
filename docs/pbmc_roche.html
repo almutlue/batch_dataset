@@ -463,9 +463,9 @@ plotFilters &lt;-<span class="st"> </span>function( sce, <span class="dt">var=</
   <span class="kw">median</span>(x)+<span class="kw">c</span>(-x2,x2)
 }
 <span class="kw">plotFilters</span>(sce)</code></pre></div>
-<p><img src="../docs/pbmc_roche_files/figure-html/filter cells-1.svg" width="1152" /></p>
+<p><img src="pbmc_roche_files/figure-html/filter%20cells-1.svg" width="1152" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotFilters</span>(sce, <span class="st">&quot;log10_total_features_by_counts&quot;</span>)</code></pre></div>
-<p><img src="../docs/pbmc_roche_files/figure-html/filter cells-2.svg" width="1152" /></p>
+<p><img src="pbmc_roche_files/figure-html/filter%20cells-2.svg" width="1152" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotFilters</span>(sce, <span class="st">&quot;pct_counts_Mt&quot;</span>, <span class="dt">xscale=</span><span class="fl">0.98</span>)</code></pre></div>
 <pre><code>## Warning: Removed 234 rows containing non-finite values (stat_bin).</code></pre>
 <pre><code>## Warning: Removed 8 rows containing missing values (geom_bar).</code></pre>
@@ -484,7 +484,7 @@ plotFilters &lt;-<span class="st"> </span>function( sce, <span class="dt">var=</
 ## Warning: Removed 1 rows containing missing values (geom_vline).
 
 ## Warning: Removed 1 rows containing missing values (geom_vline).</code></pre>
-<p><img src="../docs/pbmc_roche_files/figure-html/filter cells-3.svg" width="1152" /></p>
+<p><img src="pbmc_roche_files/figure-html/filter%20cells-3.svg" width="1152" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Find outlier</span>
 outlierPlot &lt;-<span class="st"> </span>function(cd, feature, <span class="dt">aph=</span><span class="ot">NULL</span>, <span class="dt">logScale=</span><span class="ot">FALSE</span>, <span class="dt">show.legend=</span><span class="ot">TRUE</span>){
   if(<span class="kw">is.null</span>(aph)) aph &lt;-<span class="st"> </span><span class="kw">paste0</span>(feature, <span class="st">&quot;_drop&quot;</span>)
@@ -534,11 +534,11 @@ sce$isOutlier &lt;-<span class="st"> </span>sce$total_counts_drop |<span class="
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="../docs/pbmc_roche_files/figure-html/filter cells-4.svg" width="1152" /></p>
+<p><img src="pbmc_roche_files/figure-html/filter%20cells-4.svg" width="1152" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="kw">colData</span>(sce) %&gt;%<span class="st"> </span>as.data.frame, <span class="kw">aes</span>(<span class="dt">x=</span>total_features_by_counts, <span class="dt">y=</span>total_counts, <span class="dt">colour=</span>pct_counts_Mt)) +<span class="st"> </span><span class="kw">geom_point</span>() +<span class="st"> </span><span class="kw">facet_wrap</span>(~Sample) +<span class="kw">geom_density_2d</span>(<span class="dt">col=</span><span class="st">&quot;white&quot;</span>) +<span class="st"> </span><span class="kw">scale_x_sqrt</span>() +<span class="st"> </span><span class="kw">scale_y_sqrt</span>()</code></pre></div>
-<p><img src="../docs/pbmc_roche_files/figure-html/filter cells-5.svg" width="1152" /></p>
+<p><img src="pbmc_roche_files/figure-html/filter%20cells-5.svg" width="1152" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="kw">colData</span>(sce) %&gt;%<span class="st"> </span>as.data.frame, <span class="kw">aes</span>(<span class="dt">x=</span>total_features_by_counts, <span class="dt">y=</span>pct_counts_Mt)) +<span class="st"> </span><span class="kw">geom_point</span>() +<span class="st"> </span><span class="kw">facet_wrap</span>(~Sample) +<span class="kw">geom_density_2d</span>(<span class="dt">col=</span><span class="st">&quot;white&quot;</span>)</code></pre></div>
-<p><img src="../docs/pbmc_roche_files/figure-html/filter cells-6.svg" width="1152" /></p>
+<p><img src="pbmc_roche_files/figure-html/filter%20cells-6.svg" width="1152" /></p>
 </div>
 <div id="check-thresholds" class="section level3">
 <h3>Check thresholds</h3>
@@ -561,7 +561,7 @@ nbcells</code></pre></div>
 LSD::<span class="kw">heatscatter</span>( sce$total_counts, sce$total_features_by_counts, <span class="dt">xlab=</span><span class="st">&quot;Total counts&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Non-zero features&quot;</span>, <span class="dt">main=</span><span class="st">&quot;&quot;</span>,<span class="dt">log=</span><span class="st">&quot;xy&quot;</span>)
 w &lt;-<span class="st"> </span><span class="kw">which</span>(!sce$isOutlier)
 LSD::<span class="kw">heatscatter</span>( sce$total_counts[w], sce$total_features_by_counts[w], <span class="dt">xlab=</span><span class="st">&quot;Total counts&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Non-zero features&quot;</span>, <span class="dt">main=</span><span class="st">&quot;Filtered cells&quot;</span>,<span class="dt">log=</span><span class="st">&quot;xy&quot;</span>)</code></pre></div>
-<p><img src="../docs/pbmc_roche_files/figure-html/threshholds-1.svg" width="1152" /></p>
+<p><img src="pbmc_roche_files/figure-html/threshholds-1.svg" width="1152" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># summary of cells kept</span>
 cct &lt;-<span class="st"> </span><span class="kw">table</span>(sce$isOutlier, sce$batch)
 <span class="kw">row.names</span>(cct) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Kept&quot;</span>, <span class="st">&quot;Filtered out&quot;</span>)
@@ -589,7 +589,7 @@ sce &lt;-<span class="st"> </span>sce[<span class="kw">which</span>(<span class=
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="../docs/pbmc_roche_files/figure-html/threshholds-2.svg" width="1152" /></p>
+<p><img src="pbmc_roche_files/figure-html/threshholds-2.svg" width="1152" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(sce$batch)</code></pre></div>
 <pre><code>## 
 ## CR038 CR039 CR040 CR041 
@@ -602,7 +602,7 @@ sce &lt;-<span class="st"> </span>sce[<span class="kw">which</span>(<span class=
 <span class="kw">table</span>(sce$scDblFinder.class)</code></pre></div>
 <pre><code>## 
 ## doublet singlet 
-##     243   10095</code></pre>
+##     245   10093</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>sce[,!sce$scDblFinder.class %in%<span class="st"> &quot;doublet&quot;</span>]</code></pre></div>
 </div>
 <div id="normalization" class="section level2">
@@ -613,7 +613,7 @@ clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce,
 <span class="kw">table</span>(clusters)</code></pre></div>
 <pre><code>## clusters
 ##    1    2    3    4    5    6    7    8    9   10   11 
-##  671  920  930 1107 2303 1250 2014  214  463  121  102</code></pre>
+## 1111  930  819  670 2240  741 1961  561  214  743  103</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce, <span class="dt">min.mean=</span><span class="fl">0.1</span>, <span class="dt">cluster=</span>clusters) ##cluster information added
 sce &lt;-<span class="st"> </span>scater::<span class="kw">normalize</span>(sce)</code></pre></div>
 <pre><code>## Warning: &#39;normalizeSCE&#39; is deprecated.
@@ -649,49 +649,49 @@ anchors &lt;-<span class="st"> </span><span class="kw">FindIntegrationAnchors</s
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 9908 anchors</code></pre>
+<pre><code>##  Found 10019 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 5488 anchors</code></pre>
+<pre><code>##  Retained 5395 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 7727 anchors</code></pre>
+<pre><code>##  Found 7819 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 5111 anchors</code></pre>
+<pre><code>##  Retained 5099 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 7811 anchors</code></pre>
+<pre><code>##  Found 7775 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 5155 anchors</code></pre>
+<pre><code>##  Retained 5179 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 6940 anchors</code></pre>
+<pre><code>##  Found 6897 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 4736 anchors</code></pre>
+<pre><code>##  Retained 4665 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 6894 anchors</code></pre>
+<pre><code>##  Found 6864 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 4803 anchors</code></pre>
+<pre><code>##  Retained 4740 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 6191 anchors</code></pre>
+<pre><code>##  Found 6245 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 4223 anchors</code></pre>
+<pre><code>##  Retained 4237 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">seurat &lt;-<span class="st"> </span><span class="kw">IntegrateData</span>(<span class="dt">anchorset =</span> anchors, <span class="dt">dims =</span> <span class="kw">seq_len</span>(<span class="dv">30</span>),
                         <span class="dt">features.to.integrate =</span> <span class="kw">rownames</span>(sce))</code></pre></div>
@@ -736,7 +736,10 @@ seurat@meta.data$cluster &lt;-<span class="st"> </span>seurat$integrated_snn_res
 </div>
 <div id="convert-seurat-to-sce" class="section level1">
 <h1>Convert seurat to sce</h1>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span><span class="kw">as.SingleCellExperiment</span>(seurat)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>sce[, <span class="kw">colnames</span>(seurat)]
+counts &lt;-<span class="st"> </span><span class="kw">assays</span>(sce)[[<span class="st">&quot;counts&quot;</span>]]
+sce &lt;-<span class="st"> </span><span class="kw">as.SingleCellExperiment</span>(seurat)
+<span class="kw">assays</span>(sce)[[<span class="st">&quot;counts&quot;</span>]] &lt;-<span class="st"> </span>counts
 
 <span class="co"># Save data</span>
 <span class="kw">saveRDS</span>(sce, <span class="dt">file =</span> <span class="kw">paste0</span>(out_path, <span class="st">&quot;/sce_pbmc_roche.rds&quot;</span>))</code></pre></div>
