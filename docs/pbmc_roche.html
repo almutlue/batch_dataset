@@ -602,7 +602,7 @@ sce &lt;-<span class="st"> </span>sce[<span class="kw">which</span>(<span class=
 <span class="kw">table</span>(sce$scDblFinder.class)</code></pre></div>
 <pre><code>## 
 ## doublet singlet 
-##     234   10104</code></pre>
+##     236   10102</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>sce[,!sce$scDblFinder.class %in%<span class="st"> &quot;doublet&quot;</span>]</code></pre></div>
 </div>
 <div id="normalization" class="section level2">
@@ -612,8 +612,8 @@ sce &lt;-<span class="st"> </span>sce[<span class="kw">which</span>(<span class=
 clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce, <span class="dt">use.ranks=</span><span class="ot">FALSE</span>)
 <span class="kw">table</span>(clusters)</code></pre></div>
 <pre><code>## clusters
-##    1    2    3    4    5    6    7    8    9   10   11   12   13   14 
-## 1093  580  554  890 1287  683  677 1883 1455  413  208  136  125  120</code></pre>
+##    1    2    3    4    5    6    7    8    9   10   11   12 
+##  998  930 1101  674 2202  989  232 1554  213  380  714  115</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce, <span class="dt">min.mean=</span><span class="fl">0.1</span>, <span class="dt">cluster=</span>clusters) ##cluster information added
 sce &lt;-<span class="st"> </span>scater::<span class="kw">normalize</span>(sce)</code></pre></div>
 <pre><code>## Warning: &#39;normalizeSCE&#39; is deprecated.
