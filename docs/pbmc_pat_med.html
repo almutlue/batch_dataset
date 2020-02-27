@@ -662,7 +662,7 @@ div.tocify {
 <a class="sourceLine" id="cb42-2" data-line-number="2"><span class="kw">table</span>(sce<span class="op">$</span>scDblFinder.class)</a></code></pre></div>
 <pre><code>## 
 ## doublet singlet 
-##    1149   22820</code></pre>
+##    1120   22849</code></pre>
 <div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1">sce &lt;-<span class="st"> </span>sce[,<span class="op">!</span>sce<span class="op">$</span>scDblFinder.class <span class="op">%in%</span><span class="st"> &quot;doublet&quot;</span>]</a></code></pre></div>
 </div>
 <div id="normalization" class="section level2">
@@ -673,9 +673,9 @@ div.tocify {
 <a class="sourceLine" id="cb45-4" data-line-number="4"><span class="kw">table</span>(clusters)</a></code></pre></div>
 <pre><code>## clusters
 ##    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16 
-## 1376  881 2821 1300  359 2532 1198  327 2394  955 3099 1083 1204  618 1429  377 
-##   17   18   19 
-##  401  246  220</code></pre>
+## 1261 1958 1627  945 2813 2731 1030 2861 1068 1421  461  493  494  639  383  352 
+##   17   18   19   20   21   22 
+##  234  463  447  689  274  205</code></pre>
 <div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce, <span class="dt">min.mean=</span><span class="fl">0.1</span>, <span class="dt">cluster=</span>clusters) ##cluster information added</a>
 <a class="sourceLine" id="cb47-2" data-line-number="2">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">normalize</span>(sce)</a></code></pre></div>
 <pre><code>## Warning: &#39;normalizeSCE&#39; is deprecated.
@@ -712,83 +712,83 @@ div.tocify {
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 11517 anchors</code></pre>
+<pre><code>##  Found 11521 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 6402 anchors</code></pre>
+<pre><code>##  Retained 6411 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 15561 anchors</code></pre>
+<pre><code>##  Found 15585 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 7658 anchors</code></pre>
+<pre><code>##  Retained 7618 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 11128 anchors</code></pre>
+<pre><code>##  Found 11133 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 4359 anchors</code></pre>
+<pre><code>##  Retained 4401 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 15236 anchors</code></pre>
+<pre><code>##  Found 15279 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 6533 anchors</code></pre>
+<pre><code>##  Retained 6515 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 11977 anchors</code></pre>
+<pre><code>##  Found 12030 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 6090 anchors</code></pre>
+<pre><code>##  Retained 5976 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 14464 anchors</code></pre>
+<pre><code>##  Found 14534 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 6192 anchors</code></pre>
+<pre><code>##  Retained 6104 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 9346 anchors</code></pre>
+<pre><code>##  Found 9367 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 5162 anchors</code></pre>
+<pre><code>##  Retained 5070 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 8279 anchors</code></pre>
+<pre><code>##  Found 8256 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 4941 anchors</code></pre>
+<pre><code>##  Retained 4996 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 9267 anchors</code></pre>
+<pre><code>##  Found 9334 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 5391 anchors</code></pre>
+<pre><code>##  Retained 5487 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 9526 anchors</code></pre>
+<pre><code>##  Found 9543 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 5821 anchors</code></pre>
+<pre><code>##  Retained 5741 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
-<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb136-1" data-line-number="1">seurat &lt;-<span class="st"> </span><span class="kw">IntegrateData</span>(<span class="dt">anchorset =</span> anchors, <span class="dt">dims =</span> <span class="kw">seq_len</span>(<span class="dv">30</span>),</a>
+<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb136-1" data-line-number="1">seurat &lt;-<span class="st"> </span><span class="kw">IntegrateData</span>(<span class="dt">anchorset =</span> anchors, <span class="dt">dims =</span> <span class="kw">seq_len</span>(<span class="dv">20</span>),</a>
 <a class="sourceLine" id="cb136-2" data-line-number="2">                        <span class="dt">features.to.integrate =</span> <span class="kw">rownames</span>(sce))</a></code></pre></div>
 <pre><code>## Merging dataset 5 into 4</code></pre>
 <pre><code>## Extracting anchors for merged samples</code></pre>
@@ -832,18 +832,29 @@ div.tocify {
 <a class="sourceLine" id="cb161-2" data-line-number="2"><span class="cf">for</span> (res <span class="cf">in</span> <span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.4</span>, <span class="fl">0.8</span>, <span class="dv">1</span>, <span class="fl">1.2</span>, <span class="dv">2</span>))</a>
 <a class="sourceLine" id="cb161-3" data-line-number="3">  seurat &lt;-<span class="st"> </span><span class="kw">FindClusters</span>(<span class="dt">object =</span> seurat, <span class="dt">resolution =</span> res, <span class="dt">random.seed =</span> seed, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb161-4" data-line-number="4">seurat &lt;-<span class="st"> </span><span class="kw">SetIdent</span>(seurat, <span class="dt">value=</span><span class="st">&quot;integrated_snn_res.0.2&quot;</span>)</a>
-<a class="sourceLine" id="cb161-5" data-line-number="5">seurat<span class="op">@</span>meta.data<span class="op">$</span>cluster &lt;-<span class="st"> </span>seurat<span class="op">$</span>integrated_snn_res.<span class="fl">0.2</span></a></code></pre></div>
+<a class="sourceLine" id="cb161-5" data-line-number="5">seurat<span class="op">@</span>meta.data<span class="op">$</span>cluster &lt;-<span class="st"> </span>seurat<span class="op">$</span>integrated_snn_res.<span class="fl">0.2</span></a>
+<a class="sourceLine" id="cb161-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb161-7" data-line-number="7"><span class="kw">DimPlot</span>(seurat, <span class="dt">reduction =</span> <span class="st">&quot;umap&quot;</span>)</a></code></pre></div>
+<p><img src="pbmc_pat_med_files/figure-html/clustering-1.png" width="672" /></p>
+<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb162-1" data-line-number="1"><span class="kw">DimPlot</span>(seurat, <span class="dt">reduction =</span> <span class="st">&quot;tsne&quot;</span>)</a></code></pre></div>
+<p><img src="pbmc_pat_med_files/figure-html/clustering-2.png" width="672" /></p>
+<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb163-1" data-line-number="1"><span class="kw">DimPlot</span>(seurat, <span class="dt">reduction =</span> <span class="st">&quot;tsne&quot;</span>, <span class="dt">group.by =</span> <span class="st">&quot;sample_id&quot;</span>)</a></code></pre></div>
+<p><img src="pbmc_pat_med_files/figure-html/clustering-3.png" width="672" /></p>
+<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb164-1" data-line-number="1"><span class="kw">DimPlot</span>(seurat, <span class="dt">reduction =</span> <span class="st">&quot;tsne&quot;</span>, <span class="dt">group.by =</span> <span class="st">&quot;patient&quot;</span>)</a></code></pre></div>
+<p><img src="pbmc_pat_med_files/figure-html/clustering-4.png" width="672" /></p>
+<div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb165-1" data-line-number="1"><span class="kw">DimPlot</span>(seurat, <span class="dt">reduction =</span> <span class="st">&quot;tsne&quot;</span>, <span class="dt">group.by =</span> <span class="st">&quot;media&quot;</span>)</a></code></pre></div>
+<p><img src="pbmc_pat_med_files/figure-html/clustering-5.png" width="672" /></p>
 </div>
 <div id="convert-seurat-to-sce" class="section level1">
 <h1>Convert seurat to sce</h1>
-<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb162-1" data-line-number="1">sce &lt;-<span class="st"> </span>sce[, <span class="kw">colnames</span>(seurat)]</a>
-<a class="sourceLine" id="cb162-2" data-line-number="2">counts &lt;-<span class="st"> </span><span class="kw">assays</span>(sce)[[<span class="st">&quot;counts&quot;</span>]]</a>
-<a class="sourceLine" id="cb162-3" data-line-number="3">sce &lt;-<span class="st"> </span><span class="kw">as.SingleCellExperiment</span>(seurat)</a>
-<a class="sourceLine" id="cb162-4" data-line-number="4"><span class="kw">assays</span>(sce)[[<span class="st">&quot;counts&quot;</span>]] &lt;-<span class="st"> </span>counts</a>
-<a class="sourceLine" id="cb162-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb162-6" data-line-number="6"><span class="co"># Save data</span></a>
-<a class="sourceLine" id="cb162-7" data-line-number="7"><span class="kw">saveRDS</span>(sce, <span class="dt">file =</span> <span class="kw">paste0</span>(out_path, <span class="st">&quot;/sce_pbmc_pat_med.rds&quot;</span>))</a></code></pre></div>
-<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb163-1" data-line-number="1"><span class="kw">sessionInfo</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb166-1" data-line-number="1">sce &lt;-<span class="st"> </span>sce[, <span class="kw">colnames</span>(seurat)]</a>
+<a class="sourceLine" id="cb166-2" data-line-number="2">counts &lt;-<span class="st"> </span><span class="kw">assays</span>(sce)[[<span class="st">&quot;counts&quot;</span>]]</a>
+<a class="sourceLine" id="cb166-3" data-line-number="3">sce &lt;-<span class="st"> </span><span class="kw">as.SingleCellExperiment</span>(seurat)</a>
+<a class="sourceLine" id="cb166-4" data-line-number="4"><span class="kw">assays</span>(sce)[[<span class="st">&quot;counts&quot;</span>]] &lt;-<span class="st"> </span>counts</a>
+<a class="sourceLine" id="cb166-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb166-6" data-line-number="6"><span class="co"># Save data</span></a>
+<a class="sourceLine" id="cb166-7" data-line-number="7"><span class="kw">saveRDS</span>(sce, <span class="dt">file =</span> <span class="kw">paste0</span>(out_path, <span class="st">&quot;/sce_pbmc_pat_med.rds&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb167-1" data-line-number="1"><span class="kw">sessionInfo</span>()</a></code></pre></div>
 <pre><code>## R version 3.6.1 (2019-07-05)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
 ## Running under: Ubuntu 16.04.6 LTS
