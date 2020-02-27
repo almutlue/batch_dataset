@@ -17,6 +17,8 @@ For more information check https://github.com/elimereu/matchSCore2 and  http://d
 ```{r libs}
 suppressPackageStartupMessages({
     library(scran)
+    library(magrittr)
+    library(dplyr)
 })
 
 seed <- 1000
@@ -32,6 +34,9 @@ load(file=paste0(data_path, "/sce.all_classified.technologies.RData"))
 head(colData(sce))
 dim(sce)
 table(sce$batch)
+discard_ct <- as_tibble(colData(sce)) %>% group_by(nnet2) %>% tally() %>% filter(n < 50)
+sce <- sce[,!sce$nnet2 %in% as.character(discard_ct$nnet2)]
+sce$nnet2 <- droplevels(sce$nnet2) 
 
 saveRDS(sce, file = paste0(out_path, "/sce_hca.rds"))
 ```
