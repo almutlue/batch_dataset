@@ -78,8 +78,8 @@ sce$sample_id <- gsub("/outs.*","", sample_id)
 sce$info <- meta$`Sample Name`[match(sce$sample_id, meta$`Sequencing ID`)]
 
 ##Add patient id
-sce$patient <- ifelse(grepl("D301089", sce$Sample), "pat1", "pat2")
-sce$media <- ifelse(grepl("Fresh", sce$Sample), "fresh", ifelse(grepl("DMSO", sce$Sample), "DMSO", "MetOH"))
+sce$patient <- ifelse(grepl("D301089", sce$info), "pat1", "pat2")
+sce$media <- ifelse(grepl("Fresh", sce$info), "fresh", ifelse(grepl("DMSO", sce$info), "DMSO", "MetOH"))
 
 colnames(sce) <- paste0(sce$sample_id, ".", sce$Barcode)
 rownames(sce) <- paste0(rowData(sce)$ID, ".", rowData(sce)$Symbol)

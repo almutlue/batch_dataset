@@ -405,8 +405,8 @@ div.tocify {
 <a class="sourceLine" id="cb2-15" data-line-number="15">sce<span class="op">$</span>info &lt;-<span class="st"> </span>meta<span class="op">$</span><span class="st">`</span><span class="dt">Sample Name</span><span class="st">`</span>[<span class="kw">match</span>(sce<span class="op">$</span>sample_id, meta<span class="op">$</span><span class="st">`</span><span class="dt">Sequencing ID</span><span class="st">`</span>)]</a>
 <a class="sourceLine" id="cb2-16" data-line-number="16"></a>
 <a class="sourceLine" id="cb2-17" data-line-number="17">##Add patient id</a>
-<a class="sourceLine" id="cb2-18" data-line-number="18">sce<span class="op">$</span>patient &lt;-<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">grepl</span>(<span class="st">&quot;D301089&quot;</span>, sce<span class="op">$</span>Sample), <span class="st">&quot;pat1&quot;</span>, <span class="st">&quot;pat2&quot;</span>)</a>
-<a class="sourceLine" id="cb2-19" data-line-number="19">sce<span class="op">$</span>media &lt;-<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">grepl</span>(<span class="st">&quot;Fresh&quot;</span>, sce<span class="op">$</span>Sample), <span class="st">&quot;fresh&quot;</span>, <span class="kw">ifelse</span>(<span class="kw">grepl</span>(<span class="st">&quot;DMSO&quot;</span>, sce<span class="op">$</span>Sample), <span class="st">&quot;DMSO&quot;</span>, <span class="st">&quot;MetOH&quot;</span>))</a>
+<a class="sourceLine" id="cb2-18" data-line-number="18">sce<span class="op">$</span>patient &lt;-<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">grepl</span>(<span class="st">&quot;D301089&quot;</span>, sce<span class="op">$</span>info), <span class="st">&quot;pat1&quot;</span>, <span class="st">&quot;pat2&quot;</span>)</a>
+<a class="sourceLine" id="cb2-19" data-line-number="19">sce<span class="op">$</span>media &lt;-<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">grepl</span>(<span class="st">&quot;Fresh&quot;</span>, sce<span class="op">$</span>info), <span class="st">&quot;fresh&quot;</span>, <span class="kw">ifelse</span>(<span class="kw">grepl</span>(<span class="st">&quot;DMSO&quot;</span>, sce<span class="op">$</span>info), <span class="st">&quot;DMSO&quot;</span>, <span class="st">&quot;MetOH&quot;</span>))</a>
 <a class="sourceLine" id="cb2-20" data-line-number="20"></a>
 <a class="sourceLine" id="cb2-21" data-line-number="21"><span class="kw">colnames</span>(sce) &lt;-<span class="st"> </span><span class="kw">paste0</span>(sce<span class="op">$</span>sample_id, <span class="st">&quot;.&quot;</span>, sce<span class="op">$</span>Barcode)</a>
 <a class="sourceLine" id="cb2-22" data-line-number="22"><span class="kw">rownames</span>(sce) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">rowData</span>(sce)<span class="op">$</span>ID, <span class="st">&quot;.&quot;</span>, <span class="kw">rowData</span>(sce)<span class="op">$</span>Symbol)</a>
@@ -416,12 +416,12 @@ div.tocify {
 <a class="sourceLine" id="cb2-26" data-line-number="26"></a>
 <a class="sourceLine" id="cb2-27" data-line-number="27"><span class="kw">table</span>(sce<span class="op">$</span>patient)</a></code></pre></div>
 <pre><code>## 
-##  pat2 
-## 40717</code></pre>
+##  pat1  pat2 
+## 24704 16013</code></pre>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">table</span>(sce<span class="op">$</span>media)</a></code></pre></div>
 <pre><code>## 
-## MetOH 
-## 40717</code></pre>
+##  DMSO fresh MetOH 
+## 15658 12975 12084</code></pre>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">dim</span>(sce)</a></code></pre></div>
 <pre><code>## [1] 33808 40717</code></pre>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">dim</span>(<span class="kw">colData</span>(sce))</a></code></pre></div>
@@ -662,7 +662,7 @@ div.tocify {
 <a class="sourceLine" id="cb42-2" data-line-number="2"><span class="kw">table</span>(sce<span class="op">$</span>scDblFinder.class)</a></code></pre></div>
 <pre><code>## 
 ## doublet singlet 
-##    1120   22849</code></pre>
+##    1145   22824</code></pre>
 <div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1">sce &lt;-<span class="st"> </span>sce[,<span class="op">!</span>sce<span class="op">$</span>scDblFinder.class <span class="op">%in%</span><span class="st"> &quot;doublet&quot;</span>]</a></code></pre></div>
 </div>
 <div id="normalization" class="section level2">
@@ -673,9 +673,9 @@ div.tocify {
 <a class="sourceLine" id="cb45-4" data-line-number="4"><span class="kw">table</span>(clusters)</a></code></pre></div>
 <pre><code>## clusters
 ##    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16 
-## 1261 1958 1627  945 2813 2731 1030 2861 1068 1421  461  493  494  639  383  352 
-##   17   18   19   20   21   22 
-##  234  463  447  689  274  205</code></pre>
+## 2738  316  892 1055 1224 2613 1115 1502 1526 1113 1673  426  476  738 1671  527 
+##   17   18   19   20   21   22   23 
+##  503  565  248  740  476  483  204</code></pre>
 <div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce, <span class="dt">min.mean=</span><span class="fl">0.1</span>, <span class="dt">cluster=</span>clusters) ##cluster information added</a>
 <a class="sourceLine" id="cb47-2" data-line-number="2">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">normalize</span>(sce)</a></code></pre></div>
 <pre><code>## Warning: &#39;normalizeSCE&#39; is deprecated.
@@ -712,81 +712,81 @@ div.tocify {
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 11521 anchors</code></pre>
+<pre><code>##  Found 11574 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 6411 anchors</code></pre>
+<pre><code>##  Retained 6419 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 15585 anchors</code></pre>
+<pre><code>##  Found 15477 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 7618 anchors</code></pre>
+<pre><code>##  Retained 7763 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 11133 anchors</code></pre>
+<pre><code>##  Found 11091 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 4401 anchors</code></pre>
+<pre><code>##  Retained 4374 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 15279 anchors</code></pre>
+<pre><code>##  Found 15271 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 6515 anchors</code></pre>
+<pre><code>##  Retained 6446 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 12030 anchors</code></pre>
+<pre><code>##  Found 12041 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 5976 anchors</code></pre>
+<pre><code>##  Retained 6003 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 14534 anchors</code></pre>
+<pre><code>##  Found 14464 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 6104 anchors</code></pre>
+<pre><code>##  Retained 6022 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 9367 anchors</code></pre>
+<pre><code>##  Found 9416 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 5070 anchors</code></pre>
+<pre><code>##  Retained 5061 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 8256 anchors</code></pre>
+<pre><code>##  Found 8242 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 4996 anchors</code></pre>
+<pre><code>##  Retained 4966 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 9334 anchors</code></pre>
+<pre><code>##  Found 9322 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 5487 anchors</code></pre>
+<pre><code>##  Retained 5443 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 9543 anchors</code></pre>
+<pre><code>##  Found 9474 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 5741 anchors</code></pre>
+<pre><code>##  Retained 5762 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb136-1" data-line-number="1">seurat &lt;-<span class="st"> </span><span class="kw">IntegrateData</span>(<span class="dt">anchorset =</span> anchors, <span class="dt">dims =</span> <span class="kw">seq_len</span>(<span class="dv">20</span>),</a>
 <a class="sourceLine" id="cb136-2" data-line-number="2">                        <span class="dt">features.to.integrate =</span> <span class="kw">rownames</span>(sce))</a></code></pre></div>
