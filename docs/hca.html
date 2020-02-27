@@ -189,6 +189,8 @@ summary {
 <p>PBMC+HEK293T QCed data (UMI counts + matchSCore2 annotations) from 13 protocols. For more information check <a href="https://github.com/elimereu/matchSCore2" class="uri">https://github.com/elimereu/matchSCore2</a> and <a href="http://dx.doi.org/10.1101/630087" class="uri">http://dx.doi.org/10.1101/630087</a>.</p>
 <pre class="r"><code>suppressPackageStartupMessages({
     library(scran)
+    library(magrittr)
+    library(dplyr)
 })
 
 seed &lt;- 1000</code></pre>
@@ -217,7 +219,11 @@ head(colData(sce))</code></pre>
 ##         2261         1927          686         1481         1684         1333 
 ##   Smart-Seq2 
 ##          732</code></pre>
-<pre class="r"><code>saveRDS(sce, file = paste0(out_path, &quot;/sce_hca.rds&quot;))</code></pre>
+<pre class="r"><code>discard_ct &lt;- as_tibble(colData(sce)) %&gt;% group_by(nnet2) %&gt;% tally() %&gt;% filter(n &lt; 50)
+sce &lt;- sce[,!sce$nnet2 %in% as.character(discard_ct$nnet2)]
+sce$nnet2 &lt;- droplevels(sce$nnet2) 
+
+saveRDS(sce, file = paste0(out_path, &quot;/sce_hca.rds&quot;))</code></pre>
 </div>
 
 
