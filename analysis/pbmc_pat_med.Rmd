@@ -277,7 +277,7 @@ sl <- lapply(unique(as.character(seurat@meta.data$sample_id)), FUN=function(x){
 
 # find anchors & integrate
 anchors <- FindIntegrationAnchors(sl)
-seurat <- IntegrateData(anchorset = anchors, dims = seq_len(30),
+seurat <- IntegrateData(anchorset = anchors, dims = seq_len(20),
                         features.to.integrate = rownames(sce))
 # scale integrated data
 DefaultAssay(object=seurat) <- "integrated"
@@ -300,6 +300,12 @@ for (res in c(0.1, 0.2, 0.4, 0.8, 1, 1.2, 2))
   seurat <- FindClusters(object = seurat, resolution = res, random.seed = seed, verbose = FALSE)
 seurat <- SetIdent(seurat, value="integrated_snn_res.0.2")
 seurat@meta.data$cluster <- seurat$integrated_snn_res.0.2
+
+DimPlot(seurat, reduction = "umap")
+DimPlot(seurat, reduction = "tsne")
+DimPlot(seurat, reduction = "tsne", group.by = "sample_id")
+DimPlot(seurat, reduction = "tsne", group.by = "patient")
+DimPlot(seurat, reduction = "tsne", group.by = "media")
 ```
 
 # Convert seurat to sce
