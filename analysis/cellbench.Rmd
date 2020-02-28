@@ -1,0 +1,56 @@
+---
+title: "cellBench"
+author: "Almut Lütge"
+date: "28 Februar 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## CellBench
+
+CellBench uses three human lung adenocarcinoma cell lines HCC827, H1975 and H2228, which were cultured separately, and then processed in three different ways. Firstly, single cells from each cell line were mixed in equal proportions, with libraries generated using three different protocols: CEL-seq2, Drop-seq (with Dolomite equipment) and 10X Chromium. Secondly, the single cells were sorted from the three cell lines into 384-well plates, with an equal number of cells per well in different combinations (generally 9-cells, but with some 90-cell population controls).
+See 
+
+```{r libs}
+suppressPackageStartupMessages({
+    library(scran)
+    library(magrittr)
+    library(dplyr)
+    library(CellBench)
+})
+
+seed <- 1000
+```
+
+
+```{r load data}
+out_path <- here::here("out")
+
+sc_data <- load_sc_data()
+colData(sc_data[[1]])$protocol <- rep(names(sc_data)[1], ncol(sc_data[[1]]))
+sce <- sc_data[[1]]
+
+for(i in 2:length(sc_data)){
+  colData(sc_data[[i]])$protocol <- rep(names(sc_data)[i], ncol(sc_data[[i]]))
+  gene_overlap <- intersect(rownames(sce), rownames(sc_data[[i]]))
+  coldata_overlap <- intersect(names(colData(sce)), names(colData(sc_data[[i]])))
+  sc_data[[i]] <- sc_data[[i]][gene_overlap,]
+  colData(sc_data[[i]]) <- colData(sc_data[[i]])[, coldata_overlap]
+  colData(sce) <- colData(sce)[, coldata_overlap]
+  sce <- sce[gene_overlap,]
+  sce <- cbind(sce, sc_data[[i]])
+}
+colnames(sce) <- paste0(colnames(sce), "_", sce$protocol)
+dim(sce)
+
+## Filter out genes that are not expressed in any cell
+sce <- sce[which(rowSums(counts(sce) > 0) > 0), ]
+dim(sce)
+
+saveRDS(sce, file = paste0(out_path, "/sce_cellBench.rds"))
+sessionInfo()
+```
+
