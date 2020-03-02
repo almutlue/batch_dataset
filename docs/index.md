@@ -33,11 +33,11 @@ Dataset collection to characterize and simulate batch effects.
 
 ## Protocol batch
 + [hca_protocols](hca.html)
-+ [csf_patient](csf_pat_med.html)
++ [Pancreas](pancreas.html)
 + [CellBench](cellbench.html)
 
 ## Patient batch
-+ [pbmcc2_pat](pbmc_pat_med.html)
-+ [Khan_patients](khan.html)
-+ [Pancreas_patients](pancreas.html)
++ [pbmc2_pat](pbmc_pat_med.html)
++ [Kang_patient](kang.html)
++ [csf_patient](csf_pat_med.html)
 

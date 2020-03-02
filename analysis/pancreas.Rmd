@@ -1,0 +1,126 @@
+---
+title: "pancreas"
+author: "Almut Lütge"
+date: "2 März 2020"
+output:
+  html_document:
+    self_contained: no
+    lib_dir: '../docs/site_libs'
+    code_folding: show
+    theme: journal
+    highlight: tango
+    number_sections: no
+    toc: yes
+    toc_depth: 3
+    toc_float: true
+    collapsed: no
+    smooth_scroll: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Pancreas dataset
+
+A human pancreatic islet cell datasets produced across four technologies, CelSeq (GSE81076) CelSeq2 (GSE85241), Fluidigm C1 (GSE86469), and SMART-Seq2 (E-MTAB-5061). Count data are provided by https://satijalab.org, where they are used to demonstrate seurat integration. Further details can be assessed via https://satijalab.org/seurat/v3.0/integration.html. 
+
+
+```{r libraries}
+suppressPackageStartupMessages({
+  library(CellBench)
+  library(cowplot)
+  library(ggplot2)
+  library(scater)
+  library(jcolors)
+  library(CellMixS)
+  library(gridExtra)
+  library(purrr)
+  library(jcolors)
+  library(here)
+  library(tidyr)
+  library(dplyr)
+  library(stringr)
+  library(variancePartition)
+  library(stringr)
+  library(Seurat)
+})
+
+seed <- 1000
+```
+
+# Data
+Load data
+
+```{r data}
+out_path <- here::here("out")
+data_path <- here::here("data")
+
+pancreas.data <- readRDS(paste0(data_path,"/pancreas_expression_matrix.rds"))
+
+# load metadata
+metadata <- readRDS(paste0(data_path,"/pancreas_metadata.rds"))
+
+# create SeuratObject
+pancreas <- CreateSeuratObject(pancreas.data, meta.data = metadata)
+
+```
+
+
+# Integration
+```{r integration}
+pancreas.list <- SplitObject(pancreas, split.by = "tech")
+
+for (i in 1:length(pancreas.list)) {
+  pancreas.list[[i]] <- NormalizeData(pancreas.list[[i]], verbose = FALSE)
+  pancreas.list[[i]] <- FindVariableFeatures(pancreas.list[[i]], 
+                                             selection.method = "vst", 
+                                             nfeatures = 2000, 
+                                             verbose = FALSE)
+}
+reference.list <- pancreas.list[c("celseq", "celseq2", "smartseq2")]
+
+# find anchors & integrate
+pancreas.anchors <- FindIntegrationAnchors(object.list = reference.list, dims = 1:30)
+pancreas.integrated <- IntegrateData(anchorset = pancreas.anchors, dims = 1:30)
+
+# scale integrated data
+DefaultAssay(pancreas.integrated) <- "integrated"
+pancreas.integrated <- ScaleData(pancreas.integrated, verbose = FALSE)
+```
+
+# Dimension reduction
+```{r dimred}
+pancreas.integrated <- RunPCA(pancreas.integrated, npcs = 30, verbose = FALSE)
+pancreas.integrated <- RunTSNE(pancreas.integrated, reduction = "pca", dims = 1:30)
+pancreas.integrated <- RunUMAP(pancreas.integrated, reduction = "pca", dims = seq_len(30),
+                               seed.use = seed, verbose = FALSE,n.neighbors = 30, min.dist = 0.5)
+
+p1 <- DimPlot(pancreas.integrated, reduction = "tsne", group.by = "tech")
+p2 <- DimPlot(pancreas.integrated, reduction = "tsne", group.by = "celltype", 
+              label = TRUE, repel = TRUE) + NoLegend()
+plot_grid(p1, p2)
+
+```
+
+# Convert seurat to sce
+```{r saving}
+seurat <- pancreas.integrated
+sce <- SingleCellExperiment(
+    assays=list(
+        counts=seurat@assays$RNA@counts,
+        logcounts=seurat@assays$RNA@data),
+    colData=seurat@meta.data,
+    reducedDims=lapply(seurat@reductions, FUN=function(x) x@cell.embeddings)
+)
+
+# Save data
+saveRDS(sce, file = paste0(out_path, "/sce_pancreas.rds"))
+```
+
+```{r session info}
+sessionInfo()
+```
+
+
+
