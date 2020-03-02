@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Almut Lütge" />
+
+
+<title>Kang dataset</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Kang dataset</h1>
+<h4 class="author">Almut Lütge</h4>
+<h4 class="date">2 März 2020</h4>
+
+</div>
+
+
+<div id="kang-dataset" class="section level2">
+<h2>Kang dataset</h2>
+<p>10x droplet-based scRNA-seq PBMC data from 8 Lupus patients before and after 6h-treatment with INF-beta (16 samples in total). data are derived from the muscData package and can be assessed via ExperimentHub. Here we use only the control sample to not mix treatment and batch effect. See <a href="https://bioconductor.org/packages/release/data/experiment/vignettes/muscData/inst/doc/muscData.html" class="uri">https://bioconductor.org/packages/release/data/experiment/vignettes/muscData/inst/doc/muscData.html</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">suppressPackageStartupMessages</span>({
+    <span class="kw">library</span>(plotly)
+    <span class="kw">library</span>(readr)
+    <span class="kw">library</span>(stringr)
+    <span class="kw">library</span>(edgeR)
+    <span class="kw">library</span>(stringr)
+    <span class="kw">library</span>(pheatmap)
+    <span class="kw">library</span>(purrr)
+    <span class="kw">library</span>(scater)
+    <span class="kw">library</span>(dplyr)
+    <span class="kw">library</span>(reshape2)
+    <span class="kw">library</span>(ggplot2)
+    <span class="kw">library</span>(cowplot)
+    <span class="kw">library</span>(Matrix)
+    <span class="kw">library</span>(scran)
+    <span class="kw">library</span>(LSD)
+    <span class="kw">library</span>(Seurat)
+    <span class="kw">library</span>(sctransform)
+    <span class="kw">library</span>(readxl)
+    <span class="kw">library</span>(DropletUtils)
+    <span class="kw">library</span>(CellMixS)
+    <span class="kw">library</span>(tibble)
+    <span class="kw">library</span>(ExperimentHub)
+})
+
+seed &lt;-<span class="st"> </span><span class="dv">1000</span></code></pre></div>
+</div>
+<div id="data" class="section level1">
+<h1>Data</h1>
+<p>Load data</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">out_path &lt;-<span class="st"> </span>here::<span class="kw">here</span>(<span class="st">&quot;out&quot;</span>)
+sc &lt;-<span class="st"> </span><span class="kw">ExperimentHub</span>()</code></pre></div>
+<pre><code>## snapshotDate(): 2019-10-22</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>sc[[<span class="st">&quot;EH2259&quot;</span>]]</code></pre></div>
+<pre><code>## snapshotDate(): 2019-10-22</code></pre>
+<pre><code>## see ?muscData and browseVignettes(&#39;muscData&#39;) for documentation</code></pre>
+<pre><code>## loading from cache</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Filter out genes that are not expressed in any cell
+sce &lt;-<span class="st"> </span>sce[<span class="kw">which</span>(<span class="kw">rowSums</span>(<span class="kw">counts</span>(sce) &gt;<span class="st"> </span><span class="dv">0</span>) &gt;<span class="st"> </span><span class="dv">0</span>), ]
+sce$patient &lt;-<span class="st"> </span>sce$ind
+
+sce$patient &lt;-<span class="st"> </span><span class="kw">factor</span>(sce$patient)
+
+<span class="kw">table</span>(sce$patient)</code></pre></div>
+<pre><code>## 
+##  101  107 1015 1016 1039 1244 1256 1488 
+## 2390 1286 5841 4178 1349 4005 4726 5290</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(sce$patient, sce$stim)</code></pre></div>
+<pre><code>##       
+##        ctrl stim
+##   101  1027 1363
+##   107   645  641
+##   1015 3138 2703
+##   1016 2180 1998
+##   1039  552  797
+##   1244 2250 1755
+##   1256 2451 2275
+##   1488 2376 2914</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(sce)</code></pre></div>
+<pre><code>## [1] 18890 29065</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(<span class="kw">colData</span>(sce))</code></pre></div>
+<pre><code>## [1] 29065     6</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(<span class="kw">rowData</span>(sce))</code></pre></div>
+<pre><code>## [1] 18890     2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#remove stmulated sample</span>
+sce &lt;-<span class="st"> </span>sce[,!sce$stim %in%<span class="st"> &quot;stim&quot;</span>]
+<span class="kw">dim</span>(sce)</code></pre></div>
+<pre><code>## [1] 18890 14619</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#remove doublets</span>
+sce &lt;-<span class="st"> </span>sce[,!sce$multiplets %in%<span class="st"> &quot;doublet&quot;</span>]
+<span class="kw">dim</span>(sce)</code></pre></div>
+<pre><code>## [1] 18890 13021</code></pre>
+<div id="calculate-qc" class="section level3">
+<h3>Calculate QC</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#remove genes without any counts</span>
+keep_features &lt;-<span class="st"> </span><span class="kw">rowSums</span>(<span class="kw">counts</span>(sce) &gt;<span class="st"> </span><span class="dv">0</span>) &gt;<span class="st"> </span><span class="dv">0</span>
+sce &lt;-<span class="st"> </span>sce[keep_features, ]
+<span class="kw">dim</span>(sce)</code></pre></div>
+<pre><code>## [1] 17294 13021</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># # Mitochondrial genes</span>
+is.mito &lt;-<span class="st"> </span><span class="kw">grepl</span>(<span class="st">&quot;MT-&quot;</span>, <span class="kw">rownames</span>(sce))
+<span class="kw">summary</span>(is.mito)</code></pre></div>
+<pre><code>##    Mode   FALSE 
+## logical   17294</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mito &lt;-<span class="st"> </span><span class="kw">rownames</span>(sce)[is.mito]
+
+sce &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(sce, <span class="dt">feature_controls =</span> <span class="kw">list</span>(<span class="dt">Mt =</span> mito))</code></pre></div>
+<pre><code>## Warning: &#39;calculateQCMetrics&#39; is deprecated.
+## Use &#39;perCellQCMetrics&#39; or &#39;perFeatureQCMetrics&#39; instead.</code></pre>
+</div>
+</div>
+<div id="filtering" class="section level1">
+<h1>Filtering</h1>
+<div id="find-outlier" class="section level2">
+<h2>Find outlier</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># # Plot filters</span>
+plotFilters &lt;-<span class="st"> </span>function( sce, <span class="dt">var=</span><span class="st">&quot;log10_total_counts&quot;</span>, <span class="dt">split_by=</span><span class="st">&quot;patient&quot;</span>, <span class="dt">nrow=</span><span class="ot">NULL</span>,
+                         <span class="dt">nmads=</span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">5</span>), <span class="dt">lt=</span><span class="kw">c</span>(<span class="st">&quot;dashed&quot;</span>,<span class="st">&quot;dotted&quot;</span>,<span class="st">&quot;dotdash&quot;</span>), <span class="dt">xscale=</span><span class="st">&quot;free&quot;</span> ){
+  CD &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">colData</span>(sce))
+  if(!(var %in%<span class="st"> </span><span class="kw">colnames</span>(CD))) <span class="kw">stop</span>(<span class="kw">paste</span>(<span class="st">&quot;`var`&quot;</span>,var,<span class="st">&quot;is not in `colData(sce)`!&quot;</span>))
+  if(!<span class="kw">is.null</span>(split_by) &amp;&amp;<span class="st"> </span>!(split_by %in%<span class="st"> </span><span class="kw">colnames</span>(CD))){
+    <span class="kw">stop</span>(<span class="kw">paste</span>(<span class="st">&quot;`split_by`&quot;</span>,split_by,<span class="st">&quot;is not in `colData(sce)`!&quot;</span>))
+  }
+  <span class="kw">library</span>(ggplot2)
+  <span class="kw">library</span>(cowplot)
+  d &lt;-<span class="st"> </span>CD[,var,drop=F]
+  if(!<span class="kw">is.null</span>(split_by)) d$dataset &lt;-<span class="st"> </span>CD[[split_by]]
+  p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(d, <span class="kw">aes_string</span>(<span class="dt">x=</span>var)) +<span class="st"> </span><span class="kw">geom_histogram</span>(<span class="dt">color=</span><span class="st">&quot;darkblue&quot;</span>, <span class="dt">bins=</span><span class="dv">30</span>)
+  if(xscale!=<span class="st">&quot;free&quot;</span>){
+    if(xscale!=<span class="st">&quot;fixed&quot;</span>){
+      if(xscale&gt;<span class="dv">1</span> &amp;&amp;<span class="st"> </span>xscale%%<span class="dv">1</span>==<span class="dv">0</span>){
+        xq &lt;-<span class="st"> </span><span class="kw">.tmads</span>(d[[var]], xscale)
+        xr &lt;-<span class="st"> </span><span class="kw">range</span>(d[[var]],<span class="dt">na.rm=</span>T)
+        xq &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">max</span>(xq[<span class="dv">1</span>],xr[<span class="dv">1</span>]), <span class="kw">min</span>(xq[<span class="dv">2</span>],xr[<span class="dv">2</span>]))
+      }else{
+        if(xscale&lt;=<span class="dv">1</span> &amp;<span class="st"> </span>xscale&gt;<span class="dv">0</span>){
+          xscale &lt;-<span class="st"> </span>(<span class="dv">1</span>-xscale)/<span class="dv">2</span>
+          xq &lt;-<span class="st"> </span><span class="kw">quantile</span>(d[[var]], <span class="dt">probs=</span><span class="kw">c</span>(xscale,<span class="dv">1</span>-xscale), <span class="dt">na.rm=</span>T)
+        }else{
+          <span class="kw">stop</span>(<span class="st">&quot;Wrong `xscale` value!&quot;</span>)
+        }
+      }
+      p &lt;-<span class="st"> </span>p +<span class="st"> </span><span class="kw">xlim</span>(xq[<span class="dv">1</span>], xq[<span class="dv">2</span>])
+    }
+  }
+  if(!<span class="kw">is.null</span>(split_by)){
+    if(<span class="kw">is.null</span>(nrow)) nrow &lt;-<span class="st"> </span><span class="kw">ceiling</span>(<span class="kw">length</span>(<span class="kw">unique</span>(d$dataset))/<span class="dv">3</span>)
+    p &lt;-<span class="st"> </span>p +<span class="st"> </span><span class="kw">facet_wrap</span>(~dataset, <span class="dt">scales=</span><span class="kw">ifelse</span>(xscale==<span class="st">&quot;free&quot;</span>,<span class="st">&quot;free&quot;</span>,<span class="st">&quot;free_y&quot;</span>), <span class="dt">nrow=</span>nrow)
+    for(ds in <span class="kw">unique</span>(d$dataset)){
+      for(i in <span class="dv">1</span>:<span class="kw">length</span>(nmads)){
+        ma &lt;-<span class="st"> </span><span class="kw">.tmads</span>(d[<span class="kw">which</span>(d$dataset==ds),var], nmads[i])
+        df2 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">xint=</span><span class="kw">as.numeric</span>(ma), <span class="dt">dataset=</span><span class="kw">rep</span>(ds,<span class="dv">2</span>))
+        p &lt;-<span class="st"> </span>p +<span class="st"> </span><span class="kw">geom_vline</span>(<span class="dt">data=</span>df2, <span class="kw">aes</span>(<span class="dt">xintercept=</span>xint), <span class="dt">linetype=</span>lt[i])
+      }
+    }
+  }else{
+    for(i in <span class="dv">1</span>:<span class="kw">length</span>(nmads)){
+      df2 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">xint=</span><span class="kw">as.numeric</span>(<span class="kw">.tmads</span>(d[[var]], nmads[i])))
+      p &lt;-<span class="st"> </span>p +<span class="st"> </span><span class="kw">geom_vline</span>(<span class="dt">data=</span>df2, <span class="kw">aes</span>(<span class="dt">xintercept=</span>xint), <span class="dt">linetype=</span>lt[i])
+    }
+  }
+  p
+}
+.tmads &lt;-<span class="st"> </span>function(x, <span class="dt">nbmads=</span><span class="fl">2.5</span>){
+  x2 &lt;-<span class="st"> </span>nbmads*<span class="kw">median</span>(<span class="kw">abs</span>(x-<span class="kw">median</span>(x)))
+  <span class="kw">median</span>(x)+<span class="kw">c</span>(-x2,x2)
+}
+<span class="kw">plotFilters</span>(sce)</code></pre></div>
+<p><img src="kang_files/figure-html/filter%20cells-1.svg" width="1152" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotFilters</span>(sce, <span class="st">&quot;log10_total_features_by_counts&quot;</span>)</code></pre></div>
+<p><img src="kang_files/figure-html/filter%20cells-2.svg" width="1152" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotFilters</span>(sce, <span class="st">&quot;pct_counts_Mt&quot;</span>, <span class="dt">xscale=</span><span class="fl">0.98</span>)</code></pre></div>
+<pre><code>## Warning: Removed 8 rows containing missing values (geom_bar).</code></pre>
+<p><img src="kang_files/figure-html/filter%20cells-3.svg" width="1152" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Find outlier</span>
+outlierPlot &lt;-<span class="st"> </span>function(cd, feature, <span class="dt">aph=</span><span class="ot">NULL</span>, <span class="dt">logScale=</span><span class="ot">FALSE</span>, <span class="dt">show.legend=</span><span class="ot">TRUE</span>){
+  if(<span class="kw">is.null</span>(aph)) aph &lt;-<span class="st"> </span><span class="kw">paste0</span>(feature, <span class="st">&quot;_drop&quot;</span>)
+  if(!(aph %in%<span class="st"> </span><span class="kw">colnames</span>(cd))) aph &lt;-<span class="st"> </span><span class="ot">NULL</span>
+  p &lt;-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">as.data.frame</span>(cd), <span class="kw">aes_string</span>(<span class="dt">x =</span> feature, <span class="dt">alpha =</span> aph)) +
+<span class="st">    </span><span class="kw">geom_histogram</span>(<span class="dt">show.legend=</span>show.legend)
+  if(!<span class="kw">is.null</span>(aph)) p &lt;-<span class="st"> </span>p +<span class="st"> </span><span class="kw">scale_alpha_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&quot;TRUE&quot;</span> =<span class="st"> </span><span class="fl">0.4</span>, <span class="st">&quot;FALSE&quot;</span> =<span class="st"> </span><span class="dv">1</span>))
+  if(logScale) p &lt;-<span class="st"> </span>p +<span class="st"> </span><span class="kw">scale_x_log10</span>()
+  p
+}
+plQCplot &lt;-<span class="st"> </span>function(cd, <span class="dt">show.legend=</span><span class="ot">TRUE</span>){
+  ps &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">split</span>(cd,cd$patient), <span class="dt">sl=</span>show.legend, <span class="dt">FUN=</span>function(x,sl){
+    <span class="kw">list</span>( <span class="kw">outlierPlot</span>( x, <span class="st">&quot;total_counts&quot;</span>, <span class="dt">logScale=</span>T, <span class="dt">show.legend=</span>sl),
+          <span class="kw">outlierPlot</span>( x, <span class="st">&quot;total_features_by_counts&quot;</span>, <span class="st">&quot;total_features_drop&quot;</span>,
+                       <span class="dt">logScale=</span>T, <span class="dt">show.legend=</span>sl),
+          <span class="kw">outlierPlot</span>( x, <span class="st">&quot;pct_counts_Mt&quot;</span>, <span class="st">&quot;mito_drop&quot;</span>, <span class="dt">show.legend=</span>sl)
+    )
+  })
+  <span class="kw">plot_grid</span>( <span class="dt">plotlist =</span> <span class="kw">do.call</span>(c, ps),
+             <span class="dt">labels=</span><span class="kw">rep</span>(<span class="kw">basename</span>(<span class="kw">names</span>(ps)), <span class="dt">each=</span><span class="kw">length</span>(ps[[<span class="dv">1</span>]])),
+             <span class="dt">ncol=</span><span class="kw">length</span>(ps[[<span class="dv">1</span>]]),
+             <span class="dt">label_x=</span><span class="fl">0.5</span> )
+}
+
+
+<span class="co">#Filtering</span>
+sce$total_counts_drop &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce$total_counts, <span class="dt">nmads =</span> <span class="fl">2.5</span>,
+                                   <span class="dt">type =</span> <span class="st">&quot;both&quot;</span>, <span class="dt">log =</span> <span class="ot">TRUE</span>, <span class="dt">batch=</span>sce$patient)
+sce$total_features_drop &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce$total_features_by_counts, <span class="dt">nmads =</span> <span class="fl">2.5</span>,
+                                     <span class="dt">type =</span> <span class="st">&quot;both&quot;</span>, <span class="dt">log =</span> <span class="ot">TRUE</span>, <span class="dt">batch=</span>sce$patient)
+sce$mito_drop &lt;-<span class="st"> </span>sce$pct_counts_Mt &gt;<span class="st"> </span><span class="dv">5</span> &amp;
+<span class="st">  </span><span class="kw">isOutlier</span>(sce$pct_counts_Mt, <span class="dt">nmads =</span> <span class="fl">2.5</span>, <span class="dt">type =</span> <span class="st">&quot;higher&quot;</span>, <span class="dt">batch=</span>sce$patient)
+
+sce$isOutlier &lt;-<span class="st"> </span>sce$total_counts_drop |<span class="st"> </span>sce$total_features_drop |<span class="st"> </span>sce$mito_drop
+
+<span class="co"># quality plot</span>
+<span class="kw">plQCplot</span>(<span class="kw">colData</span>(sce), <span class="dt">show.legend=</span><span class="ot">FALSE</span>)</code></pre></div>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="kang_files/figure-html/filter%20cells-4.svg" width="1152" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="kw">colData</span>(sce) %&gt;%<span class="st"> </span>as.data.frame, <span class="kw">aes</span>(<span class="dt">x=</span>total_features_by_counts, <span class="dt">y=</span>total_counts, <span class="dt">colour=</span>pct_counts_Mt)) +<span class="st"> </span><span class="kw">geom_point</span>() +<span class="st"> </span><span class="kw">facet_wrap</span>(~patient) +<span class="kw">geom_density_2d</span>(<span class="dt">col=</span><span class="st">&quot;white&quot;</span>) +<span class="st"> </span><span class="kw">scale_x_sqrt</span>() +<span class="st"> </span><span class="kw">scale_y_sqrt</span>()</code></pre></div>
+<p><img src="kang_files/figure-html/filter%20cells-5.svg" width="1152" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="kw">colData</span>(sce) %&gt;%<span class="st"> </span>as.data.frame, <span class="kw">aes</span>(<span class="dt">x=</span>total_features_by_counts, <span class="dt">y=</span>pct_counts_Mt)) +<span class="st"> </span><span class="kw">geom_point</span>() +<span class="st"> </span><span class="kw">facet_wrap</span>(~patient) +<span class="kw">geom_density_2d</span>(<span class="dt">col=</span><span class="st">&quot;white&quot;</span>)</code></pre></div>
+<pre><code>## Warning: Computation failed in `stat_density2d()`:
+## bandwidths must be strictly positive</code></pre>
+<pre><code>## Warning: Computation failed in `stat_density2d()`:
+## bandwidths must be strictly positive
+
+## Warning: Computation failed in `stat_density2d()`:
+## bandwidths must be strictly positive
+
+## Warning: Computation failed in `stat_density2d()`:
+## bandwidths must be strictly positive
+
+## Warning: Computation failed in `stat_density2d()`:
+## bandwidths must be strictly positive
+
+## Warning: Computation failed in `stat_density2d()`:
+## bandwidths must be strictly positive
+
+## Warning: Computation failed in `stat_density2d()`:
+## bandwidths must be strictly positive
+
+## Warning: Computation failed in `stat_density2d()`:
+## bandwidths must be strictly positive</code></pre>
+<p><img src="kang_files/figure-html/filter%20cells-6.svg" width="1152" /></p>
+</div>
+<div id="check-thresholds" class="section level2">
+<h2>Check thresholds</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Check outlier</span>
+mets &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;total_counts_drop&quot;</span>,<span class="st">&quot;total_features_drop&quot;</span>,<span class="st">&quot;mito_drop&quot;</span>)
+<span class="kw">sapply</span>(mets, <span class="dt">FUN=</span>function(x){ <span class="kw">sapply</span>(mets, <span class="dt">y=</span>x, function(x,y){ <span class="kw">sum</span>(sce[[x]] &amp;<span class="st"> </span>sce[[y]]) }) })</code></pre></div>
+<pre><code>##                     total_counts_drop total_features_drop mito_drop
+## total_counts_drop                 722                 535         0
+## total_features_drop               535                 845         0
+## mito_drop                           0                   0         0</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nbcells &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">table</span>(sce$patient),<span class="kw">table</span>(sce$patient[!sce$isOutlier]))
+<span class="kw">colnames</span>(nbcells) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;cells total&quot;</span>,<span class="st">&quot;cells after filtering&quot;</span>)
+nbcells</code></pre></div>
+<pre><code>##      cells total cells after filtering
+## 101          902                   873
+## 107          556                   547
+## 1015        2822                  2687
+## 1016        1888                  1686
+## 1039         490                   409
+## 1244        2018                  1816
+## 1256        2181                  2010
+## 1488        2164                  1961</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">layout</span>(<span class="kw">matrix</span>(<span class="dv">1</span>:<span class="dv">2</span>,<span class="dt">nrow=</span><span class="dv">1</span>))
+LSD::<span class="kw">heatscatter</span>( sce$total_counts, sce$total_features_by_counts, <span class="dt">xlab=</span><span class="st">&quot;Total counts&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Non-zero features&quot;</span>, <span class="dt">main=</span><span class="st">&quot;&quot;</span>,<span class="dt">log=</span><span class="st">&quot;xy&quot;</span>)
+w &lt;-<span class="st"> </span><span class="kw">which</span>(!sce$isOutlier)
+LSD::<span class="kw">heatscatter</span>( sce$total_counts[w], sce$total_features_by_counts[w], <span class="dt">xlab=</span><span class="st">&quot;Total counts&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Non-zero features&quot;</span>, <span class="dt">main=</span><span class="st">&quot;Filtered cells&quot;</span>,<span class="dt">log=</span><span class="st">&quot;xy&quot;</span>)</code></pre></div>
+<p><img src="kang_files/figure-html/threshholds-1.svg" width="1152" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># summary of cells kept</span>
+cct &lt;-<span class="st"> </span><span class="kw">table</span>(sce$isOutlier, sce$patient)
+<span class="kw">row.names</span>(cct) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Kept&quot;</span>, <span class="st">&quot;Filtered out&quot;</span>)
+cct</code></pre></div>
+<pre><code>##               
+##                 101  107 1015 1016 1039 1244 1256 1488
+##   Kept          873  547 2687 1686  409 1816 2010 1961
+##   Filtered out   29    9  135  202   81  202  171  203</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># drop outlier cells</span>
+sce &lt;-<span class="st"> </span>sce[,!sce$isOutlier]
+
+<span class="co"># require count &gt; 1 in at least 20 cells</span>
+sce &lt;-<span class="st"> </span>sce[<span class="kw">which</span>(<span class="kw">rowSums</span>(<span class="kw">counts</span>(sce)&gt;<span class="dv">1</span>)&gt;=<span class="dv">20</span>),]
+<span class="kw">dim</span>(sce)</code></pre></div>
+<pre><code>## [1]  3757 11989</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plQCplot</span>(<span class="kw">colData</span>(sce), <span class="dt">show.legend=</span><span class="ot">FALSE</span>)</code></pre></div>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="kang_files/figure-html/threshholds-2.svg" width="1152" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(sce$patient)</code></pre></div>
+<pre><code>## 
+##  101  107 1015 1016 1039 1244 1256 1488 
+##  873  547 2687 1686  409 1816 2010 1961</code></pre>
+</div>
+</div>
+<div id="save-data" class="section level1">
+<h1>Save data</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Save data</span>
+<span class="kw">saveRDS</span>(sce, <span class="dt">file =</span> <span class="kw">paste0</span>(out_path, <span class="st">&quot;/sce_kang.rds&quot;</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sessionInfo</span>()</code></pre></div>
+<pre><code>## R version 3.6.1 (2019-07-05)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 16.04.6 LTS
+## 
+## Matrix products: default
+## BLAS:   /home/aluetg/R/lib/R/lib/libRblas.so
+## LAPACK: /home/aluetg/R/lib/R/lib/libRlapack.so
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] parallel  stats4    stats     graphics  grDevices utils     datasets 
+## [8] methods   base     
+## 
+## other attached packages:
+##  [1] muscData_1.0.0              ExperimentHub_1.12.0       
+##  [3] AnnotationHub_2.18.0        BiocFileCache_1.10.2       
+##  [5] dbplyr_1.4.2                tibble_2.1.3               
+##  [7] CellMixS_1.2.3              kSamples_1.2-9             
+##  [9] SuppDists_1.1-9.5           DropletUtils_1.6.1         
+## [11] readxl_1.3.1                sctransform_0.2.1          
+## [13] Seurat_3.1.4                LSD_4.0-0                  
+## [15] scran_1.14.6                Matrix_1.2-18              
+## [17] cowplot_1.0.0               reshape2_1.4.3             
+## [19] dplyr_0.8.4                 scater_1.14.6              
+## [21] SingleCellExperiment_1.8.0  SummarizedExperiment_1.16.1
+## [23] DelayedArray_0.12.2         BiocParallel_1.20.1        
+## [25] matrixStats_0.55.0          Biobase_2.46.0             
+## [27] GenomicRanges_1.38.0        GenomeInfoDb_1.22.0        
+## [29] IRanges_2.20.2              S4Vectors_0.24.3           
+## [31] BiocGenerics_0.32.0         purrr_0.3.3                
+## [33] pheatmap_1.0.12             edgeR_3.28.1               
+## [35] limma_3.42.2                stringr_1.4.0              
+## [37] readr_1.3.1                 plotly_4.9.2               
+## [39] ggplot2_3.2.1              
+## 
+## loaded via a namespace (and not attached):
+##   [1] reticulate_1.14               R.utils_2.9.2                
+##   [3] tidyselect_1.0.0              AnnotationDbi_1.48.0         
+##   [5] RSQLite_2.2.0                 htmlwidgets_1.5.1            
+##   [7] grid_3.6.1                    Rtsne_0.15                   
+##   [9] munsell_0.5.0                 codetools_0.2-16             
+##  [11] mutoss_0.1-12                 ica_1.0-2                    
+##  [13] statmod_1.4.34                future_1.16.0                
+##  [15] withr_2.1.2                   colorspace_1.4-1             
+##  [17] knitr_1.28                    ROCR_1.0-7                   
+##  [19] gbRd_0.4-11                   listenv_0.8.0                
+##  [21] labeling_0.3                  Rdpack_0.11-1                
+##  [23] GenomeInfoDbData_1.2.2        mnormt_1.5-6                 
+##  [25] farver_2.0.3                  bit64_0.9-7                  
+##  [27] rhdf5_2.30.1                  rprojroot_1.3-2              
+##  [29] vctrs_0.2.3                   TH.data_1.0-10               
+##  [31] xfun_0.12                     R6_2.4.1                     
+##  [33] ggbeeswarm_0.6.0              rsvd_1.0.3                   
+##  [35] locfit_1.5-9.1                bitops_1.0-6                 
+##  [37] assertthat_0.2.1              promises_1.1.0               
+##  [39] scales_1.1.0                  multcomp_1.4-12              
+##  [41] beeswarm_0.2.3                gtable_0.3.0                 
+##  [43] npsurv_0.4-0                  globals_0.12.5               
+##  [45] sandwich_2.5-1                rlang_0.4.5                  
+##  [47] splines_3.6.1                 lazyeval_0.2.2               
+##  [49] BiocManager_1.30.10           yaml_2.2.1                   
+##  [51] backports_1.1.5               httpuv_1.5.2                 
+##  [53] tools_3.6.1                   gplots_3.0.3                 
+##  [55] RColorBrewer_1.1-2            ggridges_0.5.2               
+##  [57] TFisher_0.2.0                 Rcpp_1.0.3                   
+##  [59] plyr_1.8.5                    zlibbioc_1.32.0              
+##  [61] RCurl_1.98-1.1                pbapply_1.4-2                
+##  [63] viridis_0.5.1                 zoo_1.8-7                    
+##  [65] ggrepel_0.8.1                 cluster_2.1.0                
+##  [67] here_0.1                      magrittr_1.5                 
+##  [69] data.table_1.12.8             lmtest_0.9-37                
+##  [71] RANN_2.6.1                    mvtnorm_1.1-0                
+##  [73] fitdistrplus_1.0-14           xtable_1.8-4                 
+##  [75] mime_0.9                      hms_0.5.3                    
+##  [77] patchwork_1.0.0               lsei_1.2-0                   
+##  [79] evaluate_0.14                 gridExtra_2.3                
+##  [81] compiler_3.6.1                KernSmooth_2.23-16           
+##  [83] crayon_1.3.4                  R.oo_1.23.0                  
+##  [85] htmltools_0.4.0               later_1.0.0                  
+##  [87] tidyr_1.0.2                   RcppParallel_4.4.4           
+##  [89] DBI_1.1.0                     MASS_7.3-51.5                
+##  [91] rappdirs_0.3.1                R.methodsS3_1.8.0            
+##  [93] gdata_2.18.0                  metap_1.3                    
+##  [95] igraph_1.2.4.2                pkgconfig_2.0.3              
+##  [97] sn_1.5-5                      numDeriv_2016.8-1.1          
+##  [99] vipor_0.4.5                   dqrng_0.2.1                  
+## [101] multtest_2.42.0               XVector_0.26.0               
+## [103] bibtex_0.4.2.2                digest_0.6.25                
+## [105] RcppAnnoy_0.0.15              tsne_0.1-3                   
+## [107] rmarkdown_2.1                 cellranger_1.1.0             
+## [109] leiden_0.3.3                  uwot_0.1.5                   
+## [111] DelayedMatrixStats_1.8.0      listarrays_0.3.0             
+## [113] curl_4.3                      shiny_1.4.0                  
+## [115] gtools_3.8.1                  lifecycle_0.1.0              
+## [117] nlme_3.1-144                  jsonlite_1.6.1               
+## [119] Rhdf5lib_1.8.0                BiocNeighbors_1.4.2          
+## [121] viridisLite_0.3.0             pillar_1.4.3                 
+## [123] lattice_0.20-40               fastmap_1.0.1                
+## [125] httr_1.4.1                    plotrix_3.7-7                
+## [127] survival_3.1-8                interactiveDisplayBase_1.24.0
+## [129] glue_1.3.1                    png_0.1-7                    
+## [131] BiocVersion_3.10.1            bit_1.1-15.2                 
+## [133] stringi_1.4.6                 HDF5Array_1.14.3             
+## [135] blob_1.2.1                    BiocSingular_1.2.2           
+## [137] caTools_1.18.0                memoise_1.1.0                
+## [139] irlba_2.3.3                   future.apply_1.4.0           
+## [141] ape_5.3</code></pre>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

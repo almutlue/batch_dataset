@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Almut Lütge" />
+
+
+<title>pancreas</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">pancreas</h1>
+<h4 class="author">Almut Lütge</h4>
+<h4 class="date">2 März 2020</h4>
+
+</div>
+
+
+<div id="pancreas-dataset" class="section level2">
+<h2>Pancreas dataset</h2>
+<p>A human pancreatic islet cell datasets produced across four technologies, CelSeq (GSE81076) CelSeq2 (GSE85241), Fluidigm C1 (GSE86469), and SMART-Seq2 (E-MTAB-5061). Count data are provided by <a href="https://satijalab.org" class="uri">https://satijalab.org</a>, where they are used to demonstrate seurat integration. Further details can be assessed via <a href="https://satijalab.org/seurat/v3.0/integration.html" class="uri">https://satijalab.org/seurat/v3.0/integration.html</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">suppressPackageStartupMessages</span>({
+  <span class="kw">library</span>(CellBench)
+  <span class="kw">library</span>(cowplot)
+  <span class="kw">library</span>(ggplot2)
+  <span class="kw">library</span>(scater)
+  <span class="kw">library</span>(jcolors)
+  <span class="kw">library</span>(CellMixS)
+  <span class="kw">library</span>(gridExtra)
+  <span class="kw">library</span>(purrr)
+  <span class="kw">library</span>(jcolors)
+  <span class="kw">library</span>(here)
+  <span class="kw">library</span>(tidyr)
+  <span class="kw">library</span>(dplyr)
+  <span class="kw">library</span>(stringr)
+  <span class="kw">library</span>(variancePartition)
+  <span class="kw">library</span>(stringr)
+  <span class="kw">library</span>(Seurat)
+})
+
+seed &lt;-<span class="st"> </span><span class="dv">1000</span></code></pre></div>
+</div>
+<div id="data" class="section level1">
+<h1>Data</h1>
+<p>Load data</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">out_path &lt;-<span class="st"> </span>here::<span class="kw">here</span>(<span class="st">&quot;out&quot;</span>)
+data_path &lt;-<span class="st"> </span>here::<span class="kw">here</span>(<span class="st">&quot;data&quot;</span>)
+
+pancreas.data &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">paste0</span>(data_path,<span class="st">&quot;/pancreas_expression_matrix.rds&quot;</span>))
+
+<span class="co"># load metadata</span>
+metadata &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="kw">paste0</span>(data_path,<span class="st">&quot;/pancreas_metadata.rds&quot;</span>))
+
+<span class="co"># create SeuratObject</span>
+pancreas &lt;-<span class="st"> </span><span class="kw">CreateSeuratObject</span>(pancreas.data, <span class="dt">meta.data =</span> metadata)</code></pre></div>
+</div>
+<div id="integration" class="section level1">
+<h1>Integration</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pancreas.list &lt;-<span class="st"> </span><span class="kw">SplitObject</span>(pancreas, <span class="dt">split.by =</span> <span class="st">&quot;tech&quot;</span>)
+
+for (i in <span class="dv">1</span>:<span class="kw">length</span>(pancreas.list)) {
+  pancreas.list[[i]] &lt;-<span class="st"> </span><span class="kw">NormalizeData</span>(pancreas.list[[i]], <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
+  pancreas.list[[i]] &lt;-<span class="st"> </span><span class="kw">FindVariableFeatures</span>(pancreas.list[[i]], 
+                                             <span class="dt">selection.method =</span> <span class="st">&quot;vst&quot;</span>, 
+                                             <span class="dt">nfeatures =</span> <span class="dv">2000</span>, 
+                                             <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
+}
+reference.list &lt;-<span class="st"> </span>pancreas.list[<span class="kw">c</span>(<span class="st">&quot;celseq&quot;</span>, <span class="st">&quot;celseq2&quot;</span>, <span class="st">&quot;smartseq2&quot;</span>)]
+
+<span class="co"># find anchors &amp; integrate</span>
+pancreas.anchors &lt;-<span class="st"> </span><span class="kw">FindIntegrationAnchors</span>(<span class="dt">object.list =</span> reference.list, <span class="dt">dims =</span> <span class="dv">1</span>:<span class="dv">30</span>)</code></pre></div>
+<pre><code>## Computing 2000 integration features</code></pre>
+<pre><code>## Scaling features for provided objects</code></pre>
+<pre><code>## Finding all pairwise anchors</code></pre>
+<pre><code>## Running CCA</code></pre>
+<pre><code>## Merging objects</code></pre>
+<pre><code>## Finding neighborhoods</code></pre>
+<pre><code>## Finding anchors</code></pre>
+<pre><code>##  Found 3510 anchors</code></pre>
+<pre><code>## Filtering anchors</code></pre>
+<pre><code>##  Retained 2759 anchors</code></pre>
+<pre><code>## Extracting within-dataset neighbors</code></pre>
+<pre><code>## Running CCA</code></pre>
+<pre><code>## Merging objects</code></pre>
+<pre><code>## Finding neighborhoods</code></pre>
+<pre><code>## Finding anchors</code></pre>
+<pre><code>##  Found 3501 anchors</code></pre>
+<pre><code>## Filtering anchors</code></pre>
+<pre><code>##  Retained 2729 anchors</code></pre>
+<pre><code>## Extracting within-dataset neighbors</code></pre>
+<pre><code>## Running CCA</code></pre>
+<pre><code>## Merging objects</code></pre>
+<pre><code>## Finding neighborhoods</code></pre>
+<pre><code>## Finding anchors</code></pre>
+<pre><code>##  Found 6176 anchors</code></pre>
+<pre><code>## Filtering anchors</code></pre>
+<pre><code>##  Retained 4561 anchors</code></pre>
+<pre><code>## Extracting within-dataset neighbors</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pancreas.integrated &lt;-<span class="st"> </span><span class="kw">IntegrateData</span>(<span class="dt">anchorset =</span> pancreas.anchors, <span class="dt">dims =</span> <span class="dv">1</span>:<span class="dv">30</span>)</code></pre></div>
+<pre><code>## Merging dataset 1 into 2</code></pre>
+<pre><code>## Extracting anchors for merged samples</code></pre>
+<pre><code>## Finding integration vectors</code></pre>
+<pre><code>## Finding integration vector weights</code></pre>
+<pre><code>## Integrating data</code></pre>
+<pre><code>## Merging dataset 3 into 2 1</code></pre>
+<pre><code>## Extracting anchors for merged samples</code></pre>
+<pre><code>## Finding integration vectors</code></pre>
+<pre><code>## Finding integration vector weights</code></pre>
+<pre><code>## Integrating data</code></pre>
+<pre><code>## Warning: Adding a command log without an assay associated with it</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># scale integrated data</span>
+<span class="kw">DefaultAssay</span>(pancreas.integrated) &lt;-<span class="st"> &quot;integrated&quot;</span>
+pancreas.integrated &lt;-<span class="st"> </span><span class="kw">ScaleData</span>(pancreas.integrated, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</code></pre></div>
+</div>
+<div id="dimension-reduction" class="section level1">
+<h1>Dimension reduction</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pancreas.integrated &lt;-<span class="st"> </span><span class="kw">RunPCA</span>(pancreas.integrated, <span class="dt">npcs =</span> <span class="dv">30</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)
+pancreas.integrated &lt;-<span class="st"> </span><span class="kw">RunTSNE</span>(pancreas.integrated, <span class="dt">reduction =</span> <span class="st">&quot;pca&quot;</span>, <span class="dt">dims =</span> <span class="dv">1</span>:<span class="dv">30</span>)
+pancreas.integrated &lt;-<span class="st"> </span><span class="kw">RunUMAP</span>(pancreas.integrated, <span class="dt">reduction =</span> <span class="st">&quot;pca&quot;</span>, <span class="dt">dims =</span> <span class="kw">seq_len</span>(<span class="dv">30</span>),
+                               <span class="dt">seed.use =</span> seed, <span class="dt">verbose =</span> <span class="ot">FALSE</span>,<span class="dt">n.neighbors =</span> <span class="dv">30</span>, <span class="dt">min.dist =</span> <span class="fl">0.5</span>)</code></pre></div>
+<pre><code>## Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
+## To use Python UMAP via reticulate, set umap.method to &#39;umap-learn&#39; and metric to &#39;correlation&#39;
+## This message will be shown once per session</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p1 &lt;-<span class="st"> </span><span class="kw">DimPlot</span>(pancreas.integrated, <span class="dt">reduction =</span> <span class="st">&quot;tsne&quot;</span>, <span class="dt">group.by =</span> <span class="st">&quot;tech&quot;</span>)
+p2 &lt;-<span class="st"> </span><span class="kw">DimPlot</span>(pancreas.integrated, <span class="dt">reduction =</span> <span class="st">&quot;tsne&quot;</span>, <span class="dt">group.by =</span> <span class="st">&quot;celltype&quot;</span>, 
+              <span class="dt">label =</span> <span class="ot">TRUE</span>, <span class="dt">repel =</span> <span class="ot">TRUE</span>) +<span class="st"> </span><span class="kw">NoLegend</span>()</code></pre></div>
+<pre><code>## Warning: Using `as.character()` on a quosure is deprecated as of rlang 0.3.0.
+## Please use `as_label()` or `as_name()` instead.
+## This warning is displayed once per session.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot_grid</span>(p1, p2)</code></pre></div>
+<p><img src="pancreas_files/figure-html/dimred-1.svg" width="672" /></p>
+</div>
+<div id="convert-seurat-to-sce" class="section level1">
+<h1>Convert seurat to sce</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">seurat &lt;-<span class="st"> </span>pancreas.integrated
+sce &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(
+    <span class="dt">assays=</span><span class="kw">list</span>(
+        <span class="dt">counts=</span>seurat@assays$RNA@counts,
+        <span class="dt">logcounts=</span>seurat@assays$RNA@data),
+    <span class="dt">colData=</span>seurat@meta.data,
+    <span class="dt">reducedDims=</span><span class="kw">lapply</span>(seurat@reductions, <span class="dt">FUN=</span>function(x) x@cell.embeddings)
+)
+
+<span class="co"># Save data</span>
+<span class="kw">saveRDS</span>(sce, <span class="dt">file =</span> <span class="kw">paste0</span>(out_path, <span class="st">&quot;/sce_pancreas.rds&quot;</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sessionInfo</span>()</code></pre></div>
+<pre><code>## R version 3.6.1 (2019-07-05)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 16.04.6 LTS
+## 
+## Matrix products: default
+## BLAS:   /home/aluetg/R/lib/R/lib/libRblas.so
+## LAPACK: /home/aluetg/R/lib/R/lib/libRlapack.so
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] parallel  stats4    stats     graphics  grDevices utils     datasets 
+## [8] methods   base     
+## 
+## other attached packages:
+##  [1] Seurat_3.1.4                variancePartition_1.16.1   
+##  [3] scales_1.1.0                foreach_1.4.8              
+##  [5] limma_3.42.2                stringr_1.4.0              
+##  [7] dplyr_0.8.4                 tidyr_1.0.2                
+##  [9] here_0.1                    purrr_0.3.3                
+## [11] gridExtra_2.3               CellMixS_1.2.3             
+## [13] kSamples_1.2-9              SuppDists_1.1-9.5          
+## [15] jcolors_0.0.4               scater_1.14.6              
+## [17] ggplot2_3.2.1               cowplot_1.0.0              
+## [19] CellBench_1.2.0             tibble_2.1.3               
+## [21] magrittr_1.5                SingleCellExperiment_1.8.0 
+## [23] SummarizedExperiment_1.16.1 DelayedArray_0.12.2        
+## [25] BiocParallel_1.20.1         matrixStats_0.55.0         
+## [27] Biobase_2.46.0              GenomicRanges_1.38.0       
+## [29] GenomeInfoDb_1.22.0         IRanges_2.20.2             
+## [31] S4Vectors_0.24.3            BiocGenerics_0.32.0        
+## 
+## loaded via a namespace (and not attached):
+##   [1] backports_1.1.5          BiocFileCache_1.10.2     sn_1.5-5                
+##   [4] plyr_1.8.5               igraph_1.2.4.2           lazyeval_0.2.2          
+##   [7] splines_3.6.1            listenv_0.8.0            TH.data_1.0-10          
+##  [10] digest_0.6.25            htmltools_0.4.0          viridis_0.5.1           
+##  [13] gdata_2.18.0             memoise_1.1.0            cluster_2.1.0           
+##  [16] doParallel_1.0.15        ROCR_1.0-7               globals_0.12.5          
+##  [19] RcppParallel_4.4.4       sandwich_2.5-1           prettyunits_1.1.1       
+##  [22] colorspace_1.4-1         blob_1.2.1               rappdirs_0.3.1          
+##  [25] ggrepel_0.8.1            xfun_0.12                crayon_1.3.4            
+##  [28] RCurl_1.98-1.1           jsonlite_1.6.1           lme4_1.1-21             
+##  [31] survival_3.1-8           zoo_1.8-7                iterators_1.0.12        
+##  [34] ape_5.3                  glue_1.3.1               gtable_0.3.0            
+##  [37] zlibbioc_1.32.0          XVector_0.26.0           listarrays_0.3.0        
+##  [40] leiden_0.3.3             BiocSingular_1.2.2       future.apply_1.4.0      
+##  [43] mvtnorm_1.1-0            DBI_1.1.0                bibtex_0.4.2.2          
+##  [46] Rcpp_1.0.3               plotrix_3.7-7            metap_1.3               
+##  [49] viridisLite_0.3.0        progress_1.2.2           reticulate_1.14         
+##  [52] bit_1.1-15.2             rsvd_1.0.3               tsne_0.1-3              
+##  [55] htmlwidgets_1.5.1        httr_1.4.1               gplots_3.0.3            
+##  [58] RColorBrewer_1.1-2       TFisher_0.2.0            ica_1.0-2               
+##  [61] farver_2.0.3             pkgconfig_2.0.3          uwot_0.1.5              
+##  [64] dbplyr_1.4.2             labeling_0.3             tidyselect_1.0.0        
+##  [67] rlang_0.4.5              reshape2_1.4.3           munsell_0.5.0           
+##  [70] tools_3.6.1              RSQLite_2.2.0            ggridges_0.5.2          
+##  [73] evaluate_0.14            yaml_2.2.1               npsurv_0.4-0            
+##  [76] knitr_1.28               bit64_0.9-7              fitdistrplus_1.0-14     
+##  [79] caTools_1.18.0           RANN_2.6.1               pbapply_1.4-2           
+##  [82] future_1.16.0            nlme_3.1-144             compiler_3.6.1          
+##  [85] pbkrtest_0.4-8.6         png_0.1-7                plotly_4.9.2            
+##  [88] beeswarm_0.2.3           curl_4.3                 lsei_1.2-0              
+##  [91] stringi_1.4.6            lattice_0.20-40          Matrix_1.2-18           
+##  [94] nloptr_1.2.2             multtest_2.42.0          vctrs_0.2.3             
+##  [97] mutoss_0.1-12            pillar_1.4.3             lifecycle_0.1.0         
+## [100] Rdpack_0.11-1            lmtest_0.9-37            RcppAnnoy_0.0.15        
+## [103] BiocNeighbors_1.4.2      data.table_1.12.8        bitops_1.0-6            
+## [106] irlba_2.3.3              gbRd_0.4-11              patchwork_1.0.0         
+## [109] colorRamps_2.3           R6_2.4.1                 KernSmooth_2.23-16      
+## [112] vipor_0.4.5              codetools_0.2-16         boot_1.3-24             
+## [115] MASS_7.3-51.5            gtools_3.8.1             assertthat_0.2.1        
+## [118] rprojroot_1.3-2          withr_2.1.2              sctransform_0.2.1       
+## [121] mnormt_1.5-6             multcomp_1.4-12          GenomeInfoDbData_1.2.2  
+## [124] hms_0.5.3                grid_3.6.1               minqa_1.2.4             
+## [127] rmarkdown_2.1            DelayedMatrixStats_1.8.0 Rtsne_0.15              
+## [130] numDeriv_2016.8-1.1      lubridate_1.7.4          ggbeeswarm_0.6.0</code></pre>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
