@@ -51,6 +51,7 @@ suppressPackageStartupMessages({
   library(tibble)
     library(here)
     library(scDblFinder)
+    library(plyr)
 })
 
 seed <- 1000
@@ -297,9 +298,14 @@ DimPlot(seurat, reduction = "tsne", group.by = "batch")
 # Convert seurat to sce
 ```{r saving}
 sce <- sce[, colnames(seurat)]
-counts <- assays(sce)[["counts"]]
-sce <- as.SingleCellExperiment(seurat)
-assays(sce)[["counts"]] <- counts
+sce <- SingleCellExperiment(
+    assays=list(
+        counts=seurat@assays$RNA@counts,
+        logcounts=seurat@assays$RNA@data),
+    colData=seurat@meta.data,
+    reducedDims=lapply(seurat@reductions, FUN=function(x) x@cell.embeddings)
+)
+
 ```
 
 
