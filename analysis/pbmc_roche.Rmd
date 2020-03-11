@@ -69,12 +69,14 @@ sce <- DropletUtils::read10xCounts(samples=paste0(data_path, "PBMC_data/", fastq
 # Add metadata
 meta <- read_excel(paste0(data_path, "EXP_CR005 Samples ID.xlsx"))
 sce$batch <- gsub(".*data/","", sce$Sample)
+sce$Sample <- gsub(".*data/","", sce$Sample)
 sce$mean_reads_per_cell_cr <- meta$`Mean reads/cell`[match(sce$Sample, meta$`Sample ID`)]
 sce$info <- meta$`Characteristics`[match(sce$Sample, meta$`Sample ID`)]
 colnames(sce) <- paste0(sce$batch, ".", sce$Barcode)
 rownames(sce) <- paste0(rowData(sce)$ID, ".", rowData(sce)$Symbol)
 
 sce$batch <- factor(sce$batch)
+sce$batch <- mapvalues(sce$batch, from = c("CR038", "CR039", "CR040", "CR041"), to = c("fresh", "DMSO", "CS10", "PSC"))
 
 table(sce$batch)
 dim(sce)
@@ -298,7 +300,47 @@ sce <- sce[, colnames(seurat)]
 counts <- assays(sce)[["counts"]]
 sce <- as.SingleCellExperiment(seurat)
 assays(sce)[["counts"]] <- counts
+```
+
+
+#Add random batch label
+```{r random batch label}
+label <- as.factor(colData(sce)$batch)
+
+batch_label <- list()
+names_list <- c()
+seed <- 1234
+for(i in c(10,20,30,40,50,60,70,80,90)){
+  label_new <- label
+  lab_pc <- sample_frac(as.data.frame(label), i/100)
+  label_new[as.numeric(rownames(lab_pc))] <- sample(label, length(rownames(lab_pc)), replace = TRUE)
+  batch_label[[i/10]] <- label_new
+  names_list[i/10] <- paste0("batch", i)
+}
+names(batch_label) <- names_list
+
+colData(sce)$batch0 <- label
+colData(sce)$batch90 <- batch_label$batch90
+colData(sce)$batch80 <- batch_label$batch80
+colData(sce)$batch70 <- batch_label$batch70
+colData(sce)$batch60 <- batch_label$batch60
+colData(sce)$batch50 <- batch_label$batch50
+colData(sce)$batch40 <- batch_label$batch40
+colData(sce)$batch30 <- batch_label$batch30
+colData(sce)$batch20 <- batch_label$batch20
+colData(sce)$batch10 <- batch_label$batch10
+colData(sce)$batch100 <- sample(label, length(label), replace = TRUE)
+
+## Visualize randomization
+batch_list <- str_subset(names(colData(sce)), "batch")
+
+lapply(batch_list, function(feature_name){
+  visGroup(sce, feature_name, dim_red= "tsne")
+})
+
 
 # Save data
 saveRDS(sce, file = paste0(out_path, "/sce_pbmc_roche.rds"))
 ```
+
+
