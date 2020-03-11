@@ -20,6 +20,7 @@ suppressPackageStartupMessages({
     library(magrittr)
     library(dplyr)
     library(CellBench)
+    library(plyr)
 })
 
 seed <- 1000
@@ -45,6 +46,8 @@ for(i in 2:length(sc_data)){
 }
 colnames(sce) <- paste0(colnames(sce), "_", sce$protocol)
 dim(sce)
+
+sce$protocol <- mapvalues(sce$protocol, from = c("sc_10x","sc_celseq","sc_dropseq"), to = c("tenx", "celseq", "dropseq"))
 
 ## Filter out genes that are not expressed in any cell
 sce <- sce[which(rowSums(counts(sce) > 0) > 0), ]

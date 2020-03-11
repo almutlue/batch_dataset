@@ -355,6 +355,7 @@ div.tocify {
   <span class="kw">library</span>(tibble)
     <span class="kw">library</span>(here)
     <span class="kw">library</span>(scDblFinder)
+    <span class="kw">library</span>(plyr)
 })
 
 seed &lt;-<span class="st"> </span><span class="dv">1000</span></code></pre></div>
@@ -369,16 +370,18 @@ sce &lt;-<span class="st"> </span>DropletUtils::<span class="kw">read10xCounts</
 <span class="co"># Add metadata</span>
 meta &lt;-<span class="st"> </span><span class="kw">read_excel</span>(<span class="kw">paste0</span>(data_path, <span class="st">&quot;EXP_CR005 Samples ID.xlsx&quot;</span>))
 sce$batch &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;.*data/&quot;</span>,<span class="st">&quot;&quot;</span>, sce$Sample)
+sce$Sample &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;.*data/&quot;</span>,<span class="st">&quot;&quot;</span>, sce$Sample)
 sce$mean_reads_per_cell_cr &lt;-<span class="st"> </span>meta$<span class="st">`</span><span class="dt">Mean reads/cell</span><span class="st">`</span>[<span class="kw">match</span>(sce$Sample, meta$<span class="st">`</span><span class="dt">Sample ID</span><span class="st">`</span>)]
 sce$info &lt;-<span class="st"> </span>meta$<span class="st">`</span><span class="dt">Characteristics</span><span class="st">`</span>[<span class="kw">match</span>(sce$Sample, meta$<span class="st">`</span><span class="dt">Sample ID</span><span class="st">`</span>)]
 <span class="kw">colnames</span>(sce) &lt;-<span class="st"> </span><span class="kw">paste0</span>(sce$batch, <span class="st">&quot;.&quot;</span>, sce$Barcode)
 <span class="kw">rownames</span>(sce) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">rowData</span>(sce)$ID, <span class="st">&quot;.&quot;</span>, <span class="kw">rowData</span>(sce)$Symbol)
 
 sce$batch &lt;-<span class="st"> </span><span class="kw">factor</span>(sce$batch)
+sce$batch &lt;-<span class="st"> </span><span class="kw">mapvalues</span>(sce$batch, <span class="dt">from =</span> <span class="kw">c</span>(<span class="st">&quot;CR038&quot;</span>, <span class="st">&quot;CR039&quot;</span>, <span class="st">&quot;CR040&quot;</span>, <span class="st">&quot;CR041&quot;</span>), <span class="dt">to =</span> <span class="kw">c</span>(<span class="st">&quot;fresh&quot;</span>, <span class="st">&quot;DMSO&quot;</span>, <span class="st">&quot;CS10&quot;</span>, <span class="st">&quot;PSC&quot;</span>))
 
 <span class="kw">table</span>(sce$batch)</code></pre></div>
 <pre><code>## 
-## CR038 CR039 CR040 CR041 
+## fresh  DMSO  CS10   PSC 
 ##  3696  3612  2347  1994</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(sce)</code></pre></div>
 <pre><code>## [1] 19883 11649</code></pre>
@@ -553,10 +556,10 @@ mets &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&q
 <span class="kw">colnames</span>(nbcells) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;cells total&quot;</span>,<span class="st">&quot;cells after filtering&quot;</span>)
 nbcells</code></pre></div>
 <pre><code>##       cells total cells after filtering
-## CR038        3696                  3289
-## CR039        3612                  3180
-## CR040        2347                  2081
-## CR041        1994                  1788</code></pre>
+## fresh        3696                  3289
+## DMSO         3612                  3180
+## CS10         2347                  2081
+## PSC          1994                  1788</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">layout</span>(<span class="kw">matrix</span>(<span class="dv">1</span>:<span class="dv">2</span>,<span class="dt">nrow=</span><span class="dv">1</span>))
 LSD::<span class="kw">heatscatter</span>( sce$total_counts, sce$total_features_by_counts, <span class="dt">xlab=</span><span class="st">&quot;Total counts&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Non-zero features&quot;</span>, <span class="dt">main=</span><span class="st">&quot;&quot;</span>,<span class="dt">log=</span><span class="st">&quot;xy&quot;</span>)
 w &lt;-<span class="st"> </span><span class="kw">which</span>(!sce$isOutlier)
@@ -567,9 +570,9 @@ cct &lt;-<span class="st"> </span><span class="kw">table</span>(sce$isOutlier, s
 <span class="kw">row.names</span>(cct) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Kept&quot;</span>, <span class="st">&quot;Filtered out&quot;</span>)
 cct</code></pre></div>
 <pre><code>##               
-##                CR038 CR039 CR040 CR041
-##   Kept          3289  3180  2081  1788
-##   Filtered out   407   432   266   206</code></pre>
+##                fresh DMSO CS10  PSC
+##   Kept          3289 3180 2081 1788
+##   Filtered out   407  432  266  206</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># drop outlier cells</span>
 sce &lt;-<span class="st"> </span>sce[,!sce$isOutlier]
 <span class="co"># require count &gt; 1 in at least 20 cells</span>
@@ -592,7 +595,7 @@ sce &lt;-<span class="st"> </span>sce[<span class="kw">which</span>(<span class=
 <p><img src="pbmc_roche_files/figure-html/threshholds-2.svg" width="1152" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(sce$batch)</code></pre></div>
 <pre><code>## 
-## CR038 CR039 CR040 CR041 
+## fresh  DMSO  CS10   PSC 
 ##  3289  3180  2081  1788</code></pre>
 </div>
 </div>
@@ -602,7 +605,7 @@ sce &lt;-<span class="st"> </span>sce[<span class="kw">which</span>(<span class=
 <span class="kw">table</span>(sce$scDblFinder.class)</code></pre></div>
 <pre><code>## 
 ## doublet singlet 
-##     236   10102</code></pre>
+##     242   10096</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>sce[,!sce$scDblFinder.class %in%<span class="st"> &quot;doublet&quot;</span>]</code></pre></div>
 </div>
 <div id="normalization" class="section level2">
@@ -613,7 +616,7 @@ clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce,
 <span class="kw">table</span>(clusters)</code></pre></div>
 <pre><code>## clusters
 ##    1    2    3    4    5    6    7    8    9   10   11   12 
-##  998  930 1101  674 2202  989  232 1554  213  380  714  115</code></pre>
+##  879  748 1083  584  631  849 1594 2147  207 1078  138  158</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce, <span class="dt">min.mean=</span><span class="fl">0.1</span>, <span class="dt">cluster=</span>clusters) ##cluster information added
 sce &lt;-<span class="st"> </span>scater::<span class="kw">normalize</span>(sce)</code></pre></div>
 <pre><code>## Warning: &#39;normalizeSCE&#39; is deprecated.
@@ -679,11 +682,84 @@ seurat@meta.data$cluster &lt;-<span class="st"> </span>seurat$integrated_snn_res
 <div id="convert-seurat-to-sce" class="section level1">
 <h1>Convert seurat to sce</h1>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce &lt;-<span class="st"> </span>sce[, <span class="kw">colnames</span>(seurat)]
-counts &lt;-<span class="st"> </span><span class="kw">assays</span>(sce)[[<span class="st">&quot;counts&quot;</span>]]
-sce &lt;-<span class="st"> </span><span class="kw">as.SingleCellExperiment</span>(seurat)
-<span class="kw">assays</span>(sce)[[<span class="st">&quot;counts&quot;</span>]] &lt;-<span class="st"> </span>counts
+sce &lt;-<span class="st"> </span><span class="kw">SingleCellExperiment</span>(
+    <span class="dt">assays=</span><span class="kw">list</span>(
+        <span class="dt">counts=</span>seurat@assays$RNA@counts,
+        <span class="dt">logcounts=</span>seurat@assays$RNA@data),
+    <span class="dt">colData=</span>seurat@meta.data,
+    <span class="dt">reducedDims=</span><span class="kw">lapply</span>(seurat@reductions, <span class="dt">FUN=</span>function(x) x@cell.embeddings)
+)</code></pre></div>
+</div>
+<div id="add-random-batch-label" class="section level1">
+<h1>Add random batch label</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">label &lt;-<span class="st"> </span><span class="kw">as.factor</span>(<span class="kw">colData</span>(sce)$batch)
 
-<span class="co"># Save data</span>
+batch_label &lt;-<span class="st"> </span><span class="kw">list</span>()
+names_list &lt;-<span class="st"> </span><span class="kw">c</span>()
+seed &lt;-<span class="st"> </span><span class="dv">1234</span>
+for(i in <span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>,<span class="dv">40</span>,<span class="dv">50</span>,<span class="dv">60</span>,<span class="dv">70</span>,<span class="dv">80</span>,<span class="dv">90</span>)){
+  label_new &lt;-<span class="st"> </span>label
+  lab_pc &lt;-<span class="st"> </span><span class="kw">sample_frac</span>(<span class="kw">as.data.frame</span>(label), i/<span class="dv">100</span>)
+  label_new[<span class="kw">as.numeric</span>(<span class="kw">rownames</span>(lab_pc))] &lt;-<span class="st"> </span><span class="kw">sample</span>(label, <span class="kw">length</span>(<span class="kw">rownames</span>(lab_pc)), <span class="dt">replace =</span> <span class="ot">TRUE</span>)
+  batch_label[[i/<span class="dv">10</span>]] &lt;-<span class="st"> </span>label_new
+  names_list[i/<span class="dv">10</span>] &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;batch&quot;</span>, i)
+}
+<span class="kw">names</span>(batch_label) &lt;-<span class="st"> </span>names_list
+
+<span class="kw">colData</span>(sce)$batch0 &lt;-<span class="st"> </span>label
+<span class="kw">colData</span>(sce)$batch90 &lt;-<span class="st"> </span>batch_label$batch90
+<span class="kw">colData</span>(sce)$batch80 &lt;-<span class="st"> </span>batch_label$batch80
+<span class="kw">colData</span>(sce)$batch70 &lt;-<span class="st"> </span>batch_label$batch70
+<span class="kw">colData</span>(sce)$batch60 &lt;-<span class="st"> </span>batch_label$batch60
+<span class="kw">colData</span>(sce)$batch50 &lt;-<span class="st"> </span>batch_label$batch50
+<span class="kw">colData</span>(sce)$batch40 &lt;-<span class="st"> </span>batch_label$batch40
+<span class="kw">colData</span>(sce)$batch30 &lt;-<span class="st"> </span>batch_label$batch30
+<span class="kw">colData</span>(sce)$batch20 &lt;-<span class="st"> </span>batch_label$batch20
+<span class="kw">colData</span>(sce)$batch10 &lt;-<span class="st"> </span>batch_label$batch10
+<span class="kw">colData</span>(sce)$batch100 &lt;-<span class="st"> </span><span class="kw">sample</span>(label, <span class="kw">length</span>(label), <span class="dt">replace =</span> <span class="ot">TRUE</span>)
+
+## Visualize randomization
+batch_list &lt;-<span class="st"> </span><span class="kw">str_subset</span>(<span class="kw">names</span>(<span class="kw">colData</span>(sce)), <span class="st">&quot;batch&quot;</span>)
+
+<span class="kw">lapply</span>(batch_list, function(feature_name){
+  <span class="kw">visGroup</span>(sce, feature_name, <span class="dt">dim_red=</span> <span class="st">&quot;tsne&quot;</span>)
+})</code></pre></div>
+<pre><code>## [[1]]</code></pre>
+<p><img src="pbmc_roche_files/figure-html/random%20batch%20label-1.svg" width="672" /></p>
+<pre><code>## 
+## [[2]]</code></pre>
+<p><img src="pbmc_roche_files/figure-html/random%20batch%20label-2.svg" width="672" /></p>
+<pre><code>## 
+## [[3]]</code></pre>
+<p><img src="pbmc_roche_files/figure-html/random%20batch%20label-3.svg" width="672" /></p>
+<pre><code>## 
+## [[4]]</code></pre>
+<p><img src="pbmc_roche_files/figure-html/random%20batch%20label-4.svg" width="672" /></p>
+<pre><code>## 
+## [[5]]</code></pre>
+<p><img src="pbmc_roche_files/figure-html/random%20batch%20label-5.svg" width="672" /></p>
+<pre><code>## 
+## [[6]]</code></pre>
+<p><img src="pbmc_roche_files/figure-html/random%20batch%20label-6.svg" width="672" /></p>
+<pre><code>## 
+## [[7]]</code></pre>
+<p><img src="pbmc_roche_files/figure-html/random%20batch%20label-7.svg" width="672" /></p>
+<pre><code>## 
+## [[8]]</code></pre>
+<p><img src="pbmc_roche_files/figure-html/random%20batch%20label-8.svg" width="672" /></p>
+<pre><code>## 
+## [[9]]</code></pre>
+<p><img src="pbmc_roche_files/figure-html/random%20batch%20label-9.svg" width="672" /></p>
+<pre><code>## 
+## [[10]]</code></pre>
+<p><img src="pbmc_roche_files/figure-html/random%20batch%20label-10.svg" width="672" /></p>
+<pre><code>## 
+## [[11]]</code></pre>
+<p><img src="pbmc_roche_files/figure-html/random%20batch%20label-11.svg" width="672" /></p>
+<pre><code>## 
+## [[12]]</code></pre>
+<p><img src="pbmc_roche_files/figure-html/random%20batch%20label-12.svg" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Save data</span>
 <span class="kw">saveRDS</span>(sce, <span class="dt">file =</span> <span class="kw">paste0</span>(out_path, <span class="st">&quot;/sce_pbmc_roche.rds&quot;</span>))</code></pre></div>
 </div>
 
