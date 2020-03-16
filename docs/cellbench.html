@@ -193,13 +193,15 @@ summary {
     library(dplyr)
     library(CellBench)
     library(plyr)
+    library(EnsDb.Hsapiens.v86)
+    library(AnnotationDbi)
 })
 
 seed &lt;- 1000</code></pre>
 <pre class="r"><code>out_path &lt;- here::here(&quot;out&quot;)
 
 sc_data &lt;- load_sc_data()</code></pre>
-<pre><code>## Using temporary cache /tmp/Rtmp74woyo/BiocFileCache</code></pre>
+<pre><code>## Using temporary cache /tmp/RtmpoU7gQB/BiocFileCache</code></pre>
 <pre><code>## Downloading data file from https://github.com/Shians/scBenchData/raw/master/single_cell_data.RData</code></pre>
 <pre class="r"><code>colData(sc_data[[1]])$protocol &lt;- rep(names(sc_data)[1], ncol(sc_data[[1]]))
 sce &lt;- sc_data[[1]]
@@ -218,6 +220,12 @@ colnames(sce) &lt;- paste0(colnames(sce), &quot;_&quot;, sce$protocol)
 dim(sce)</code></pre>
 <pre><code>## [1] 13575  1401</code></pre>
 <pre class="r"><code>sce$protocol &lt;- mapvalues(sce$protocol, from = c(&quot;sc_10x&quot;,&quot;sc_celseq&quot;,&quot;sc_dropseq&quot;), to = c(&quot;tenx&quot;, &quot;celseq&quot;, &quot;dropseq&quot;))
+
+#Gene annotation to symbol
+edb &lt;- EnsDb.Hsapiens.v86
+rowData(sce)$symbol &lt;- mapIds(edb, keys=rownames(sce), column=&quot;SYMBOL&quot;, keytype=&quot;GENEID&quot;, multiVals=&quot;first&quot;)</code></pre>
+<pre><code>## Warning: Unable to map 2 of 13575 requested IDs.</code></pre>
+<pre class="r"><code>rownames(sce) &lt;- paste0(rownames(sce), &quot;.&quot;, rowData(sce)$symbol)
 
 ## Filter out genes that are not expressed in any cell
 sce &lt;- sce[which(rowSums(counts(sce) &gt; 0) &gt; 0), ]
@@ -246,41 +254,47 @@ sessionInfo()</code></pre>
 ## [8] methods   base     
 ## 
 ## other attached packages:
-##  [1] plyr_1.8.5                  CellBench_1.2.0            
-##  [3] tibble_2.1.3                dplyr_0.8.4                
-##  [5] magrittr_1.5                scran_1.14.6               
-##  [7] SingleCellExperiment_1.8.0  SummarizedExperiment_1.16.1
-##  [9] DelayedArray_0.12.2         BiocParallel_1.20.1        
-## [11] matrixStats_0.55.0          Biobase_2.46.0             
-## [13] GenomicRanges_1.38.0        GenomeInfoDb_1.22.0        
-## [15] IRanges_2.20.2              S4Vectors_0.24.3           
-## [17] BiocGenerics_0.32.0        
+##  [1] EnsDb.Hsapiens.v86_2.99.0   ensembldb_2.10.2           
+##  [3] AnnotationFilter_1.10.0     GenomicFeatures_1.38.2     
+##  [5] AnnotationDbi_1.48.0        plyr_1.8.6                 
+##  [7] CellBench_1.2.0             tibble_2.1.3               
+##  [9] dplyr_0.8.5                 magrittr_1.5               
+## [11] scran_1.14.6                SingleCellExperiment_1.8.0 
+## [13] SummarizedExperiment_1.16.1 DelayedArray_0.12.2        
+## [15] BiocParallel_1.20.1         matrixStats_0.55.0         
+## [17] Biobase_2.46.0              GenomicRanges_1.38.0       
+## [19] GenomeInfoDb_1.22.0         IRanges_2.20.2             
+## [21] S4Vectors_0.24.3            BiocGenerics_0.32.0        
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] httr_1.4.1               viridis_0.5.1            edgeR_3.28.1            
-##  [4] BiocSingular_1.2.2       bit64_0.9-7              viridisLite_0.3.0       
-##  [7] here_0.1                 DelayedMatrixStats_1.8.0 assertthat_0.2.1        
-## [10] statmod_1.4.34           BiocFileCache_1.10.2     dqrng_0.2.1             
-## [13] blob_1.2.1               GenomeInfoDbData_1.2.2   vipor_0.4.5             
-## [16] yaml_2.2.1               backports_1.1.5          pillar_1.4.3            
-## [19] RSQLite_2.2.0            lattice_0.20-40          glue_1.3.1              
-## [22] limma_3.42.2             digest_0.6.25            XVector_0.26.0          
-## [25] colorspace_1.4-1         htmltools_0.4.0          Matrix_1.2-18           
-## [28] pkgconfig_2.0.3          zlibbioc_1.32.0          purrr_0.3.3             
-## [31] scales_1.1.0             ggplot2_3.2.1            lazyeval_0.2.2          
-## [34] crayon_1.3.4             memoise_1.1.0            evaluate_0.14           
-## [37] beeswarm_0.2.3           tools_3.6.1              scater_1.14.6           
-## [40] lifecycle_0.1.0          stringr_1.4.0            munsell_0.5.0           
-## [43] locfit_1.5-9.1           irlba_2.3.3              compiler_3.6.1          
-## [46] rsvd_1.0.3               rlang_0.4.5              grid_3.6.1              
-## [49] RCurl_1.98-1.1           BiocNeighbors_1.4.2      rappdirs_0.3.1          
-## [52] igraph_1.2.4.2           bitops_1.0-6             rmarkdown_2.1           
-## [55] gtable_0.3.0             curl_4.3                 DBI_1.1.0               
-## [58] R6_2.4.1                 lubridate_1.7.4          gridExtra_2.3           
-## [61] knitr_1.28               bit_1.1-15.2             rprojroot_1.3-2         
-## [64] stringi_1.4.6            ggbeeswarm_0.6.0         Rcpp_1.0.3              
-## [67] vctrs_0.2.3              dbplyr_1.4.2             tidyselect_1.0.0        
-## [70] xfun_0.12</code></pre>
+##  [1] ProtGenerics_1.18.0      bitops_1.0-6             lubridate_1.7.4         
+##  [4] bit64_0.9-7              progress_1.2.2           httr_1.4.1              
+##  [7] rprojroot_1.3-2          backports_1.1.5          tools_3.6.1             
+## [10] R6_2.4.1                 irlba_2.3.3              vipor_0.4.5             
+## [13] lazyeval_0.2.2           DBI_1.1.0                colorspace_1.4-1        
+## [16] prettyunits_1.1.1        tidyselect_1.0.0         gridExtra_2.3           
+## [19] bit_1.1-15.2             curl_4.3                 compiler_3.6.1          
+## [22] BiocNeighbors_1.4.2      rtracklayer_1.46.0       scales_1.1.0            
+## [25] askpass_1.1              rappdirs_0.3.1           Rsamtools_2.2.3         
+## [28] stringr_1.4.0            digest_0.6.25            rmarkdown_2.1           
+## [31] XVector_0.26.0           scater_1.14.6            pkgconfig_2.0.3         
+## [34] htmltools_0.4.0          dbplyr_1.4.2             limma_3.42.2            
+## [37] rlang_0.4.5              RSQLite_2.2.0            DelayedMatrixStats_1.8.0
+## [40] RCurl_1.98-1.1           BiocSingular_1.2.2       GenomeInfoDbData_1.2.2  
+## [43] Matrix_1.2-18            Rcpp_1.0.3               ggbeeswarm_0.6.0        
+## [46] munsell_0.5.0            viridis_0.5.1            lifecycle_0.2.0         
+## [49] stringi_1.4.6            yaml_2.2.1               edgeR_3.28.1            
+## [52] zlibbioc_1.32.0          BiocFileCache_1.10.2     grid_3.6.1              
+## [55] blob_1.2.1               dqrng_0.2.1              crayon_1.3.4            
+## [58] lattice_0.20-40          Biostrings_2.54.0        hms_0.5.3               
+## [61] locfit_1.5-9.1           knitr_1.28               pillar_1.4.3            
+## [64] igraph_1.2.4.2           biomaRt_2.42.0           XML_3.99-0.3            
+## [67] glue_1.3.1               evaluate_0.14            vctrs_0.2.4             
+## [70] openssl_1.4.1            gtable_0.3.0             purrr_0.3.3             
+## [73] assertthat_0.2.1         ggplot2_3.3.0            xfun_0.12               
+## [76] rsvd_1.0.3               viridisLite_0.3.0        GenomicAlignments_1.22.1
+## [79] beeswarm_0.2.3           memoise_1.1.0            statmod_1.4.34          
+## [82] here_0.1</code></pre>
 </div>
 
 

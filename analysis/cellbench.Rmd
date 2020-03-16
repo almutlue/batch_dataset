@@ -21,6 +21,8 @@ suppressPackageStartupMessages({
     library(dplyr)
     library(CellBench)
     library(plyr)
+    library(EnsDb.Hsapiens.v86)
+    library(AnnotationDbi)
 })
 
 seed <- 1000
@@ -48,6 +50,11 @@ colnames(sce) <- paste0(colnames(sce), "_", sce$protocol)
 dim(sce)
 
 sce$protocol <- mapvalues(sce$protocol, from = c("sc_10x","sc_celseq","sc_dropseq"), to = c("tenx", "celseq", "dropseq"))
+
+#Gene annotation to symbol
+edb <- EnsDb.Hsapiens.v86
+rowData(sce)$symbol <- mapIds(edb, keys=rownames(sce), column="SYMBOL", keytype="GENEID", multiVals="first")
+rownames(sce) <- paste0(rownames(sce), ".", rowData(sce)$symbol)
 
 ## Filter out genes that are not expressed in any cell
 sce <- sce[which(rowSums(counts(sce) > 0) > 0), ]
