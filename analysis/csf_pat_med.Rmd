@@ -320,6 +320,61 @@ sce <- sce[,!sce$patient %in% "pat3"]
 saveRDS(sce, file = paste0(out_path, "/sce_csf_patient.rds"))
 ```
 
+
+#Add random batch label
+```{r random batch label}
+
+#normalize to get rid of seurat integrated slot in logcounts and redDims
+clusters <- quickCluster(sce, use.ranks=FALSE)
+table(clusters)
+sce <- computeSumFactors(sce, min.mean=0.1, cluster=clusters)
+sce <-  logNormCounts(sce)
+sce <- runPCA(sce, ncomponents = 10, ntop = 1000)
+sce <- runUMAP(sce)
+sce <- runTSNE(sce)
+
+
+label <- as.factor(colData(sce)$patient)
+
+batch_label <- list()
+names_list <- c()
+seed <- 1234
+for(i in c(10,20,30,40,50,60,70,80,90)){
+  label_new <- label
+  lab_pc <- sample_frac(as.data.frame(label), i/100)
+  label_new[as.numeric(rownames(lab_pc))] <- sample(label, length(rownames(lab_pc)), replace = TRUE)
+  batch_label[[i/10]] <- label_new
+  names_list[i/10] <- paste0("batch", i)
+}
+names(batch_label) <- names_list
+
+colData(sce)$batch0 <- label
+colData(sce)$batch90 <- batch_label$batch90
+colData(sce)$batch80 <- batch_label$batch80
+colData(sce)$batch70 <- batch_label$batch70
+colData(sce)$batch60 <- batch_label$batch60
+colData(sce)$batch50 <- batch_label$batch50
+colData(sce)$batch40 <- batch_label$batch40
+colData(sce)$batch30 <- batch_label$batch30
+colData(sce)$batch20 <- batch_label$batch20
+colData(sce)$batch10 <- batch_label$batch10
+colData(sce)$batch100 <- sample(label, length(label), replace = TRUE)
+
+## Visualize randomization
+batch_list <- str_subset(names(colData(sce)), "batch")
+
+lapply(batch_list, function(feature_name){
+  visGroup(sce, feature_name, dim_red= "TSNE")
+})
+
+
+# Save data
+saveRDS(sce, file = paste0(out_path, "/sce_csf_patient_random.rds"))
+```
+
+
+
+
 ```{r session info}
 sessionInfo()
 ```

@@ -631,7 +631,7 @@ div.tocify {
 <a class="sourceLine" id="cb43-2" data-line-number="2"><span class="kw">table</span>(sce<span class="op">$</span>scDblFinder.class)</a></code></pre></div>
 <pre><code>## 
 ## doublet singlet 
-##      41    3149</code></pre>
+##      39    3151</code></pre>
 <div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1">sce &lt;-<span class="st"> </span>sce[,<span class="op">!</span>sce<span class="op">$</span>scDblFinder.class <span class="op">%in%</span><span class="st"> &quot;doublet&quot;</span>]</a></code></pre></div>
 </div>
 <div id="normalization" class="section level2">
@@ -641,8 +641,8 @@ div.tocify {
 <a class="sourceLine" id="cb46-3" data-line-number="3">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce, <span class="dt">use.ranks=</span><span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb46-4" data-line-number="4"><span class="kw">table</span>(clusters)</a></code></pre></div>
 <pre><code>## clusters
-##   1   2   3   4   5   6   7   8   9 
-## 635 398 236 325 205 554 527 149 120</code></pre>
+##   1   2   3   4   5   6   7   8   9  10 
+## 243 389 596 534 219 226 365 195 179 205</code></pre>
 <div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce, <span class="dt">min.mean=</span><span class="fl">0.1</span>, <span class="dt">cluster=</span>clusters) ##cluster information added</a>
 <a class="sourceLine" id="cb48-2" data-line-number="2">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">normalize</span>(sce)</a></code></pre></div>
 <pre><code>## Warning: &#39;normalizeSCE&#39; is deprecated.
@@ -677,34 +677,34 @@ div.tocify {
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 3467 anchors</code></pre>
+<pre><code>##  Found 3494 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 1844 anchors</code></pre>
+<pre><code>##  Retained 1864 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 3234 anchors</code></pre>
+<pre><code>##  Found 3230 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 1878 anchors</code></pre>
+<pre><code>##  Retained 1801 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 4043 anchors</code></pre>
+<pre><code>##  Found 4074 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
 <pre><code>##  Retained 2467 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" data-line-number="1">seurat &lt;-<span class="st"> </span><span class="kw">IntegrateData</span>(<span class="dt">anchorset =</span> anchors, <span class="dt">dims =</span> <span class="kw">seq_len</span>(<span class="dv">20</span>),</a>
 <a class="sourceLine" id="cb81-2" data-line-number="2">                        <span class="dt">features.to.integrate =</span> <span class="kw">rownames</span>(sce))</a></code></pre></div>
-<pre><code>## Merging dataset 1 into 3</code></pre>
+<pre><code>## Merging dataset 1 into 2</code></pre>
 <pre><code>## Extracting anchors for merged samples</code></pre>
 <pre><code>## Finding integration vectors</code></pre>
 <pre><code>## Finding integration vector weights</code></pre>
 <pre><code>## Integrating data</code></pre>
-<pre><code>## Merging dataset 2 into 3 1</code></pre>
+<pre><code>## Merging dataset 3 into 2 1</code></pre>
 <pre><code>## Extracting anchors for merged samples</code></pre>
 <pre><code>## Finding integration vectors</code></pre>
 <pre><code>## Finding integration vector weights</code></pre>
@@ -756,7 +756,87 @@ div.tocify {
 <a class="sourceLine" id="cb101-8" data-line-number="8"><span class="co"># Save  without media effect </span></a>
 <a class="sourceLine" id="cb101-9" data-line-number="9">sce &lt;-<span class="st"> </span>sce[,<span class="op">!</span>sce<span class="op">$</span>patient <span class="op">%in%</span><span class="st"> &quot;pat3&quot;</span>]</a>
 <a class="sourceLine" id="cb101-10" data-line-number="10"><span class="kw">saveRDS</span>(sce, <span class="dt">file =</span> <span class="kw">paste0</span>(out_path, <span class="st">&quot;/sce_csf_patient.rds&quot;</span>))</a></code></pre></div>
-<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb102-1" data-line-number="1"><span class="kw">sessionInfo</span>()</a></code></pre></div>
+<p>#Add random batch label</p>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb102-1" data-line-number="1"><span class="co">#normalize to get rid of seurat integrated slot in logcounts and redDims</span></a>
+<a class="sourceLine" id="cb102-2" data-line-number="2">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce, <span class="dt">use.ranks=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb102-3" data-line-number="3"><span class="kw">table</span>(clusters)</a></code></pre></div>
+<pre><code>## clusters
+##   1   2   3   4   5   6   7   8   9  10 
+## 129 412 542 218 204 238 230 123 173 103</code></pre>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb104-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce, <span class="dt">min.mean=</span><span class="fl">0.1</span>, <span class="dt">cluster=</span>clusters)</a>
+<a class="sourceLine" id="cb104-2" data-line-number="2">sce &lt;-<span class="st">  </span><span class="kw">logNormCounts</span>(sce)</a>
+<a class="sourceLine" id="cb104-3" data-line-number="3">sce &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce, <span class="dt">ncomponents =</span> <span class="dv">10</span>, <span class="dt">ntop =</span> <span class="dv">1000</span>)</a>
+<a class="sourceLine" id="cb104-4" data-line-number="4">sce &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce)</a>
+<a class="sourceLine" id="cb104-5" data-line-number="5">sce &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce)</a>
+<a class="sourceLine" id="cb104-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb104-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb104-8" data-line-number="8">label &lt;-<span class="st"> </span><span class="kw">as.factor</span>(<span class="kw">colData</span>(sce)<span class="op">$</span>patient)</a>
+<a class="sourceLine" id="cb104-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb104-10" data-line-number="10">batch_label &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb104-11" data-line-number="11">names_list &lt;-<span class="st"> </span><span class="kw">c</span>()</a>
+<a class="sourceLine" id="cb104-12" data-line-number="12">seed &lt;-<span class="st"> </span><span class="dv">1234</span></a>
+<a class="sourceLine" id="cb104-13" data-line-number="13"><span class="cf">for</span>(i <span class="cf">in</span> <span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>,<span class="dv">40</span>,<span class="dv">50</span>,<span class="dv">60</span>,<span class="dv">70</span>,<span class="dv">80</span>,<span class="dv">90</span>)){</a>
+<a class="sourceLine" id="cb104-14" data-line-number="14">  label_new &lt;-<span class="st"> </span>label</a>
+<a class="sourceLine" id="cb104-15" data-line-number="15">  lab_pc &lt;-<span class="st"> </span><span class="kw">sample_frac</span>(<span class="kw">as.data.frame</span>(label), i<span class="op">/</span><span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb104-16" data-line-number="16">  label_new[<span class="kw">as.numeric</span>(<span class="kw">rownames</span>(lab_pc))] &lt;-<span class="st"> </span><span class="kw">sample</span>(label, <span class="kw">length</span>(<span class="kw">rownames</span>(lab_pc)), <span class="dt">replace =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb104-17" data-line-number="17">  batch_label[[i<span class="op">/</span><span class="dv">10</span>]] &lt;-<span class="st"> </span>label_new</a>
+<a class="sourceLine" id="cb104-18" data-line-number="18">  names_list[i<span class="op">/</span><span class="dv">10</span>] &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;batch&quot;</span>, i)</a>
+<a class="sourceLine" id="cb104-19" data-line-number="19">}</a>
+<a class="sourceLine" id="cb104-20" data-line-number="20"><span class="kw">names</span>(batch_label) &lt;-<span class="st"> </span>names_list</a>
+<a class="sourceLine" id="cb104-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb104-22" data-line-number="22"><span class="kw">colData</span>(sce)<span class="op">$</span>batch0 &lt;-<span class="st"> </span>label</a>
+<a class="sourceLine" id="cb104-23" data-line-number="23"><span class="kw">colData</span>(sce)<span class="op">$</span>batch90 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch90</a>
+<a class="sourceLine" id="cb104-24" data-line-number="24"><span class="kw">colData</span>(sce)<span class="op">$</span>batch80 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch80</a>
+<a class="sourceLine" id="cb104-25" data-line-number="25"><span class="kw">colData</span>(sce)<span class="op">$</span>batch70 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch70</a>
+<a class="sourceLine" id="cb104-26" data-line-number="26"><span class="kw">colData</span>(sce)<span class="op">$</span>batch60 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch60</a>
+<a class="sourceLine" id="cb104-27" data-line-number="27"><span class="kw">colData</span>(sce)<span class="op">$</span>batch50 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch50</a>
+<a class="sourceLine" id="cb104-28" data-line-number="28"><span class="kw">colData</span>(sce)<span class="op">$</span>batch40 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch40</a>
+<a class="sourceLine" id="cb104-29" data-line-number="29"><span class="kw">colData</span>(sce)<span class="op">$</span>batch30 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch30</a>
+<a class="sourceLine" id="cb104-30" data-line-number="30"><span class="kw">colData</span>(sce)<span class="op">$</span>batch20 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch20</a>
+<a class="sourceLine" id="cb104-31" data-line-number="31"><span class="kw">colData</span>(sce)<span class="op">$</span>batch10 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch10</a>
+<a class="sourceLine" id="cb104-32" data-line-number="32"><span class="kw">colData</span>(sce)<span class="op">$</span>batch100 &lt;-<span class="st"> </span><span class="kw">sample</span>(label, <span class="kw">length</span>(label), <span class="dt">replace =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb104-33" data-line-number="33"></a>
+<a class="sourceLine" id="cb104-34" data-line-number="34">## Visualize randomization</a>
+<a class="sourceLine" id="cb104-35" data-line-number="35">batch_list &lt;-<span class="st"> </span><span class="kw">str_subset</span>(<span class="kw">names</span>(<span class="kw">colData</span>(sce)), <span class="st">&quot;batch&quot;</span>)</a>
+<a class="sourceLine" id="cb104-36" data-line-number="36"></a>
+<a class="sourceLine" id="cb104-37" data-line-number="37"><span class="kw">lapply</span>(batch_list, <span class="cf">function</span>(feature_name){</a>
+<a class="sourceLine" id="cb104-38" data-line-number="38">  <span class="kw">visGroup</span>(sce, feature_name, <span class="dt">dim_red=</span> <span class="st">&quot;TSNE&quot;</span>)</a>
+<a class="sourceLine" id="cb104-39" data-line-number="39">})</a></code></pre></div>
+<pre><code>## [[1]]</code></pre>
+<p><img src="csf_pat_med_files/figure-html/random%20batch%20label-1.png" width="672" /></p>
+<pre><code>## 
+## [[2]]</code></pre>
+<p><img src="csf_pat_med_files/figure-html/random%20batch%20label-2.png" width="672" /></p>
+<pre><code>## 
+## [[3]]</code></pre>
+<p><img src="csf_pat_med_files/figure-html/random%20batch%20label-3.png" width="672" /></p>
+<pre><code>## 
+## [[4]]</code></pre>
+<p><img src="csf_pat_med_files/figure-html/random%20batch%20label-4.png" width="672" /></p>
+<pre><code>## 
+## [[5]]</code></pre>
+<p><img src="csf_pat_med_files/figure-html/random%20batch%20label-5.png" width="672" /></p>
+<pre><code>## 
+## [[6]]</code></pre>
+<p><img src="csf_pat_med_files/figure-html/random%20batch%20label-6.png" width="672" /></p>
+<pre><code>## 
+## [[7]]</code></pre>
+<p><img src="csf_pat_med_files/figure-html/random%20batch%20label-7.png" width="672" /></p>
+<pre><code>## 
+## [[8]]</code></pre>
+<p><img src="csf_pat_med_files/figure-html/random%20batch%20label-8.png" width="672" /></p>
+<pre><code>## 
+## [[9]]</code></pre>
+<p><img src="csf_pat_med_files/figure-html/random%20batch%20label-9.png" width="672" /></p>
+<pre><code>## 
+## [[10]]</code></pre>
+<p><img src="csf_pat_med_files/figure-html/random%20batch%20label-10.png" width="672" /></p>
+<pre><code>## 
+## [[11]]</code></pre>
+<p><img src="csf_pat_med_files/figure-html/random%20batch%20label-11.png" width="672" /></p>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb116-1" data-line-number="1"><span class="co"># Save data</span></a>
+<a class="sourceLine" id="cb116-2" data-line-number="2"><span class="kw">saveRDS</span>(sce, <span class="dt">file =</span> <span class="kw">paste0</span>(out_path, <span class="st">&quot;/sce_csf_patient_random.rds&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb117-1" data-line-number="1"><span class="kw">sessionInfo</span>()</a></code></pre></div>
 <pre><code>## R version 3.6.1 (2019-07-05)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
 ## Running under: Ubuntu 16.04.6 LTS
@@ -816,30 +896,30 @@ div.tocify {
 ##  [43] metap_1.3                plotrix_3.7-7            viridisLite_0.3.0       
 ##  [46] reticulate_1.14          dqrng_0.2.1              rsvd_1.0.3              
 ##  [49] tsne_0.1-3               htmlwidgets_1.5.1        httr_1.4.1              
-##  [52] gplots_3.0.3             RColorBrewer_1.1-2       TFisher_0.2.0           
-##  [55] ica_1.0-2                farver_2.0.3             R.methodsS3_1.8.0       
-##  [58] pkgconfig_2.0.3          uwot_0.1.5               locfit_1.5-9.1          
-##  [61] labeling_0.3             tidyselect_1.0.0         rlang_0.4.4             
-##  [64] cellranger_1.1.0         munsell_0.5.0            tools_3.6.1             
-##  [67] ggridges_0.5.2           evaluate_0.14            yaml_2.2.1              
-##  [70] npsurv_0.4-0             knitr_1.28               fitdistrplus_1.0-14     
-##  [73] caTools_1.18.0           randomForest_4.6-14      RANN_2.6.1              
-##  [76] pbapply_1.4-2            future_1.16.0            nlme_3.1-144            
-##  [79] R.oo_1.23.0              compiler_3.6.1           beeswarm_0.2.3          
-##  [82] png_0.1-7                lsei_1.2-0               statmod_1.4.34          
-##  [85] stringi_1.4.6            RSpectra_0.16-0          lattice_0.20-38         
-##  [88] multtest_2.42.0          vctrs_0.2.3              mutoss_0.1-12           
-##  [91] pillar_1.4.3             lifecycle_0.1.0          Rdpack_0.11-1           
-##  [94] lmtest_0.9-37            RcppAnnoy_0.0.14         BiocNeighbors_1.4.1     
-##  [97] data.table_1.12.8        bitops_1.0-6             irlba_2.3.3             
-## [100] gbRd_0.4-11              R6_2.4.1                 KernSmooth_2.23-16      
-## [103] gridExtra_2.3            vipor_0.4.5              codetools_0.2-16        
-## [106] MASS_7.3-51.4            gtools_3.8.1             assertthat_0.2.1        
-## [109] rhdf5_2.30.1             rprojroot_1.3-2          withr_2.1.2             
-## [112] mnormt_1.5-6             multcomp_1.4-12          GenomeInfoDbData_1.2.2  
-## [115] hms_0.5.3                grid_3.6.1               tidyr_1.0.2             
-## [118] rmarkdown_2.1            DelayedMatrixStats_1.8.0 Rtsne_0.15              
-## [121] numDeriv_2016.8-1.1      ggbeeswarm_0.6.0</code></pre>
+##  [52] FNN_1.1.3                gplots_3.0.3             RColorBrewer_1.1-2      
+##  [55] TFisher_0.2.0            ica_1.0-2                farver_2.0.3            
+##  [58] R.methodsS3_1.8.0        pkgconfig_2.0.3          uwot_0.1.5              
+##  [61] locfit_1.5-9.1           labeling_0.3             tidyselect_1.0.0        
+##  [64] rlang_0.4.4              cellranger_1.1.0         munsell_0.5.0           
+##  [67] tools_3.6.1              ggridges_0.5.2           evaluate_0.14           
+##  [70] yaml_2.2.1               npsurv_0.4-0             knitr_1.28              
+##  [73] fitdistrplus_1.0-14      caTools_1.18.0           randomForest_4.6-14     
+##  [76] RANN_2.6.1               pbapply_1.4-2            future_1.16.0           
+##  [79] nlme_3.1-144             R.oo_1.23.0              compiler_3.6.1          
+##  [82] beeswarm_0.2.3           png_0.1-7                lsei_1.2-0              
+##  [85] statmod_1.4.34           stringi_1.4.6            RSpectra_0.16-0         
+##  [88] lattice_0.20-38          multtest_2.42.0          vctrs_0.2.3             
+##  [91] mutoss_0.1-12            pillar_1.4.3             lifecycle_0.1.0         
+##  [94] Rdpack_0.11-1            lmtest_0.9-37            RcppAnnoy_0.0.14        
+##  [97] BiocNeighbors_1.4.1      data.table_1.12.8        bitops_1.0-6            
+## [100] irlba_2.3.3              gbRd_0.4-11              R6_2.4.1                
+## [103] KernSmooth_2.23-16       gridExtra_2.3            vipor_0.4.5             
+## [106] codetools_0.2-16         MASS_7.3-51.4            gtools_3.8.1            
+## [109] assertthat_0.2.1         rhdf5_2.30.1             rprojroot_1.3-2         
+## [112] withr_2.1.2              mnormt_1.5-6             multcomp_1.4-12         
+## [115] GenomeInfoDbData_1.2.2   hms_0.5.3                grid_3.6.1              
+## [118] tidyr_1.0.2              rmarkdown_2.1            DelayedMatrixStats_1.8.0
+## [121] Rtsne_0.15               numDeriv_2016.8-1.1      ggbeeswarm_0.6.0</code></pre>
 </div>
 
 
