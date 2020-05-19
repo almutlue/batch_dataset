@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1589902558878.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3954310927",
+    "id" : "F1FAE852",
+    "lastKnownWriteTime" : 1589902573,
+    "last_content_update" : 1589902573985,
+    "path" : "~/Documents/Zurich/batch_dataset/analysis/tabulamuris.Rmd",
+    "project_path" : "analysis/tabulamuris.Rmd",
+    "properties" : {
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
