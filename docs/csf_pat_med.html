@@ -631,7 +631,7 @@ div.tocify {
 <a class="sourceLine" id="cb43-2" data-line-number="2"><span class="kw">table</span>(sce<span class="op">$</span>scDblFinder.class)</a></code></pre></div>
 <pre><code>## 
 ## doublet singlet 
-##      39    3151</code></pre>
+##     106    3084</code></pre>
 <div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1">sce &lt;-<span class="st"> </span>sce[,<span class="op">!</span>sce<span class="op">$</span>scDblFinder.class <span class="op">%in%</span><span class="st"> &quot;doublet&quot;</span>]</a></code></pre></div>
 </div>
 <div id="normalization" class="section level2">
@@ -641,8 +641,8 @@ div.tocify {
 <a class="sourceLine" id="cb46-3" data-line-number="3">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce, <span class="dt">use.ranks=</span><span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb46-4" data-line-number="4"><span class="kw">table</span>(clusters)</a></code></pre></div>
 <pre><code>## clusters
-##   1   2   3   4   5   6   7   8   9  10 
-## 243 389 596 534 219 226 365 195 179 205</code></pre>
+##   1   2   3   4   5   6   7   8   9 
+## 486 227 469 207 526 507 377 124 161</code></pre>
 <div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce, <span class="dt">min.mean=</span><span class="fl">0.1</span>, <span class="dt">cluster=</span>clusters) ##cluster information added</a>
 <a class="sourceLine" id="cb48-2" data-line-number="2">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">normalize</span>(sce)</a></code></pre></div>
 <pre><code>## Warning: &#39;normalizeSCE&#39; is deprecated.
@@ -677,25 +677,25 @@ div.tocify {
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 3494 anchors</code></pre>
+<pre><code>##  Found 3270 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 1864 anchors</code></pre>
+<pre><code>##  Retained 1665 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 3230 anchors</code></pre>
+<pre><code>##  Found 3100 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 1801 anchors</code></pre>
+<pre><code>##  Retained 1662 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 4074 anchors</code></pre>
+<pre><code>##  Found 4066 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 2467 anchors</code></pre>
+<pre><code>##  Retained 2499 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" data-line-number="1">seurat &lt;-<span class="st"> </span><span class="kw">IntegrateData</span>(<span class="dt">anchorset =</span> anchors, <span class="dt">dims =</span> <span class="kw">seq_len</span>(<span class="dv">20</span>),</a>
 <a class="sourceLine" id="cb81-2" data-line-number="2">                        <span class="dt">features.to.integrate =</span> <span class="kw">rownames</span>(sce))</a></code></pre></div>
@@ -761,8 +761,8 @@ div.tocify {
 <a class="sourceLine" id="cb102-2" data-line-number="2">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce, <span class="dt">use.ranks=</span><span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb102-3" data-line-number="3"><span class="kw">table</span>(clusters)</a></code></pre></div>
 <pre><code>## clusters
-##   1   2   3   4   5   6   7   8   9  10 
-## 129 412 542 218 204 238 230 123 173 103</code></pre>
+##   1   2   3   4   5   6   7   8 
+## 214 387 430 128 684 256 164 105</code></pre>
 <div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb104-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce, <span class="dt">min.mean=</span><span class="fl">0.1</span>, <span class="dt">cluster=</span>clusters)</a>
 <a class="sourceLine" id="cb104-2" data-line-number="2">sce &lt;-<span class="st">  </span><span class="kw">logNormCounts</span>(sce)</a>
 <a class="sourceLine" id="cb104-3" data-line-number="3">sce &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce, <span class="dt">ncomponents =</span> <span class="dv">10</span>, <span class="dt">ntop =</span> <span class="dv">1000</span>)</a>

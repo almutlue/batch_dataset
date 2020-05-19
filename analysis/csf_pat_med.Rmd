@@ -373,8 +373,6 @@ saveRDS(sce, file = paste0(out_path, "/sce_csf_patient_random.rds"))
 ```
 
 
-
-
 ```{r session info}
 sessionInfo()
 ```
