@@ -1,0 +1,36 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Komendy do githuba:
+
+# If you want create a new branch:
+
+git branch <name_of_your_new_branch>
+
+# Create the branch on your local machine and switch in this branch :
+
+fd
+
+# Push the branch on github
+git push origin idzi
+
+# You can see all the branches created by using
+git branch -a
+
+# Push changes from your commit into your branch
+git push --set-upstream origin idzi
+
+# To remove any branch from remote server
+git push origin --delete joanna
+
+# sprawdzenie w której gałęzi jestem
+git branch
+
+# Przejscie do gałęzi master
+git checkout master
+
+# Usunięcie branch lokalnie z komputera
+git branch -d joanna1
+

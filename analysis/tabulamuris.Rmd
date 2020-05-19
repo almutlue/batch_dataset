@@ -1,0 +1,218 @@
+---
+title: "tabulamuris"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  html_document:
+  toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Tabulamuris dataset
+
+There are two datasets from CZ Biohub's Tabula Muris. They each cover 12-18 different organs, and together provide different technical profiles in terms of cell sorting, lysis, barcoding, and library preparation. The TabulaMurisData data package provides access to the 10x and SmartSeq2 single-cell RNA-seq data sets from the Tabula Muris Consortium. The data are from website:
+https://github.com/czbiohub/tabula-muris-vignettes/blob/master/data
+
+
+
+```{r libraries}
+suppressPackageStartupMessages({
+library(Seurat)
+library(here)
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(cowplot)
+library("SingleCellExperiment")
+})
+
+seed <- 1000
+```
+
+# Data
+Load data
+
+```{r data}
+# out_path <- "/home/zjanna/"
+# data_path <- "/home/zjanna/"
+data_path <- here::here("data")
+out_path <- here::here("output")
+
+drop_erccs <- function(data){
+  erccs <- grep(pattern = "^ERCC-", x = rownames(x = data), value = TRUE)
+  ercc.index <- grep(pattern = "^ERCC-", x = rownames(x = data), value = FALSE)
+  data[-ercc.index,]
+}
+
+# facs dataset
+tm.facs.matrix = readRDS(paste0(data_path, "/TM_facs_mat.rds"))
+
+
+# load metadata
+tm.facs.metadata = read_csv(paste0(data_path,  "/TM_facs_metadata.csv"))
+row.names(tm.facs.metadata) = tm.facs.metadata %>% pull(cell)
+
+# create SeuratObject
+tmf <- CreateSeuratObject(tm.facs.matrix, meta.data = tm.facs.metadata, project = "TabulaMuris")
+
+# Only keep annotated cells
+annotated_cells = tm.facs.metadata %>% dplyr::filter(!is.na(cell_ontology_class)) %>% pull(cell)
+tmf <- SubsetData(tmf, cells.use = annotated_cells, do.clean = TRUE)
+
+# load droplet dataset
+tm.droplet.matrix = readRDS(paste0(data_path, "/TM_droplet_mat.rds"))
+
+# load metadata
+tm.droplet.metadata = read_csv(paste0(data_path, "/TM_droplet_metadata.csv"))
+row.names(tm.droplet.metadata) = tm.droplet.metadata %>% pull(cell)
+
+# create SeuratObject
+tmd <- CreateSeuratObject(tm.droplet.matrix, meta.data = tm.droplet.metadata, project = "TabulaMuris")
+# Only keep annotated cells
+annotated_cells = tm.droplet.metadata %>% dplyr::filter(!is.na(cell_ontology_class)) %>% pull(cell)
+tmd <- SubsetData(tmd, cells.use = annotated_cells, do.clean = TRUE)
+
+
+
+#tmd<-tmd[, sample(seq_len(ncol(tmd)), 250, replace = FALSE)]
+#tmf<-tmf[, sample(seq_len(ncol(tmf)), 250, replace = FALSE)]
+# taking only Lung tissue
+tmd <- SubsetData(object = tmd, cells = colnames(x = tmd)[which(tmd@meta.data$tissue=='Liver')])
+tmf <- SubsetData(object = tmf, cells = colnames(x = tmf)[which(tmf@meta.data$tissue=='Liver')])
+
+```
+
+
+# Integration
+```{r integration}
+data<-list()
+data[['droplet']]<-tmd
+data[['facs']]<-tmf
+for (i in 1:length(data)) {
+  data[[i]] <- NormalizeData(data[[i]], verbose = FALSE)
+  data[[i]] <- FindVariableFeatures(data[[i]], 
+                                             selection.method = "vst", 
+                                             nfeatures = 2000, 
+                                             verbose = FALSE)
+}
+reference.list <- data[c("droplet", "facs")]
+
+
+# find anchors & integrate
+data.anchors <- FindIntegrationAnchors(object.list = reference.list, dims = 1:30)
+data.integrated <- IntegrateData(anchorset = data.anchors, dims = 1:30)
+
+# scale integrated data
+# scale integrated data
+DefaultAssay(data.integrated) <- "integrated"
+data.integrated <- ScaleData(data.integrated, verbose = FALSE)
+
+
+```
+
+# Dimension reduction
+```{r dimred}
+seed=1234
+data.integrated <- RunPCA(data.integrated, npcs = 30, verbose = FALSE)
+data.integrated <- RunTSNE(data.integrated, reduction = "pca", dims = 1:30)
+data.integrated <- RunUMAP(data.integrated, reduction = "pca", dims = seq_len(30),
+                               seed.use = seed, verbose = FALSE,n.neighbors = 30, min.dist = 0.5)
+
+p1 <- DimPlot(data.integrated, reduction = "tsne", group.by = "method")
+p2 <- DimPlot(data.integrated, reduction = "tsne", group.by = "cell_ontology_class", 
+              label = TRUE, repel = TRUE) + NoLegend()
+
+plot_grid(p1, p2)
+
+```
+
+
+
+# Convert seurat to sce
+
+```{r saving}
+seurat <- data.integrated
+sce <- SingleCellExperiment(
+  assays=list(
+    counts=seurat@assays$RNA@counts,
+    logcounts=seurat@assays$RNA@data
+  ),
+  colData=seurat@meta.data,
+  reducedDims=lapply(seurat@reductions, FUN=function(x) x@cell.embeddings)
+)
+
+sce$celltype<-seurat@meta.data$free_annotation
+sce$batch<- seurat@meta.data$method
+# assign cluster to sce
+identical(colnames(sce), colnames(seurat))
+
+sce$seurat_cluster <- seurat@meta.data$cell_ontology_class
+dim(sce)
+# require count > 1 in at least 20 cells
+sce <- sce[which(rowSums(counts(sce)>1)>=20),]
+
+
+# Save data
+saveRDS(sce, file = paste0(out_path, "/sce_tabulamuris.rds"))
+saveRDS(seurat, file = paste0(out_path, "/seurat_tabulamuris.rds"))
+
+```
+# information about dataset
+
+```{r info}
+dim(sce)
+table(sce$celltype) 
+table(sce$batch) 
+colData(sce)[1:6,]
+cmv <- as.matrix(seurat@assays$RNA@counts)
+at_least_one <- apply(cmv, 2, function(x) sum(x>0))
+summary(at_least_one)
+hist(at_least_one, breaks = 100,
+     main = "Distribution of detected genes",
+     xlab = "Genes with at least one tag")
+
+hist(colSums(cmv),
+     breaks = 100, main = "Expression sum per cell",
+     xlab = "Sum expression")
+
+```
+
+# runPCA without integration 
+
+```{r PCA}
+CMV <- CreateSeuratObject(counts = cmv,
+                          meta.data = seurat@meta.data,
+                          min.cells = 10,
+                          min.features = 200,
+                          project = "tabulamuris")
+CMV <- NormalizeData(object = CMV,verbose = FALSE)
+
+CMV <- FindVariableFeatures(object = CMV, 
+                            selection.method = "vst", 
+                            nfeatures = 2000, 
+                            verbose = FALSE)
+
+CMV <- ScaleData(CMV,verbose = FALSE)
+seurat<-CMV
+data.integrated1 <- RunPCA(seurat, npcs = 30, verbose = FALSE)
+data.integrated1 <- RunTSNE(data.integrated1, reduction = "pca", dims = 1:30)
+data.integrated1 <- RunUMAP(data.integrated1, reduction = "pca", dims = seq_len(30),
+                           seed.use = seed, verbose = FALSE,n.neighbors = 30, min.dist = 0.5)
+
+p3 <- DimPlot(data.integrated1, reduction = "tsne", group.by = "method")
+p4 <- DimPlot(data.integrated1, reduction = "tsne", group.by = "cell_ontology_class", 
+              label = TRUE, repel = TRUE) + NoLegend()
+plot_grid(p3,p4)
+```
+
+
+
+```{r session info}
+sessionInfo()
+```
+
+
+
