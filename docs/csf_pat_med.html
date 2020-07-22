@@ -635,7 +635,7 @@ div.tocify {
 <a class="sourceLine" id="cb44-2" data-line-number="2"><span class="kw">table</span>(sce<span class="op">$</span>scDblFinder.class)</a></code></pre></div>
 <pre><code>## 
 ## doublet singlet 
-##      48    3142</code></pre>
+##      41    3149</code></pre>
 <div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1">sce &lt;-<span class="st"> </span>sce[,<span class="op">!</span>sce<span class="op">$</span>scDblFinder.class <span class="op">%in%</span><span class="st"> &quot;doublet&quot;</span>]</a></code></pre></div>
 </div>
 <div id="normalization" class="section level2">
@@ -646,7 +646,7 @@ div.tocify {
 <a class="sourceLine" id="cb47-4" data-line-number="4"><span class="kw">table</span>(clusters)</a></code></pre></div>
 <pre><code>## clusters
 ##   1   2   3   4   5   6   7   8   9 
-## 326 632 204 615 552 177 227 277 132</code></pre>
+## 328 710 461 394 229 300 346 182 199</code></pre>
 <div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce, <span class="dt">min.mean=</span><span class="fl">0.1</span>, <span class="dt">cluster=</span>clusters) ##cluster information added</a>
 <a class="sourceLine" id="cb49-2" data-line-number="2">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">normalize</span>(sce)</a></code></pre></div>
 <pre><code>## Warning: &#39;normalizeSCE&#39; is deprecated.
@@ -681,25 +681,25 @@ div.tocify {
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 3462 anchors</code></pre>
+<pre><code>##  Found 3486 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 1812 anchors</code></pre>
+<pre><code>##  Retained 1715 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 3239 anchors</code></pre>
+<pre><code>##  Found 3277 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 1902 anchors</code></pre>
+<pre><code>##  Retained 1923 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 4066 anchors</code></pre>
+<pre><code>##  Found 4115 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 2410 anchors</code></pre>
+<pre><code>##  Retained 2459 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb82-1" data-line-number="1">seurat &lt;-<span class="st"> </span><span class="kw">IntegrateData</span>(<span class="dt">anchorset =</span> anchors, <span class="dt">dims =</span> <span class="kw">seq_len</span>(<span class="dv">20</span>),</a>
 <a class="sourceLine" id="cb82-2" data-line-number="2">                        <span class="dt">features.to.integrate =</span> <span class="kw">rownames</span>(sce))</a></code></pre></div>
@@ -766,7 +766,7 @@ div.tocify {
 <a class="sourceLine" id="cb103-3" data-line-number="3"><span class="kw">table</span>(clusters)</a></code></pre></div>
 <pre><code>## clusters
 ##   1   2   3   4   5   6   7   8   9 
-## 345 470 436 200 243 162 128 161 223</code></pre>
+## 157 321 441 503 194 256 179 209 105</code></pre>
 <div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb105-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce, <span class="dt">min.mean=</span><span class="fl">0.1</span>, <span class="dt">cluster=</span>clusters)</a>
 <a class="sourceLine" id="cb105-2" data-line-number="2">sce &lt;-<span class="st">  </span><span class="kw">logNormCounts</span>(sce)</a>
 <a class="sourceLine" id="cb105-3" data-line-number="3">sce &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce, <span class="dt">ncomponents =</span> <span class="dv">10</span>, <span class="dt">ntop =</span> <span class="dv">1000</span>)</a>
@@ -896,7 +896,7 @@ div.tocify {
 <a class="sourceLine" id="cb121-8" data-line-number="8">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(tsne_long, <span class="kw">aes</span>(<span class="dt">x =</span> tsne1, <span class="dt">y =</span> tsne2, <span class="dt">color =</span> patient)) <span class="op">+</span></a>
 <a class="sourceLine" id="cb121-9" data-line-number="9"><span class="st">      </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="fl">0.4</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb121-10" data-line-number="10"><span class="st">      </span><span class="kw">scale_color_manual</span>(<span class="dt">values =</span> cols_pat) <span class="op">+</span></a>
-<a class="sourceLine" id="cb121-11" data-line-number="11"><span class="st">      </span><span class="kw">theme_ipsum</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb121-11" data-line-number="11"><span class="st">      </span><span class="kw">theme_ipsum</span>(<span class="dt">base_family =</span> <span class="st">&#39;Helvetica&#39;</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb121-12" data-line-number="12"><span class="st">      </span><span class="kw">theme</span>(</a>
 <a class="sourceLine" id="cb121-13" data-line-number="13">        <span class="dt">legend.position=</span><span class="st">&quot;top&quot;</span>,</a>
 <a class="sourceLine" id="cb121-14" data-line-number="14">        <span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">14</span>),</a>

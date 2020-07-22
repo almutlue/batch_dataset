@@ -401,7 +401,7 @@ tsne_long$randomness <- factor(tsne_long$randomness, levels = batch_order)
 p <- ggplot(tsne_long, aes(x = tsne1, y = tsne2, color = patient)) +
       geom_point(size = 0.4) +
       scale_color_manual(values = cols_pat) +
-      theme_ipsum() +
+      theme_ipsum(base_family = 'Helvetica') +
       theme(
         legend.position="top",
         plot.title = element_text(size=14),
