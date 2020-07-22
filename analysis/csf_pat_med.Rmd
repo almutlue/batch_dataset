@@ -53,6 +53,8 @@ suppressPackageStartupMessages({
     library(here)
     library(scDblFinder)
     library(plyr)
+  library(hrbrthemes)
+  library(jcolors)
 })
 
 seed <- 1000
@@ -92,6 +94,9 @@ table(sce$media)
 dim(sce)
 dim(colData(sce))
 dim(rowData(sce))
+
+cols_data <-c(c(jcolors('pal6'),jcolors('pal8'))[c(1,8,14,5,2:4,6,7,9:13,15:20)],jcolors('pal4'))
+names(cols_data) <- c()
 ```
 
 
@@ -370,6 +375,47 @@ lapply(batch_list, function(feature_name){
 
 # Save data
 saveRDS(sce, file = paste0(out_path, "/sce_csf_patient_random.rds"))
+```
+
+#### Generate figure plot
+```{r fig plot, fig.width = 10, fig.height = 8}
+## Visualize randomization
+#To debug: sce <- readRDS("/run/user/1000/gvfs/sftp:host=imlstaupo.uzh.ch/home/aluetg/batch_dataset/out/sce_csf_patient_random.rds")
+batch_list <- str_subset(names(colData(sce)), "batch")
+
+#generate figure random
+tsne_long <- lapply(batch_list, function(batch_nam){
+  tab <- data.frame("tsne1" = reducedDims(sce)[["TSNE"]][,1],
+                    "tsne2" = reducedDims(sce)[["TSNE"]][,2],
+                   "patient" = as.factor(colData(sce)[ ,batch_nam]),
+                   "randomness" = batch_nam)
+}) %>% bind_rows()
+
+batch_order <- c("batch0", "batch10", "batch20","batch30", "batch40", "batch50", 
+                 "batch60", "batch70", "batch80", "batch90", "batch100")
+cols_pat <- cols_data[1:length(levels(as.factor(tsne_long$patient)))] %>% 
+  set_names(levels(as.factor(tsne_long$patient)))
+
+tsne_long$randomness <- factor(tsne_long$randomness, levels = batch_order)
+
+p <- ggplot(tsne_long, aes(x = tsne1, y = tsne2, color = patient)) +
+      geom_point(size = 0.4) +
+      scale_color_manual(values = cols_pat) +
+      theme_ipsum() +
+      theme(
+        legend.position="top",
+        plot.title = element_text(size=14),
+        panel.grid.major = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+      ) +
+      ggtitle("Gradual increased randomness") +
+      facet_wrap(~randomness) 
+
+p
+
+saveRDS(p, file = paste0(out_path, "/fig_obj/tsne_csf_patient_random.rds"))
+
 ```
 
 

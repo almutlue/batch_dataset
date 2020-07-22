@@ -383,9 +383,11 @@ div.tocify {
 <a class="sourceLine" id="cb1-22" data-line-number="22">    <span class="kw">library</span>(here)</a>
 <a class="sourceLine" id="cb1-23" data-line-number="23">    <span class="kw">library</span>(scDblFinder)</a>
 <a class="sourceLine" id="cb1-24" data-line-number="24">    <span class="kw">library</span>(plyr)</a>
-<a class="sourceLine" id="cb1-25" data-line-number="25">})</a>
-<a class="sourceLine" id="cb1-26" data-line-number="26"></a>
-<a class="sourceLine" id="cb1-27" data-line-number="27">seed &lt;-<span class="st"> </span><span class="dv">1000</span></a></code></pre></div>
+<a class="sourceLine" id="cb1-25" data-line-number="25">  <span class="kw">library</span>(hrbrthemes)</a>
+<a class="sourceLine" id="cb1-26" data-line-number="26">  <span class="kw">library</span>(jcolors)</a>
+<a class="sourceLine" id="cb1-27" data-line-number="27">})</a>
+<a class="sourceLine" id="cb1-28" data-line-number="28"></a>
+<a class="sourceLine" id="cb1-29" data-line-number="29">seed &lt;-<span class="st"> </span><span class="dv">1000</span></a></code></pre></div>
 <div id="data" class="section level3">
 <h3>data</h3>
 <p>Load data Raw reads were mapped with Cellranger v3 against ensembl hg38</p>
@@ -432,22 +434,24 @@ div.tocify {
 <pre><code>## [1] 4088    5</code></pre>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw">dim</span>(<span class="kw">rowData</span>(sce))</a></code></pre></div>
 <pre><code>## [1] 33808     3</code></pre>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">cols_data &lt;-<span class="kw">c</span>(<span class="kw">c</span>(<span class="kw">jcolors</span>(<span class="st">&#39;pal6&#39;</span>),<span class="kw">jcolors</span>(<span class="st">&#39;pal8&#39;</span>))[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">8</span>,<span class="dv">14</span>,<span class="dv">5</span>,<span class="dv">2</span><span class="op">:</span><span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">9</span><span class="op">:</span><span class="dv">13</span>,<span class="dv">15</span><span class="op">:</span><span class="dv">20</span>)],<span class="kw">jcolors</span>(<span class="st">&#39;pal4&#39;</span>))</a>
+<a class="sourceLine" id="cb14-2" data-line-number="2"><span class="kw">names</span>(cols_data) &lt;-<span class="st"> </span><span class="kw">c</span>()</a></code></pre></div>
 </div>
 <div id="calculate-qc" class="section level3">
 <h3>Calculate QC</h3>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="co">#remove genes without any counts</span></a>
-<a class="sourceLine" id="cb14-2" data-line-number="2">keep_features &lt;-<span class="st"> </span><span class="kw">rowSums</span>(<span class="kw">counts</span>(sce) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span></a>
-<a class="sourceLine" id="cb14-3" data-line-number="3">sce &lt;-<span class="st"> </span>sce[keep_features, ]</a>
-<a class="sourceLine" id="cb14-4" data-line-number="4"><span class="kw">dim</span>(sce)</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co">#remove genes without any counts</span></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">keep_features &lt;-<span class="st"> </span><span class="kw">rowSums</span>(<span class="kw">counts</span>(sce) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb15-3" data-line-number="3">sce &lt;-<span class="st"> </span>sce[keep_features, ]</a>
+<a class="sourceLine" id="cb15-4" data-line-number="4"><span class="kw">dim</span>(sce)</a></code></pre></div>
 <pre><code>## [1] 19467  4088</code></pre>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="co"># # Mitochondrial genes</span></a>
-<a class="sourceLine" id="cb16-2" data-line-number="2">is.mito &lt;-<span class="st"> </span><span class="kw">grepl</span>(<span class="st">&quot;MT-&quot;</span>, <span class="kw">rownames</span>(sce))</a>
-<a class="sourceLine" id="cb16-3" data-line-number="3"><span class="kw">summary</span>(is.mito)</a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co"># # Mitochondrial genes</span></a>
+<a class="sourceLine" id="cb17-2" data-line-number="2">is.mito &lt;-<span class="st"> </span><span class="kw">grepl</span>(<span class="st">&quot;MT-&quot;</span>, <span class="kw">rownames</span>(sce))</a>
+<a class="sourceLine" id="cb17-3" data-line-number="3"><span class="kw">summary</span>(is.mito)</a></code></pre></div>
 <pre><code>##    Mode   FALSE    TRUE 
 ## logical   19454      13</code></pre>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">mito &lt;-<span class="st"> </span><span class="kw">rownames</span>(sce)[is.mito]</a>
-<a class="sourceLine" id="cb18-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb18-3" data-line-number="3">sce &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(sce, <span class="dt">feature_controls =</span> <span class="kw">list</span>(<span class="dt">Mt =</span> mito))</a></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1">mito &lt;-<span class="st"> </span><span class="kw">rownames</span>(sce)[is.mito]</a>
+<a class="sourceLine" id="cb19-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb19-3" data-line-number="3">sce &lt;-<span class="st"> </span><span class="kw">calculateQCMetrics</span>(sce, <span class="dt">feature_controls =</span> <span class="kw">list</span>(<span class="dt">Mt =</span> mito))</a></code></pre></div>
 <pre><code>## Warning: &#39;calculateQCMetrics&#39; is deprecated.
 ## Use &#39;perCellQCMetrics&#39; or &#39;perFeatureQCMetrics&#39; instead.</code></pre>
 </div>
@@ -456,63 +460,63 @@ div.tocify {
 <h2>Filtering</h2>
 <div id="find-outlier" class="section level3">
 <h3>Find outlier</h3>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="co"># # Plot filters</span></a>
-<a class="sourceLine" id="cb20-2" data-line-number="2">plotFilters &lt;-<span class="st"> </span><span class="cf">function</span>( sce, <span class="dt">var=</span><span class="st">&quot;log10_total_counts&quot;</span>, <span class="dt">split_by=</span><span class="st">&quot;Sample&quot;</span>, <span class="dt">nrow=</span><span class="ot">NULL</span>,</a>
-<a class="sourceLine" id="cb20-3" data-line-number="3">                         <span class="dt">nmads=</span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">5</span>), <span class="dt">lt=</span><span class="kw">c</span>(<span class="st">&quot;dashed&quot;</span>,<span class="st">&quot;dotted&quot;</span>,<span class="st">&quot;dotdash&quot;</span>), <span class="dt">xscale=</span><span class="st">&quot;free&quot;</span> ){</a>
-<a class="sourceLine" id="cb20-4" data-line-number="4">  CD &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">colData</span>(sce))</a>
-<a class="sourceLine" id="cb20-5" data-line-number="5">  <span class="cf">if</span>(<span class="op">!</span>(var <span class="op">%in%</span><span class="st"> </span><span class="kw">colnames</span>(CD))) <span class="kw">stop</span>(<span class="kw">paste</span>(<span class="st">&quot;`var`&quot;</span>,var,<span class="st">&quot;is not in `colData(sce)`!&quot;</span>))</a>
-<a class="sourceLine" id="cb20-6" data-line-number="6">  <span class="cf">if</span>(<span class="op">!</span><span class="kw">is.null</span>(split_by) <span class="op">&amp;&amp;</span><span class="st"> </span><span class="op">!</span>(split_by <span class="op">%in%</span><span class="st"> </span><span class="kw">colnames</span>(CD))){</a>
-<a class="sourceLine" id="cb20-7" data-line-number="7">    <span class="kw">stop</span>(<span class="kw">paste</span>(<span class="st">&quot;`split_by`&quot;</span>,split_by,<span class="st">&quot;is not in `colData(sce)`!&quot;</span>))</a>
-<a class="sourceLine" id="cb20-8" data-line-number="8">  }</a>
-<a class="sourceLine" id="cb20-9" data-line-number="9">  <span class="kw">library</span>(ggplot2)</a>
-<a class="sourceLine" id="cb20-10" data-line-number="10">  <span class="kw">library</span>(cowplot)</a>
-<a class="sourceLine" id="cb20-11" data-line-number="11">  d &lt;-<span class="st"> </span>CD[,var,drop=F]</a>
-<a class="sourceLine" id="cb20-12" data-line-number="12">  <span class="cf">if</span>(<span class="op">!</span><span class="kw">is.null</span>(split_by)) d<span class="op">$</span>dataset &lt;-<span class="st"> </span>CD[[split_by]]</a>
-<a class="sourceLine" id="cb20-13" data-line-number="13">  p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(d, <span class="kw">aes_string</span>(<span class="dt">x=</span>var)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_histogram</span>(<span class="dt">color=</span><span class="st">&quot;darkblue&quot;</span>, <span class="dt">bins=</span><span class="dv">30</span>)</a>
-<a class="sourceLine" id="cb20-14" data-line-number="14">  <span class="cf">if</span>(xscale<span class="op">!=</span><span class="st">&quot;free&quot;</span>){</a>
-<a class="sourceLine" id="cb20-15" data-line-number="15">    <span class="cf">if</span>(xscale<span class="op">!=</span><span class="st">&quot;fixed&quot;</span>){</a>
-<a class="sourceLine" id="cb20-16" data-line-number="16">      <span class="cf">if</span>(xscale<span class="op">&gt;</span><span class="dv">1</span> <span class="op">&amp;&amp;</span><span class="st"> </span>xscale<span class="op">%%</span><span class="dv">1</span><span class="op">==</span><span class="dv">0</span>){</a>
-<a class="sourceLine" id="cb20-17" data-line-number="17">        xq &lt;-<span class="st"> </span><span class="kw">.tmads</span>(d[[var]], xscale)</a>
-<a class="sourceLine" id="cb20-18" data-line-number="18">        xr &lt;-<span class="st"> </span><span class="kw">range</span>(d[[var]],<span class="dt">na.rm=</span>T)</a>
-<a class="sourceLine" id="cb20-19" data-line-number="19">        xq &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">max</span>(xq[<span class="dv">1</span>],xr[<span class="dv">1</span>]), <span class="kw">min</span>(xq[<span class="dv">2</span>],xr[<span class="dv">2</span>]))</a>
-<a class="sourceLine" id="cb20-20" data-line-number="20">      }<span class="cf">else</span>{</a>
-<a class="sourceLine" id="cb20-21" data-line-number="21">        <span class="cf">if</span>(xscale<span class="op">&lt;=</span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>xscale<span class="op">&gt;</span><span class="dv">0</span>){</a>
-<a class="sourceLine" id="cb20-22" data-line-number="22">          xscale &lt;-<span class="st"> </span>(<span class="dv">1</span><span class="op">-</span>xscale)<span class="op">/</span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb20-23" data-line-number="23">          xq &lt;-<span class="st"> </span><span class="kw">quantile</span>(d[[var]], <span class="dt">probs=</span><span class="kw">c</span>(xscale,<span class="dv">1</span><span class="op">-</span>xscale), <span class="dt">na.rm=</span>T)</a>
-<a class="sourceLine" id="cb20-24" data-line-number="24">        }<span class="cf">else</span>{</a>
-<a class="sourceLine" id="cb20-25" data-line-number="25">          <span class="kw">stop</span>(<span class="st">&quot;Wrong `xscale` value!&quot;</span>)</a>
-<a class="sourceLine" id="cb20-26" data-line-number="26">        }</a>
-<a class="sourceLine" id="cb20-27" data-line-number="27">      }</a>
-<a class="sourceLine" id="cb20-28" data-line-number="28">      p &lt;-<span class="st"> </span>p <span class="op">+</span><span class="st"> </span><span class="kw">xlim</span>(xq[<span class="dv">1</span>], xq[<span class="dv">2</span>])</a>
-<a class="sourceLine" id="cb20-29" data-line-number="29">    }</a>
-<a class="sourceLine" id="cb20-30" data-line-number="30">  }</a>
-<a class="sourceLine" id="cb20-31" data-line-number="31">  <span class="cf">if</span>(<span class="op">!</span><span class="kw">is.null</span>(split_by)){</a>
-<a class="sourceLine" id="cb20-32" data-line-number="32">    <span class="cf">if</span>(<span class="kw">is.null</span>(nrow)) nrow &lt;-<span class="st"> </span><span class="kw">ceiling</span>(<span class="kw">length</span>(<span class="kw">unique</span>(d<span class="op">$</span>dataset))<span class="op">/</span><span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb20-33" data-line-number="33">    p &lt;-<span class="st"> </span>p <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span>dataset, <span class="dt">scales=</span><span class="kw">ifelse</span>(xscale<span class="op">==</span><span class="st">&quot;free&quot;</span>,<span class="st">&quot;free&quot;</span>,<span class="st">&quot;free_y&quot;</span>), <span class="dt">nrow=</span>nrow)</a>
-<a class="sourceLine" id="cb20-34" data-line-number="34">    <span class="cf">for</span>(ds <span class="cf">in</span> <span class="kw">unique</span>(d<span class="op">$</span>dataset)){</a>
-<a class="sourceLine" id="cb20-35" data-line-number="35">      <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(nmads)){</a>
-<a class="sourceLine" id="cb20-36" data-line-number="36">        ma &lt;-<span class="st"> </span><span class="kw">.tmads</span>(d[<span class="kw">which</span>(d<span class="op">$</span>dataset<span class="op">==</span>ds),var], nmads[i])</a>
-<a class="sourceLine" id="cb20-37" data-line-number="37">        df2 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">xint=</span><span class="kw">as.numeric</span>(ma), <span class="dt">dataset=</span><span class="kw">rep</span>(ds,<span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb20-38" data-line-number="38">        p &lt;-<span class="st"> </span>p <span class="op">+</span><span class="st"> </span><span class="kw">geom_vline</span>(<span class="dt">data=</span>df2, <span class="kw">aes</span>(<span class="dt">xintercept=</span>xint), <span class="dt">linetype=</span>lt[i])</a>
-<a class="sourceLine" id="cb20-39" data-line-number="39">      }</a>
-<a class="sourceLine" id="cb20-40" data-line-number="40">    }</a>
-<a class="sourceLine" id="cb20-41" data-line-number="41">  }<span class="cf">else</span>{</a>
-<a class="sourceLine" id="cb20-42" data-line-number="42">    <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(nmads)){</a>
-<a class="sourceLine" id="cb20-43" data-line-number="43">      df2 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">xint=</span><span class="kw">as.numeric</span>(<span class="kw">.tmads</span>(d[[var]], nmads[i])))</a>
-<a class="sourceLine" id="cb20-44" data-line-number="44">      p &lt;-<span class="st"> </span>p <span class="op">+</span><span class="st"> </span><span class="kw">geom_vline</span>(<span class="dt">data=</span>df2, <span class="kw">aes</span>(<span class="dt">xintercept=</span>xint), <span class="dt">linetype=</span>lt[i])</a>
-<a class="sourceLine" id="cb20-45" data-line-number="45">    }</a>
-<a class="sourceLine" id="cb20-46" data-line-number="46">  }</a>
-<a class="sourceLine" id="cb20-47" data-line-number="47">  p</a>
-<a class="sourceLine" id="cb20-48" data-line-number="48">}</a>
-<a class="sourceLine" id="cb20-49" data-line-number="49">.tmads &lt;-<span class="st"> </span><span class="cf">function</span>(x, <span class="dt">nbmads=</span><span class="fl">2.5</span>){</a>
-<a class="sourceLine" id="cb20-50" data-line-number="50">  x2 &lt;-<span class="st"> </span>nbmads<span class="op">*</span><span class="kw">median</span>(<span class="kw">abs</span>(x<span class="op">-</span><span class="kw">median</span>(x)))</a>
-<a class="sourceLine" id="cb20-51" data-line-number="51">  <span class="kw">median</span>(x)<span class="op">+</span><span class="kw">c</span>(<span class="op">-</span>x2,x2)</a>
-<a class="sourceLine" id="cb20-52" data-line-number="52">}</a>
-<a class="sourceLine" id="cb20-53" data-line-number="53"><span class="kw">plotFilters</span>(sce)</a></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="co"># # Plot filters</span></a>
+<a class="sourceLine" id="cb21-2" data-line-number="2">plotFilters &lt;-<span class="st"> </span><span class="cf">function</span>( sce, <span class="dt">var=</span><span class="st">&quot;log10_total_counts&quot;</span>, <span class="dt">split_by=</span><span class="st">&quot;Sample&quot;</span>, <span class="dt">nrow=</span><span class="ot">NULL</span>,</a>
+<a class="sourceLine" id="cb21-3" data-line-number="3">                         <span class="dt">nmads=</span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">5</span>), <span class="dt">lt=</span><span class="kw">c</span>(<span class="st">&quot;dashed&quot;</span>,<span class="st">&quot;dotted&quot;</span>,<span class="st">&quot;dotdash&quot;</span>), <span class="dt">xscale=</span><span class="st">&quot;free&quot;</span> ){</a>
+<a class="sourceLine" id="cb21-4" data-line-number="4">  CD &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">colData</span>(sce))</a>
+<a class="sourceLine" id="cb21-5" data-line-number="5">  <span class="cf">if</span>(<span class="op">!</span>(var <span class="op">%in%</span><span class="st"> </span><span class="kw">colnames</span>(CD))) <span class="kw">stop</span>(<span class="kw">paste</span>(<span class="st">&quot;`var`&quot;</span>,var,<span class="st">&quot;is not in `colData(sce)`!&quot;</span>))</a>
+<a class="sourceLine" id="cb21-6" data-line-number="6">  <span class="cf">if</span>(<span class="op">!</span><span class="kw">is.null</span>(split_by) <span class="op">&amp;&amp;</span><span class="st"> </span><span class="op">!</span>(split_by <span class="op">%in%</span><span class="st"> </span><span class="kw">colnames</span>(CD))){</a>
+<a class="sourceLine" id="cb21-7" data-line-number="7">    <span class="kw">stop</span>(<span class="kw">paste</span>(<span class="st">&quot;`split_by`&quot;</span>,split_by,<span class="st">&quot;is not in `colData(sce)`!&quot;</span>))</a>
+<a class="sourceLine" id="cb21-8" data-line-number="8">  }</a>
+<a class="sourceLine" id="cb21-9" data-line-number="9">  <span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb21-10" data-line-number="10">  <span class="kw">library</span>(cowplot)</a>
+<a class="sourceLine" id="cb21-11" data-line-number="11">  d &lt;-<span class="st"> </span>CD[,var,drop=F]</a>
+<a class="sourceLine" id="cb21-12" data-line-number="12">  <span class="cf">if</span>(<span class="op">!</span><span class="kw">is.null</span>(split_by)) d<span class="op">$</span>dataset &lt;-<span class="st"> </span>CD[[split_by]]</a>
+<a class="sourceLine" id="cb21-13" data-line-number="13">  p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(d, <span class="kw">aes_string</span>(<span class="dt">x=</span>var)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_histogram</span>(<span class="dt">color=</span><span class="st">&quot;darkblue&quot;</span>, <span class="dt">bins=</span><span class="dv">30</span>)</a>
+<a class="sourceLine" id="cb21-14" data-line-number="14">  <span class="cf">if</span>(xscale<span class="op">!=</span><span class="st">&quot;free&quot;</span>){</a>
+<a class="sourceLine" id="cb21-15" data-line-number="15">    <span class="cf">if</span>(xscale<span class="op">!=</span><span class="st">&quot;fixed&quot;</span>){</a>
+<a class="sourceLine" id="cb21-16" data-line-number="16">      <span class="cf">if</span>(xscale<span class="op">&gt;</span><span class="dv">1</span> <span class="op">&amp;&amp;</span><span class="st"> </span>xscale<span class="op">%%</span><span class="dv">1</span><span class="op">==</span><span class="dv">0</span>){</a>
+<a class="sourceLine" id="cb21-17" data-line-number="17">        xq &lt;-<span class="st"> </span><span class="kw">.tmads</span>(d[[var]], xscale)</a>
+<a class="sourceLine" id="cb21-18" data-line-number="18">        xr &lt;-<span class="st"> </span><span class="kw">range</span>(d[[var]],<span class="dt">na.rm=</span>T)</a>
+<a class="sourceLine" id="cb21-19" data-line-number="19">        xq &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">max</span>(xq[<span class="dv">1</span>],xr[<span class="dv">1</span>]), <span class="kw">min</span>(xq[<span class="dv">2</span>],xr[<span class="dv">2</span>]))</a>
+<a class="sourceLine" id="cb21-20" data-line-number="20">      }<span class="cf">else</span>{</a>
+<a class="sourceLine" id="cb21-21" data-line-number="21">        <span class="cf">if</span>(xscale<span class="op">&lt;=</span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>xscale<span class="op">&gt;</span><span class="dv">0</span>){</a>
+<a class="sourceLine" id="cb21-22" data-line-number="22">          xscale &lt;-<span class="st"> </span>(<span class="dv">1</span><span class="op">-</span>xscale)<span class="op">/</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb21-23" data-line-number="23">          xq &lt;-<span class="st"> </span><span class="kw">quantile</span>(d[[var]], <span class="dt">probs=</span><span class="kw">c</span>(xscale,<span class="dv">1</span><span class="op">-</span>xscale), <span class="dt">na.rm=</span>T)</a>
+<a class="sourceLine" id="cb21-24" data-line-number="24">        }<span class="cf">else</span>{</a>
+<a class="sourceLine" id="cb21-25" data-line-number="25">          <span class="kw">stop</span>(<span class="st">&quot;Wrong `xscale` value!&quot;</span>)</a>
+<a class="sourceLine" id="cb21-26" data-line-number="26">        }</a>
+<a class="sourceLine" id="cb21-27" data-line-number="27">      }</a>
+<a class="sourceLine" id="cb21-28" data-line-number="28">      p &lt;-<span class="st"> </span>p <span class="op">+</span><span class="st"> </span><span class="kw">xlim</span>(xq[<span class="dv">1</span>], xq[<span class="dv">2</span>])</a>
+<a class="sourceLine" id="cb21-29" data-line-number="29">    }</a>
+<a class="sourceLine" id="cb21-30" data-line-number="30">  }</a>
+<a class="sourceLine" id="cb21-31" data-line-number="31">  <span class="cf">if</span>(<span class="op">!</span><span class="kw">is.null</span>(split_by)){</a>
+<a class="sourceLine" id="cb21-32" data-line-number="32">    <span class="cf">if</span>(<span class="kw">is.null</span>(nrow)) nrow &lt;-<span class="st"> </span><span class="kw">ceiling</span>(<span class="kw">length</span>(<span class="kw">unique</span>(d<span class="op">$</span>dataset))<span class="op">/</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb21-33" data-line-number="33">    p &lt;-<span class="st"> </span>p <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span>dataset, <span class="dt">scales=</span><span class="kw">ifelse</span>(xscale<span class="op">==</span><span class="st">&quot;free&quot;</span>,<span class="st">&quot;free&quot;</span>,<span class="st">&quot;free_y&quot;</span>), <span class="dt">nrow=</span>nrow)</a>
+<a class="sourceLine" id="cb21-34" data-line-number="34">    <span class="cf">for</span>(ds <span class="cf">in</span> <span class="kw">unique</span>(d<span class="op">$</span>dataset)){</a>
+<a class="sourceLine" id="cb21-35" data-line-number="35">      <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(nmads)){</a>
+<a class="sourceLine" id="cb21-36" data-line-number="36">        ma &lt;-<span class="st"> </span><span class="kw">.tmads</span>(d[<span class="kw">which</span>(d<span class="op">$</span>dataset<span class="op">==</span>ds),var], nmads[i])</a>
+<a class="sourceLine" id="cb21-37" data-line-number="37">        df2 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">xint=</span><span class="kw">as.numeric</span>(ma), <span class="dt">dataset=</span><span class="kw">rep</span>(ds,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb21-38" data-line-number="38">        p &lt;-<span class="st"> </span>p <span class="op">+</span><span class="st"> </span><span class="kw">geom_vline</span>(<span class="dt">data=</span>df2, <span class="kw">aes</span>(<span class="dt">xintercept=</span>xint), <span class="dt">linetype=</span>lt[i])</a>
+<a class="sourceLine" id="cb21-39" data-line-number="39">      }</a>
+<a class="sourceLine" id="cb21-40" data-line-number="40">    }</a>
+<a class="sourceLine" id="cb21-41" data-line-number="41">  }<span class="cf">else</span>{</a>
+<a class="sourceLine" id="cb21-42" data-line-number="42">    <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(nmads)){</a>
+<a class="sourceLine" id="cb21-43" data-line-number="43">      df2 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">xint=</span><span class="kw">as.numeric</span>(<span class="kw">.tmads</span>(d[[var]], nmads[i])))</a>
+<a class="sourceLine" id="cb21-44" data-line-number="44">      p &lt;-<span class="st"> </span>p <span class="op">+</span><span class="st"> </span><span class="kw">geom_vline</span>(<span class="dt">data=</span>df2, <span class="kw">aes</span>(<span class="dt">xintercept=</span>xint), <span class="dt">linetype=</span>lt[i])</a>
+<a class="sourceLine" id="cb21-45" data-line-number="45">    }</a>
+<a class="sourceLine" id="cb21-46" data-line-number="46">  }</a>
+<a class="sourceLine" id="cb21-47" data-line-number="47">  p</a>
+<a class="sourceLine" id="cb21-48" data-line-number="48">}</a>
+<a class="sourceLine" id="cb21-49" data-line-number="49">.tmads &lt;-<span class="st"> </span><span class="cf">function</span>(x, <span class="dt">nbmads=</span><span class="fl">2.5</span>){</a>
+<a class="sourceLine" id="cb21-50" data-line-number="50">  x2 &lt;-<span class="st"> </span>nbmads<span class="op">*</span><span class="kw">median</span>(<span class="kw">abs</span>(x<span class="op">-</span><span class="kw">median</span>(x)))</a>
+<a class="sourceLine" id="cb21-51" data-line-number="51">  <span class="kw">median</span>(x)<span class="op">+</span><span class="kw">c</span>(<span class="op">-</span>x2,x2)</a>
+<a class="sourceLine" id="cb21-52" data-line-number="52">}</a>
+<a class="sourceLine" id="cb21-53" data-line-number="53"><span class="kw">plotFilters</span>(sce)</a></code></pre></div>
 <p><img src="csf_pat_med_files/figure-html/filter%20cells-1.png" width="1152" /></p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="kw">plotFilters</span>(sce, <span class="st">&quot;log10_total_features_by_counts&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw">plotFilters</span>(sce, <span class="st">&quot;log10_total_features_by_counts&quot;</span>)</a></code></pre></div>
 <p><img src="csf_pat_med_files/figure-html/filter%20cells-2.png" width="1152" /></p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw">plotFilters</span>(sce, <span class="st">&quot;pct_counts_Mt&quot;</span>, <span class="dt">xscale=</span><span class="fl">0.98</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw">plotFilters</span>(sce, <span class="st">&quot;pct_counts_Mt&quot;</span>, <span class="dt">xscale=</span><span class="fl">0.98</span>)</a></code></pre></div>
 <pre><code>## Warning: Removed 41 rows containing non-finite values (stat_bin).</code></pre>
 <pre><code>## Warning: Removed 6 rows containing missing values (geom_bar).</code></pre>
 <pre><code>## Warning: Removed 1 rows containing missing values (geom_vline).
@@ -521,43 +525,43 @@ div.tocify {
 
 ## Warning: Removed 1 rows containing missing values (geom_vline).</code></pre>
 <p><img src="csf_pat_med_files/figure-html/filter%20cells-3.png" width="1152" /></p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="co"># Find outlier</span></a>
-<a class="sourceLine" id="cb26-2" data-line-number="2">outlierPlot &lt;-<span class="st"> </span><span class="cf">function</span>(cd, feature, <span class="dt">aph=</span><span class="ot">NULL</span>, <span class="dt">logScale=</span><span class="ot">FALSE</span>, <span class="dt">show.legend=</span><span class="ot">TRUE</span>){</a>
-<a class="sourceLine" id="cb26-3" data-line-number="3">  <span class="cf">if</span>(<span class="kw">is.null</span>(aph)) aph &lt;-<span class="st"> </span><span class="kw">paste0</span>(feature, <span class="st">&quot;_drop&quot;</span>)</a>
-<a class="sourceLine" id="cb26-4" data-line-number="4">  <span class="cf">if</span>(<span class="op">!</span>(aph <span class="op">%in%</span><span class="st"> </span><span class="kw">colnames</span>(cd))) aph &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb26-5" data-line-number="5">  p &lt;-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">as.data.frame</span>(cd), <span class="kw">aes_string</span>(<span class="dt">x =</span> feature, <span class="dt">alpha =</span> aph)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb26-6" data-line-number="6"><span class="st">    </span><span class="kw">geom_histogram</span>(<span class="dt">show.legend=</span>show.legend)</a>
-<a class="sourceLine" id="cb26-7" data-line-number="7">  <span class="cf">if</span>(<span class="op">!</span><span class="kw">is.null</span>(aph)) p &lt;-<span class="st"> </span>p <span class="op">+</span><span class="st"> </span><span class="kw">scale_alpha_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&quot;TRUE&quot;</span> =<span class="st"> </span><span class="fl">0.4</span>, <span class="st">&quot;FALSE&quot;</span> =<span class="st"> </span><span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb26-8" data-line-number="8">  <span class="cf">if</span>(logScale) p &lt;-<span class="st"> </span>p <span class="op">+</span><span class="st"> </span><span class="kw">scale_x_log10</span>()</a>
-<a class="sourceLine" id="cb26-9" data-line-number="9">  p</a>
-<a class="sourceLine" id="cb26-10" data-line-number="10">}</a>
-<a class="sourceLine" id="cb26-11" data-line-number="11">plQCplot &lt;-<span class="st"> </span><span class="cf">function</span>(cd, <span class="dt">show.legend=</span><span class="ot">TRUE</span>){</a>
-<a class="sourceLine" id="cb26-12" data-line-number="12">  ps &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">split</span>(cd,cd<span class="op">$</span>Sample), <span class="dt">sl=</span>show.legend, <span class="dt">FUN=</span><span class="cf">function</span>(x,sl){</a>
-<a class="sourceLine" id="cb26-13" data-line-number="13">    <span class="kw">list</span>( <span class="kw">outlierPlot</span>( x, <span class="st">&quot;total_counts&quot;</span>, <span class="dt">logScale=</span>T, <span class="dt">show.legend=</span>sl),</a>
-<a class="sourceLine" id="cb26-14" data-line-number="14">          <span class="kw">outlierPlot</span>( x, <span class="st">&quot;total_features_by_counts&quot;</span>, <span class="st">&quot;total_features_drop&quot;</span>,</a>
-<a class="sourceLine" id="cb26-15" data-line-number="15">                       <span class="dt">logScale=</span>T, <span class="dt">show.legend=</span>sl),</a>
-<a class="sourceLine" id="cb26-16" data-line-number="16">          <span class="kw">outlierPlot</span>( x, <span class="st">&quot;pct_counts_Mt&quot;</span>, <span class="st">&quot;mito_drop&quot;</span>, <span class="dt">show.legend=</span>sl)</a>
-<a class="sourceLine" id="cb26-17" data-line-number="17">    )</a>
-<a class="sourceLine" id="cb26-18" data-line-number="18">  })</a>
-<a class="sourceLine" id="cb26-19" data-line-number="19">  <span class="kw">plot_grid</span>( <span class="dt">plotlist =</span> <span class="kw">do.call</span>(c, ps),</a>
-<a class="sourceLine" id="cb26-20" data-line-number="20">             <span class="dt">labels=</span><span class="kw">rep</span>(<span class="kw">basename</span>(<span class="kw">names</span>(ps)), <span class="dt">each=</span><span class="kw">length</span>(ps[[<span class="dv">1</span>]])),</a>
-<a class="sourceLine" id="cb26-21" data-line-number="21">             <span class="dt">ncol=</span><span class="kw">length</span>(ps[[<span class="dv">1</span>]]),</a>
-<a class="sourceLine" id="cb26-22" data-line-number="22">             <span class="dt">label_x=</span><span class="fl">0.5</span> )</a>
-<a class="sourceLine" id="cb26-23" data-line-number="23">}</a>
-<a class="sourceLine" id="cb26-24" data-line-number="24"></a>
-<a class="sourceLine" id="cb26-25" data-line-number="25"></a>
-<a class="sourceLine" id="cb26-26" data-line-number="26"><span class="co">#Filtering</span></a>
-<a class="sourceLine" id="cb26-27" data-line-number="27">sce<span class="op">$</span>total_counts_drop &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce<span class="op">$</span>total_counts, <span class="dt">nmads =</span> <span class="fl">2.5</span>,</a>
-<a class="sourceLine" id="cb26-28" data-line-number="28">                                   <span class="dt">type =</span> <span class="st">&quot;both&quot;</span>, <span class="dt">log =</span> <span class="ot">TRUE</span>, <span class="dt">batch=</span>sce<span class="op">$</span>Sample)</a>
-<a class="sourceLine" id="cb26-29" data-line-number="29">sce<span class="op">$</span>total_features_drop &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce<span class="op">$</span>total_features_by_counts, <span class="dt">nmads =</span> <span class="fl">2.5</span>,</a>
-<a class="sourceLine" id="cb26-30" data-line-number="30">                                     <span class="dt">type =</span> <span class="st">&quot;both&quot;</span>, <span class="dt">log =</span> <span class="ot">TRUE</span>, <span class="dt">batch=</span>sce<span class="op">$</span>Sample)</a>
-<a class="sourceLine" id="cb26-31" data-line-number="31">sce<span class="op">$</span>mito_drop &lt;-<span class="st"> </span>sce<span class="op">$</span>pct_counts_Mt <span class="op">&gt;</span><span class="st"> </span><span class="dv">5</span> <span class="op">&amp;</span></a>
-<a class="sourceLine" id="cb26-32" data-line-number="32"><span class="st">  </span><span class="kw">isOutlier</span>(sce<span class="op">$</span>pct_counts_Mt, <span class="dt">nmads =</span> <span class="fl">2.5</span>, <span class="dt">type =</span> <span class="st">&quot;higher&quot;</span>, <span class="dt">batch=</span>sce<span class="op">$</span>Sample)</a>
-<a class="sourceLine" id="cb26-33" data-line-number="33"></a>
-<a class="sourceLine" id="cb26-34" data-line-number="34">sce<span class="op">$</span>isOutlier &lt;-<span class="st"> </span>sce<span class="op">$</span>total_counts_drop <span class="op">|</span><span class="st"> </span>sce<span class="op">$</span>total_features_drop <span class="op">|</span><span class="st"> </span>sce<span class="op">$</span>mito_drop</a>
-<a class="sourceLine" id="cb26-35" data-line-number="35"></a>
-<a class="sourceLine" id="cb26-36" data-line-number="36"><span class="co"># quality plot</span></a>
-<a class="sourceLine" id="cb26-37" data-line-number="37"><span class="kw">plQCplot</span>(<span class="kw">colData</span>(sce), <span class="dt">show.legend=</span><span class="ot">FALSE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="co"># Find outlier</span></a>
+<a class="sourceLine" id="cb27-2" data-line-number="2">outlierPlot &lt;-<span class="st"> </span><span class="cf">function</span>(cd, feature, <span class="dt">aph=</span><span class="ot">NULL</span>, <span class="dt">logScale=</span><span class="ot">FALSE</span>, <span class="dt">show.legend=</span><span class="ot">TRUE</span>){</a>
+<a class="sourceLine" id="cb27-3" data-line-number="3">  <span class="cf">if</span>(<span class="kw">is.null</span>(aph)) aph &lt;-<span class="st"> </span><span class="kw">paste0</span>(feature, <span class="st">&quot;_drop&quot;</span>)</a>
+<a class="sourceLine" id="cb27-4" data-line-number="4">  <span class="cf">if</span>(<span class="op">!</span>(aph <span class="op">%in%</span><span class="st"> </span><span class="kw">colnames</span>(cd))) aph &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb27-5" data-line-number="5">  p &lt;-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">as.data.frame</span>(cd), <span class="kw">aes_string</span>(<span class="dt">x =</span> feature, <span class="dt">alpha =</span> aph)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb27-6" data-line-number="6"><span class="st">    </span><span class="kw">geom_histogram</span>(<span class="dt">show.legend=</span>show.legend)</a>
+<a class="sourceLine" id="cb27-7" data-line-number="7">  <span class="cf">if</span>(<span class="op">!</span><span class="kw">is.null</span>(aph)) p &lt;-<span class="st"> </span>p <span class="op">+</span><span class="st"> </span><span class="kw">scale_alpha_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&quot;TRUE&quot;</span> =<span class="st"> </span><span class="fl">0.4</span>, <span class="st">&quot;FALSE&quot;</span> =<span class="st"> </span><span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb27-8" data-line-number="8">  <span class="cf">if</span>(logScale) p &lt;-<span class="st"> </span>p <span class="op">+</span><span class="st"> </span><span class="kw">scale_x_log10</span>()</a>
+<a class="sourceLine" id="cb27-9" data-line-number="9">  p</a>
+<a class="sourceLine" id="cb27-10" data-line-number="10">}</a>
+<a class="sourceLine" id="cb27-11" data-line-number="11">plQCplot &lt;-<span class="st"> </span><span class="cf">function</span>(cd, <span class="dt">show.legend=</span><span class="ot">TRUE</span>){</a>
+<a class="sourceLine" id="cb27-12" data-line-number="12">  ps &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">split</span>(cd,cd<span class="op">$</span>Sample), <span class="dt">sl=</span>show.legend, <span class="dt">FUN=</span><span class="cf">function</span>(x,sl){</a>
+<a class="sourceLine" id="cb27-13" data-line-number="13">    <span class="kw">list</span>( <span class="kw">outlierPlot</span>( x, <span class="st">&quot;total_counts&quot;</span>, <span class="dt">logScale=</span>T, <span class="dt">show.legend=</span>sl),</a>
+<a class="sourceLine" id="cb27-14" data-line-number="14">          <span class="kw">outlierPlot</span>( x, <span class="st">&quot;total_features_by_counts&quot;</span>, <span class="st">&quot;total_features_drop&quot;</span>,</a>
+<a class="sourceLine" id="cb27-15" data-line-number="15">                       <span class="dt">logScale=</span>T, <span class="dt">show.legend=</span>sl),</a>
+<a class="sourceLine" id="cb27-16" data-line-number="16">          <span class="kw">outlierPlot</span>( x, <span class="st">&quot;pct_counts_Mt&quot;</span>, <span class="st">&quot;mito_drop&quot;</span>, <span class="dt">show.legend=</span>sl)</a>
+<a class="sourceLine" id="cb27-17" data-line-number="17">    )</a>
+<a class="sourceLine" id="cb27-18" data-line-number="18">  })</a>
+<a class="sourceLine" id="cb27-19" data-line-number="19">  <span class="kw">plot_grid</span>( <span class="dt">plotlist =</span> <span class="kw">do.call</span>(c, ps),</a>
+<a class="sourceLine" id="cb27-20" data-line-number="20">             <span class="dt">labels=</span><span class="kw">rep</span>(<span class="kw">basename</span>(<span class="kw">names</span>(ps)), <span class="dt">each=</span><span class="kw">length</span>(ps[[<span class="dv">1</span>]])),</a>
+<a class="sourceLine" id="cb27-21" data-line-number="21">             <span class="dt">ncol=</span><span class="kw">length</span>(ps[[<span class="dv">1</span>]]),</a>
+<a class="sourceLine" id="cb27-22" data-line-number="22">             <span class="dt">label_x=</span><span class="fl">0.5</span> )</a>
+<a class="sourceLine" id="cb27-23" data-line-number="23">}</a>
+<a class="sourceLine" id="cb27-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb27-25" data-line-number="25"></a>
+<a class="sourceLine" id="cb27-26" data-line-number="26"><span class="co">#Filtering</span></a>
+<a class="sourceLine" id="cb27-27" data-line-number="27">sce<span class="op">$</span>total_counts_drop &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce<span class="op">$</span>total_counts, <span class="dt">nmads =</span> <span class="fl">2.5</span>,</a>
+<a class="sourceLine" id="cb27-28" data-line-number="28">                                   <span class="dt">type =</span> <span class="st">&quot;both&quot;</span>, <span class="dt">log =</span> <span class="ot">TRUE</span>, <span class="dt">batch=</span>sce<span class="op">$</span>Sample)</a>
+<a class="sourceLine" id="cb27-29" data-line-number="29">sce<span class="op">$</span>total_features_drop &lt;-<span class="st"> </span><span class="kw">isOutlier</span>(sce<span class="op">$</span>total_features_by_counts, <span class="dt">nmads =</span> <span class="fl">2.5</span>,</a>
+<a class="sourceLine" id="cb27-30" data-line-number="30">                                     <span class="dt">type =</span> <span class="st">&quot;both&quot;</span>, <span class="dt">log =</span> <span class="ot">TRUE</span>, <span class="dt">batch=</span>sce<span class="op">$</span>Sample)</a>
+<a class="sourceLine" id="cb27-31" data-line-number="31">sce<span class="op">$</span>mito_drop &lt;-<span class="st"> </span>sce<span class="op">$</span>pct_counts_Mt <span class="op">&gt;</span><span class="st"> </span><span class="dv">5</span> <span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb27-32" data-line-number="32"><span class="st">  </span><span class="kw">isOutlier</span>(sce<span class="op">$</span>pct_counts_Mt, <span class="dt">nmads =</span> <span class="fl">2.5</span>, <span class="dt">type =</span> <span class="st">&quot;higher&quot;</span>, <span class="dt">batch=</span>sce<span class="op">$</span>Sample)</a>
+<a class="sourceLine" id="cb27-33" data-line-number="33"></a>
+<a class="sourceLine" id="cb27-34" data-line-number="34">sce<span class="op">$</span>isOutlier &lt;-<span class="st"> </span>sce<span class="op">$</span>total_counts_drop <span class="op">|</span><span class="st"> </span>sce<span class="op">$</span>total_features_drop <span class="op">|</span><span class="st"> </span>sce<span class="op">$</span>mito_drop</a>
+<a class="sourceLine" id="cb27-35" data-line-number="35"></a>
+<a class="sourceLine" id="cb27-36" data-line-number="36"><span class="co"># quality plot</span></a>
+<a class="sourceLine" id="cb27-37" data-line-number="37"><span class="kw">plQCplot</span>(<span class="kw">colData</span>(sce), <span class="dt">show.legend=</span><span class="ot">FALSE</span>)</a></code></pre></div>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
@@ -568,47 +572,47 @@ div.tocify {
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 <p><img src="csf_pat_med_files/figure-html/filter%20cells-4.png" width="1152" /></p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="kw">ggplot</span>(<span class="kw">colData</span>(sce) <span class="op">%&gt;%</span><span class="st"> </span>as.data.frame, <span class="kw">aes</span>(<span class="dt">x=</span>total_features_by_counts, <span class="dt">y=</span>total_counts, <span class="dt">colour=</span>pct_counts_Mt)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span>Sample) <span class="op">+</span><span class="kw">geom_density_2d</span>(<span class="dt">col=</span><span class="st">&quot;white&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">scale_x_sqrt</span>() <span class="op">+</span><span class="st"> </span><span class="kw">scale_y_sqrt</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="kw">ggplot</span>(<span class="kw">colData</span>(sce) <span class="op">%&gt;%</span><span class="st"> </span>as.data.frame, <span class="kw">aes</span>(<span class="dt">x=</span>total_features_by_counts, <span class="dt">y=</span>total_counts, <span class="dt">colour=</span>pct_counts_Mt)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span>Sample) <span class="op">+</span><span class="kw">geom_density_2d</span>(<span class="dt">col=</span><span class="st">&quot;white&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">scale_x_sqrt</span>() <span class="op">+</span><span class="st"> </span><span class="kw">scale_y_sqrt</span>()</a></code></pre></div>
 <p><img src="csf_pat_med_files/figure-html/filter%20cells-5.png" width="1152" /></p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="kw">ggplot</span>(<span class="kw">colData</span>(sce) <span class="op">%&gt;%</span><span class="st"> </span>as.data.frame, <span class="kw">aes</span>(<span class="dt">x=</span>total_features_by_counts, <span class="dt">y=</span>pct_counts_Mt)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span>Sample) <span class="op">+</span><span class="kw">geom_density_2d</span>(<span class="dt">col=</span><span class="st">&quot;white&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="kw">ggplot</span>(<span class="kw">colData</span>(sce) <span class="op">%&gt;%</span><span class="st"> </span>as.data.frame, <span class="kw">aes</span>(<span class="dt">x=</span>total_features_by_counts, <span class="dt">y=</span>pct_counts_Mt)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span>Sample) <span class="op">+</span><span class="kw">geom_density_2d</span>(<span class="dt">col=</span><span class="st">&quot;white&quot;</span>)</a></code></pre></div>
 <p><img src="csf_pat_med_files/figure-html/filter%20cells-6.png" width="1152" /></p>
 </div>
 <div id="check-thresholds" class="section level3">
 <h3>Check thresholds</h3>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="co"># Check outlier</span></a>
-<a class="sourceLine" id="cb30-2" data-line-number="2">mets &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;total_counts_drop&quot;</span>,<span class="st">&quot;total_features_drop&quot;</span>,<span class="st">&quot;mito_drop&quot;</span>)</a>
-<a class="sourceLine" id="cb30-3" data-line-number="3"><span class="kw">sapply</span>(mets, <span class="dt">FUN=</span><span class="cf">function</span>(x){ <span class="kw">sapply</span>(mets, <span class="dt">y=</span>x, <span class="cf">function</span>(x,y){ <span class="kw">sum</span>(sce[[x]] <span class="op">&amp;</span><span class="st"> </span>sce[[y]]) }) })</a></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="co"># Check outlier</span></a>
+<a class="sourceLine" id="cb31-2" data-line-number="2">mets &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;total_counts_drop&quot;</span>,<span class="st">&quot;total_features_drop&quot;</span>,<span class="st">&quot;mito_drop&quot;</span>)</a>
+<a class="sourceLine" id="cb31-3" data-line-number="3"><span class="kw">sapply</span>(mets, <span class="dt">FUN=</span><span class="cf">function</span>(x){ <span class="kw">sapply</span>(mets, <span class="dt">y=</span>x, <span class="cf">function</span>(x,y){ <span class="kw">sum</span>(sce[[x]] <span class="op">&amp;</span><span class="st"> </span>sce[[y]]) }) })</a></code></pre></div>
 <pre><code>##                     total_counts_drop total_features_drop mito_drop
 ## total_counts_drop                 519                 514        57
 ## total_features_drop               514                 826        62
 ## mito_drop                          57                  62       132</code></pre>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1">nbcells &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">table</span>(sce<span class="op">$</span>Sample),<span class="kw">table</span>(sce<span class="op">$</span>Sample[<span class="op">!</span>sce<span class="op">$</span>isOutlier]))</a>
-<a class="sourceLine" id="cb32-2" data-line-number="2"><span class="kw">colnames</span>(nbcells) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;cells total&quot;</span>,<span class="st">&quot;cells after filtering&quot;</span>)</a>
-<a class="sourceLine" id="cb32-3" data-line-number="3">nbcells</a></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1">nbcells &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">table</span>(sce<span class="op">$</span>Sample),<span class="kw">table</span>(sce<span class="op">$</span>Sample[<span class="op">!</span>sce<span class="op">$</span>isOutlier]))</a>
+<a class="sourceLine" id="cb33-2" data-line-number="2"><span class="kw">colnames</span>(nbcells) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;cells total&quot;</span>,<span class="st">&quot;cells after filtering&quot;</span>)</a>
+<a class="sourceLine" id="cb33-3" data-line-number="3">nbcells</a></code></pre></div>
 <pre><code>##             cells total cells after filtering
 ## E2490_fresh         986                   788
 ## E2528              1661                  1308
 ## E2547              1441                  1094</code></pre>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1"><span class="kw">layout</span>(<span class="kw">matrix</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,<span class="dt">nrow=</span><span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb34-2" data-line-number="2">LSD<span class="op">::</span><span class="kw">heatscatter</span>( sce<span class="op">$</span>total_counts, sce<span class="op">$</span>total_features_by_counts, <span class="dt">xlab=</span><span class="st">&quot;Total counts&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Non-zero features&quot;</span>, <span class="dt">main=</span><span class="st">&quot;&quot;</span>,<span class="dt">log=</span><span class="st">&quot;xy&quot;</span>)</a>
-<a class="sourceLine" id="cb34-3" data-line-number="3">w &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="op">!</span>sce<span class="op">$</span>isOutlier)</a>
-<a class="sourceLine" id="cb34-4" data-line-number="4">LSD<span class="op">::</span><span class="kw">heatscatter</span>( sce<span class="op">$</span>total_counts[w], sce<span class="op">$</span>total_features_by_counts[w], <span class="dt">xlab=</span><span class="st">&quot;Total counts&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Non-zero features&quot;</span>, <span class="dt">main=</span><span class="st">&quot;Filtered cells&quot;</span>,<span class="dt">log=</span><span class="st">&quot;xy&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="kw">layout</span>(<span class="kw">matrix</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,<span class="dt">nrow=</span><span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb35-2" data-line-number="2">LSD<span class="op">::</span><span class="kw">heatscatter</span>( sce<span class="op">$</span>total_counts, sce<span class="op">$</span>total_features_by_counts, <span class="dt">xlab=</span><span class="st">&quot;Total counts&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Non-zero features&quot;</span>, <span class="dt">main=</span><span class="st">&quot;&quot;</span>,<span class="dt">log=</span><span class="st">&quot;xy&quot;</span>)</a>
+<a class="sourceLine" id="cb35-3" data-line-number="3">w &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="op">!</span>sce<span class="op">$</span>isOutlier)</a>
+<a class="sourceLine" id="cb35-4" data-line-number="4">LSD<span class="op">::</span><span class="kw">heatscatter</span>( sce<span class="op">$</span>total_counts[w], sce<span class="op">$</span>total_features_by_counts[w], <span class="dt">xlab=</span><span class="st">&quot;Total counts&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Non-zero features&quot;</span>, <span class="dt">main=</span><span class="st">&quot;Filtered cells&quot;</span>,<span class="dt">log=</span><span class="st">&quot;xy&quot;</span>)</a></code></pre></div>
 <p><img src="csf_pat_med_files/figure-html/threshholds-1.png" width="1152" /></p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="co"># summary of cells kept</span></a>
-<a class="sourceLine" id="cb35-2" data-line-number="2">cct &lt;-<span class="st"> </span><span class="kw">table</span>(sce<span class="op">$</span>isOutlier, sce<span class="op">$</span>Sample)</a>
-<a class="sourceLine" id="cb35-3" data-line-number="3"><span class="kw">row.names</span>(cct) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Kept&quot;</span>, <span class="st">&quot;Filtered out&quot;</span>)</a>
-<a class="sourceLine" id="cb35-4" data-line-number="4">cct</a></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1"><span class="co"># summary of cells kept</span></a>
+<a class="sourceLine" id="cb36-2" data-line-number="2">cct &lt;-<span class="st"> </span><span class="kw">table</span>(sce<span class="op">$</span>isOutlier, sce<span class="op">$</span>Sample)</a>
+<a class="sourceLine" id="cb36-3" data-line-number="3"><span class="kw">row.names</span>(cct) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Kept&quot;</span>, <span class="st">&quot;Filtered out&quot;</span>)</a>
+<a class="sourceLine" id="cb36-4" data-line-number="4">cct</a></code></pre></div>
 <pre><code>##               
 ##                E2490_fresh E2528 E2547
 ##   Kept                 788  1308  1094
 ##   Filtered out         198   353   347</code></pre>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="co"># drop outlier cells</span></a>
-<a class="sourceLine" id="cb37-2" data-line-number="2">sce &lt;-<span class="st"> </span>sce[,<span class="op">!</span>sce<span class="op">$</span>isOutlier]</a>
-<a class="sourceLine" id="cb37-3" data-line-number="3"><span class="co"># require count &gt; 1 in at least 20 cells</span></a>
-<a class="sourceLine" id="cb37-4" data-line-number="4">sce &lt;-<span class="st"> </span>sce[<span class="kw">which</span>(<span class="kw">rowSums</span>(<span class="kw">counts</span>(sce)<span class="op">&gt;</span><span class="dv">1</span>)<span class="op">&gt;=</span><span class="dv">20</span>),]</a>
-<a class="sourceLine" id="cb37-5" data-line-number="5"><span class="kw">dim</span>(sce)</a></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1"><span class="co"># drop outlier cells</span></a>
+<a class="sourceLine" id="cb38-2" data-line-number="2">sce &lt;-<span class="st"> </span>sce[,<span class="op">!</span>sce<span class="op">$</span>isOutlier]</a>
+<a class="sourceLine" id="cb38-3" data-line-number="3"><span class="co"># require count &gt; 1 in at least 20 cells</span></a>
+<a class="sourceLine" id="cb38-4" data-line-number="4">sce &lt;-<span class="st"> </span>sce[<span class="kw">which</span>(<span class="kw">rowSums</span>(<span class="kw">counts</span>(sce)<span class="op">&gt;</span><span class="dv">1</span>)<span class="op">&gt;=</span><span class="dv">20</span>),]</a>
+<a class="sourceLine" id="cb38-5" data-line-number="5"><span class="kw">dim</span>(sce)</a></code></pre></div>
 <pre><code>## [1] 3613 3190</code></pre>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1"><span class="kw">plQCplot</span>(<span class="kw">colData</span>(sce), <span class="dt">show.legend=</span><span class="ot">FALSE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1"><span class="kw">plQCplot</span>(<span class="kw">colData</span>(sce), <span class="dt">show.legend=</span><span class="ot">FALSE</span>)</a></code></pre></div>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
@@ -619,7 +623,7 @@ div.tocify {
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 <p><img src="csf_pat_med_files/figure-html/threshholds-2.png" width="1152" /></p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" data-line-number="1"><span class="kw">table</span>(sce<span class="op">$</span>Sample)</a></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" data-line-number="1"><span class="kw">table</span>(sce<span class="op">$</span>Sample)</a></code></pre></div>
 <pre><code>## 
 ## E2490_fresh       E2528       E2547 
 ##         788        1308        1094</code></pre>
@@ -627,24 +631,24 @@ div.tocify {
 </div>
 <div id="remove-doublets" class="section level2">
 <h2>Remove doublets</h2>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">scDblFinder</span>(sce, <span class="dt">samples=</span><span class="st">&quot;Sample&quot;</span>, <span class="dt">BPPARAM=</span><span class="kw">MulticoreParam</span>(<span class="dv">3</span>))</a>
-<a class="sourceLine" id="cb43-2" data-line-number="2"><span class="kw">table</span>(sce<span class="op">$</span>scDblFinder.class)</a></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">scDblFinder</span>(sce, <span class="dt">samples=</span><span class="st">&quot;Sample&quot;</span>, <span class="dt">BPPARAM=</span><span class="kw">MulticoreParam</span>(<span class="dv">3</span>))</a>
+<a class="sourceLine" id="cb44-2" data-line-number="2"><span class="kw">table</span>(sce<span class="op">$</span>scDblFinder.class)</a></code></pre></div>
 <pre><code>## 
 ## doublet singlet 
-##     106    3084</code></pre>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1">sce &lt;-<span class="st"> </span>sce[,<span class="op">!</span>sce<span class="op">$</span>scDblFinder.class <span class="op">%in%</span><span class="st"> &quot;doublet&quot;</span>]</a></code></pre></div>
+##      48    3142</code></pre>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1">sce &lt;-<span class="st"> </span>sce[,<span class="op">!</span>sce<span class="op">$</span>scDblFinder.class <span class="op">%in%</span><span class="st"> &quot;doublet&quot;</span>]</a></code></pre></div>
 </div>
 <div id="normalization" class="section level2">
 <h2>Normalization</h2>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1"><span class="co"># Scater</span></a>
-<a class="sourceLine" id="cb46-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">1000</span>)</a>
-<a class="sourceLine" id="cb46-3" data-line-number="3">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce, <span class="dt">use.ranks=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb46-4" data-line-number="4"><span class="kw">table</span>(clusters)</a></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1"><span class="co"># Scater</span></a>
+<a class="sourceLine" id="cb47-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">1000</span>)</a>
+<a class="sourceLine" id="cb47-3" data-line-number="3">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce, <span class="dt">use.ranks=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb47-4" data-line-number="4"><span class="kw">table</span>(clusters)</a></code></pre></div>
 <pre><code>## clusters
 ##   1   2   3   4   5   6   7   8   9 
-## 486 227 469 207 526 507 377 124 161</code></pre>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce, <span class="dt">min.mean=</span><span class="fl">0.1</span>, <span class="dt">cluster=</span>clusters) ##cluster information added</a>
-<a class="sourceLine" id="cb48-2" data-line-number="2">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">normalize</span>(sce)</a></code></pre></div>
+## 326 632 204 615 552 177 227 277 132</code></pre>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce, <span class="dt">min.mean=</span><span class="fl">0.1</span>, <span class="dt">cluster=</span>clusters) ##cluster information added</a>
+<a class="sourceLine" id="cb49-2" data-line-number="2">sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">normalize</span>(sce)</a></code></pre></div>
 <pre><code>## Warning: &#39;normalizeSCE&#39; is deprecated.
 ## Use &#39;logNormCounts&#39; instead.
 ## See help(&quot;Deprecated&quot;)</code></pre>
@@ -653,23 +657,23 @@ div.tocify {
 </div>
 <div id="integration" class="section level2">
 <h2>Integration</h2>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" data-line-number="1"><span class="co"># create SeuratObject</span></a>
-<a class="sourceLine" id="cb51-2" data-line-number="2">seurat &lt;-<span class="st"> </span><span class="kw">as.Seurat</span>(sce)</a>
-<a class="sourceLine" id="cb51-3" data-line-number="3"><span class="co"># normalize, find variable genes, and scale</span></a>
-<a class="sourceLine" id="cb51-4" data-line-number="4">sl &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">unique</span>(<span class="kw">as.character</span>(seurat<span class="op">@</span>meta.data<span class="op">$</span>Sample)), <span class="dt">FUN=</span><span class="cf">function</span>(x){</a>
-<a class="sourceLine" id="cb51-5" data-line-number="5">  x &lt;-<span class="st"> </span><span class="kw">subset</span>(seurat, <span class="dt">cells=</span><span class="kw">which</span>(seurat<span class="op">@</span>meta.data<span class="op">$</span>Sample<span class="op">==</span>x))</a>
-<a class="sourceLine" id="cb51-6" data-line-number="6">  x &lt;-<span class="st"> </span><span class="kw">ScaleData</span>(x)</a>
-<a class="sourceLine" id="cb51-7" data-line-number="7">  x &lt;-<span class="st"> </span><span class="kw">FindVariableFeatures</span>(x, <span class="dt">verbose=</span>F)</a>
-<a class="sourceLine" id="cb51-8" data-line-number="8">  <span class="co"># use non-standardized variance</span></a>
-<a class="sourceLine" id="cb51-9" data-line-number="9">  v &lt;-<span class="st"> </span>x<span class="op">@</span>assays<span class="op">$</span>RNA<span class="op">@</span>meta.features[[<span class="st">&quot;vst.variance&quot;</span>]]</a>
-<a class="sourceLine" id="cb51-10" data-line-number="10">  <span class="kw">VariableFeatures</span>(x) &lt;-<span class="st"> </span><span class="kw">row.names</span>(x<span class="op">@</span>assays<span class="op">$</span>RNA<span class="op">@</span>meta.features)[<span class="kw">order</span>(v, <span class="dt">decreasing=</span><span class="ot">TRUE</span>)[<span class="dv">1</span><span class="op">:</span><span class="dv">500</span>]]</a>
-<a class="sourceLine" id="cb51-11" data-line-number="11">  x</a>
-<a class="sourceLine" id="cb51-12" data-line-number="12">})</a></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" data-line-number="1"><span class="co"># create SeuratObject</span></a>
+<a class="sourceLine" id="cb52-2" data-line-number="2">seurat &lt;-<span class="st"> </span><span class="kw">as.Seurat</span>(sce)</a>
+<a class="sourceLine" id="cb52-3" data-line-number="3"><span class="co"># normalize, find variable genes, and scale</span></a>
+<a class="sourceLine" id="cb52-4" data-line-number="4">sl &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">unique</span>(<span class="kw">as.character</span>(seurat<span class="op">@</span>meta.data<span class="op">$</span>Sample)), <span class="dt">FUN=</span><span class="cf">function</span>(x){</a>
+<a class="sourceLine" id="cb52-5" data-line-number="5">  x &lt;-<span class="st"> </span><span class="kw">subset</span>(seurat, <span class="dt">cells=</span><span class="kw">which</span>(seurat<span class="op">@</span>meta.data<span class="op">$</span>Sample<span class="op">==</span>x))</a>
+<a class="sourceLine" id="cb52-6" data-line-number="6">  x &lt;-<span class="st"> </span><span class="kw">ScaleData</span>(x)</a>
+<a class="sourceLine" id="cb52-7" data-line-number="7">  x &lt;-<span class="st"> </span><span class="kw">FindVariableFeatures</span>(x, <span class="dt">verbose=</span>F)</a>
+<a class="sourceLine" id="cb52-8" data-line-number="8">  <span class="co"># use non-standardized variance</span></a>
+<a class="sourceLine" id="cb52-9" data-line-number="9">  v &lt;-<span class="st"> </span>x<span class="op">@</span>assays<span class="op">$</span>RNA<span class="op">@</span>meta.features[[<span class="st">&quot;vst.variance&quot;</span>]]</a>
+<a class="sourceLine" id="cb52-10" data-line-number="10">  <span class="kw">VariableFeatures</span>(x) &lt;-<span class="st"> </span><span class="kw">row.names</span>(x<span class="op">@</span>assays<span class="op">$</span>RNA<span class="op">@</span>meta.features)[<span class="kw">order</span>(v, <span class="dt">decreasing=</span><span class="ot">TRUE</span>)[<span class="dv">1</span><span class="op">:</span><span class="dv">500</span>]]</a>
+<a class="sourceLine" id="cb52-11" data-line-number="11">  x</a>
+<a class="sourceLine" id="cb52-12" data-line-number="12">})</a></code></pre></div>
 <pre><code>## Centering and scaling data matrix
 ## Centering and scaling data matrix
 ## Centering and scaling data matrix</code></pre>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" data-line-number="1"><span class="co"># find anchors &amp; integrate</span></a>
-<a class="sourceLine" id="cb53-2" data-line-number="2">anchors &lt;-<span class="st"> </span><span class="kw">FindIntegrationAnchors</span>(sl)</a></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" data-line-number="1"><span class="co"># find anchors &amp; integrate</span></a>
+<a class="sourceLine" id="cb54-2" data-line-number="2">anchors &lt;-<span class="st"> </span><span class="kw">FindIntegrationAnchors</span>(sl)</a></code></pre></div>
 <pre><code>## Computing 2000 integration features</code></pre>
 <pre><code>## Scaling features for provided objects</code></pre>
 <pre><code>## Finding all pairwise anchors</code></pre>
@@ -677,17 +681,17 @@ div.tocify {
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 3270 anchors</code></pre>
+<pre><code>##  Found 3462 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 1665 anchors</code></pre>
+<pre><code>##  Retained 1812 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
 <pre><code>## Finding neighborhoods</code></pre>
 <pre><code>## Finding anchors</code></pre>
-<pre><code>##  Found 3100 anchors</code></pre>
+<pre><code>##  Found 3239 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 1662 anchors</code></pre>
+<pre><code>##  Retained 1902 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
 <pre><code>## Running CCA</code></pre>
 <pre><code>## Merging objects</code></pre>
@@ -695,113 +699,113 @@ div.tocify {
 <pre><code>## Finding anchors</code></pre>
 <pre><code>##  Found 4066 anchors</code></pre>
 <pre><code>## Filtering anchors</code></pre>
-<pre><code>##  Retained 2499 anchors</code></pre>
+<pre><code>##  Retained 2410 anchors</code></pre>
 <pre><code>## Extracting within-dataset neighbors</code></pre>
-<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" data-line-number="1">seurat &lt;-<span class="st"> </span><span class="kw">IntegrateData</span>(<span class="dt">anchorset =</span> anchors, <span class="dt">dims =</span> <span class="kw">seq_len</span>(<span class="dv">20</span>),</a>
-<a class="sourceLine" id="cb81-2" data-line-number="2">                        <span class="dt">features.to.integrate =</span> <span class="kw">rownames</span>(sce))</a></code></pre></div>
-<pre><code>## Merging dataset 1 into 2</code></pre>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb82-1" data-line-number="1">seurat &lt;-<span class="st"> </span><span class="kw">IntegrateData</span>(<span class="dt">anchorset =</span> anchors, <span class="dt">dims =</span> <span class="kw">seq_len</span>(<span class="dv">20</span>),</a>
+<a class="sourceLine" id="cb82-2" data-line-number="2">                        <span class="dt">features.to.integrate =</span> <span class="kw">rownames</span>(sce))</a></code></pre></div>
+<pre><code>## Merging dataset 1 into 3</code></pre>
 <pre><code>## Extracting anchors for merged samples</code></pre>
 <pre><code>## Finding integration vectors</code></pre>
 <pre><code>## Finding integration vector weights</code></pre>
 <pre><code>## Integrating data</code></pre>
-<pre><code>## Merging dataset 3 into 2 1</code></pre>
+<pre><code>## Merging dataset 2 into 3 1</code></pre>
 <pre><code>## Extracting anchors for merged samples</code></pre>
 <pre><code>## Finding integration vectors</code></pre>
 <pre><code>## Finding integration vector weights</code></pre>
 <pre><code>## Integrating data</code></pre>
 <pre><code>## Warning: Adding a command log without an assay associated with it</code></pre>
-<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb93-1" data-line-number="1"><span class="co"># scale integrated data</span></a>
-<a class="sourceLine" id="cb93-2" data-line-number="2"><span class="kw">DefaultAssay</span>(<span class="dt">object=</span>seurat) &lt;-<span class="st"> &quot;integrated&quot;</span></a>
-<a class="sourceLine" id="cb93-3" data-line-number="3">seurat &lt;-<span class="st"> </span><span class="kw">ScaleData</span>(seurat, <span class="dt">verbose=</span>F)</a></code></pre></div>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb94-1" data-line-number="1"><span class="co"># scale integrated data</span></a>
+<a class="sourceLine" id="cb94-2" data-line-number="2"><span class="kw">DefaultAssay</span>(<span class="dt">object=</span>seurat) &lt;-<span class="st"> &quot;integrated&quot;</span></a>
+<a class="sourceLine" id="cb94-3" data-line-number="3">seurat &lt;-<span class="st"> </span><span class="kw">ScaleData</span>(seurat, <span class="dt">verbose=</span>F)</a></code></pre></div>
 </div>
 <div id="dimension-reduction" class="section level1">
 <h1>Dimension reduction</h1>
-<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb94-1" data-line-number="1">seurat &lt;-<span class="st"> </span><span class="kw">RunPCA</span>(<span class="dt">object =</span> seurat, <span class="dt">npcs =</span> <span class="dv">30</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb94-2" data-line-number="2">seurat &lt;-<span class="st"> </span><span class="kw">RunTSNE</span>(<span class="dt">object =</span> seurat, <span class="dt">perplexity =</span> <span class="dv">30</span>,<span class="dt">reduction =</span> <span class="st">&quot;pca&quot;</span>, <span class="dt">dims =</span> <span class="kw">seq_len</span>(<span class="dv">20</span>),</a>
-<a class="sourceLine" id="cb94-3" data-line-number="3">                  <span class="dt">seed.use =</span> seed, <span class="dt">do.fast =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb94-4" data-line-number="4">seurat &lt;-<span class="st"> </span><span class="kw">RunUMAP</span>(<span class="dt">object =</span> seurat, <span class="dt">reduction =</span> <span class="st">&quot;pca&quot;</span>, <span class="dt">dims =</span> <span class="kw">seq_len</span>(<span class="dv">20</span>),</a>
-<a class="sourceLine" id="cb94-5" data-line-number="5">                  <span class="dt">seed.use =</span> seed, <span class="dt">verbose =</span> <span class="ot">FALSE</span>, <span class="dt">n.neighbors =</span> <span class="dv">30</span>, <span class="dt">min.dist =</span> <span class="fl">0.5</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb95-1" data-line-number="1">seurat &lt;-<span class="st"> </span><span class="kw">RunPCA</span>(<span class="dt">object =</span> seurat, <span class="dt">npcs =</span> <span class="dv">30</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb95-2" data-line-number="2">seurat &lt;-<span class="st"> </span><span class="kw">RunTSNE</span>(<span class="dt">object =</span> seurat, <span class="dt">perplexity =</span> <span class="dv">30</span>,<span class="dt">reduction =</span> <span class="st">&quot;pca&quot;</span>, <span class="dt">dims =</span> <span class="kw">seq_len</span>(<span class="dv">20</span>),</a>
+<a class="sourceLine" id="cb95-3" data-line-number="3">                  <span class="dt">seed.use =</span> seed, <span class="dt">do.fast =</span> <span class="ot">TRUE</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb95-4" data-line-number="4">seurat &lt;-<span class="st"> </span><span class="kw">RunUMAP</span>(<span class="dt">object =</span> seurat, <span class="dt">reduction =</span> <span class="st">&quot;pca&quot;</span>, <span class="dt">dims =</span> <span class="kw">seq_len</span>(<span class="dv">20</span>),</a>
+<a class="sourceLine" id="cb95-5" data-line-number="5">                  <span class="dt">seed.use =</span> seed, <span class="dt">verbose =</span> <span class="ot">FALSE</span>, <span class="dt">n.neighbors =</span> <span class="dv">30</span>, <span class="dt">min.dist =</span> <span class="fl">0.5</span>)</a></code></pre></div>
 <pre><code>## Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
 ## To use Python UMAP via reticulate, set umap.method to &#39;umap-learn&#39; and metric to &#39;correlation&#39;
 ## This message will be shown once per session</code></pre>
 </div>
 <div id="clustering" class="section level1">
 <h1>Clustering</h1>
-<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb96-1" data-line-number="1">seurat &lt;-<span class="st"> </span><span class="kw">FindNeighbors</span>(<span class="dt">object =</span> seurat, <span class="dt">reduction =</span> <span class="st">&quot;pca&quot;</span>, <span class="dt">dims =</span> <span class="kw">seq_len</span>(<span class="dv">20</span>), <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb96-2" data-line-number="2"><span class="cf">for</span> (res <span class="cf">in</span> <span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.4</span>, <span class="fl">0.8</span>, <span class="dv">1</span>, <span class="fl">1.2</span>, <span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb96-3" data-line-number="3">  seurat &lt;-<span class="st"> </span><span class="kw">FindClusters</span>(<span class="dt">object =</span> seurat, <span class="dt">resolution =</span> res, <span class="dt">random.seed =</span> seed, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb96-4" data-line-number="4">seurat &lt;-<span class="st"> </span><span class="kw">SetIdent</span>(seurat, <span class="dt">value=</span><span class="st">&quot;integrated_snn_res.0.2&quot;</span>)</a>
-<a class="sourceLine" id="cb96-5" data-line-number="5">seurat<span class="op">@</span>meta.data<span class="op">$</span>cluster &lt;-<span class="st"> </span>seurat<span class="op">$</span>integrated_snn_res.<span class="fl">0.2</span></a>
-<a class="sourceLine" id="cb96-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb96-7" data-line-number="7"><span class="kw">DimPlot</span>(seurat, <span class="dt">reduction =</span> <span class="st">&quot;umap&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb97-1" data-line-number="1">seurat &lt;-<span class="st"> </span><span class="kw">FindNeighbors</span>(<span class="dt">object =</span> seurat, <span class="dt">reduction =</span> <span class="st">&quot;pca&quot;</span>, <span class="dt">dims =</span> <span class="kw">seq_len</span>(<span class="dv">20</span>), <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb97-2" data-line-number="2"><span class="cf">for</span> (res <span class="cf">in</span> <span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.4</span>, <span class="fl">0.8</span>, <span class="dv">1</span>, <span class="fl">1.2</span>, <span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb97-3" data-line-number="3">  seurat &lt;-<span class="st"> </span><span class="kw">FindClusters</span>(<span class="dt">object =</span> seurat, <span class="dt">resolution =</span> res, <span class="dt">random.seed =</span> seed, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb97-4" data-line-number="4">seurat &lt;-<span class="st"> </span><span class="kw">SetIdent</span>(seurat, <span class="dt">value=</span><span class="st">&quot;integrated_snn_res.0.2&quot;</span>)</a>
+<a class="sourceLine" id="cb97-5" data-line-number="5">seurat<span class="op">@</span>meta.data<span class="op">$</span>cluster &lt;-<span class="st"> </span>seurat<span class="op">$</span>integrated_snn_res.<span class="fl">0.2</span></a>
+<a class="sourceLine" id="cb97-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb97-7" data-line-number="7"><span class="kw">DimPlot</span>(seurat, <span class="dt">reduction =</span> <span class="st">&quot;umap&quot;</span>)</a></code></pre></div>
 <p><img src="csf_pat_med_files/figure-html/clustering-1.png" width="672" /></p>
-<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb97-1" data-line-number="1"><span class="kw">DimPlot</span>(seurat, <span class="dt">reduction =</span> <span class="st">&quot;tsne&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb98-1" data-line-number="1"><span class="kw">DimPlot</span>(seurat, <span class="dt">reduction =</span> <span class="st">&quot;tsne&quot;</span>)</a></code></pre></div>
 <p><img src="csf_pat_med_files/figure-html/clustering-2.png" width="672" /></p>
-<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb98-1" data-line-number="1"><span class="kw">DimPlot</span>(seurat, <span class="dt">reduction =</span> <span class="st">&quot;tsne&quot;</span>, <span class="dt">group.by =</span> <span class="st">&quot;Sample&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb99-1" data-line-number="1"><span class="kw">DimPlot</span>(seurat, <span class="dt">reduction =</span> <span class="st">&quot;tsne&quot;</span>, <span class="dt">group.by =</span> <span class="st">&quot;Sample&quot;</span>)</a></code></pre></div>
 <p><img src="csf_pat_med_files/figure-html/clustering-3.png" width="672" /></p>
-<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb99-1" data-line-number="1"><span class="kw">DimPlot</span>(seurat, <span class="dt">reduction =</span> <span class="st">&quot;tsne&quot;</span>, <span class="dt">group.by =</span> <span class="st">&quot;patient&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb100-1" data-line-number="1"><span class="kw">DimPlot</span>(seurat, <span class="dt">reduction =</span> <span class="st">&quot;tsne&quot;</span>, <span class="dt">group.by =</span> <span class="st">&quot;patient&quot;</span>)</a></code></pre></div>
 <p><img src="csf_pat_med_files/figure-html/clustering-4.png" width="672" /></p>
-<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb100-1" data-line-number="1"><span class="kw">DimPlot</span>(seurat, <span class="dt">reduction =</span> <span class="st">&quot;tsne&quot;</span>, <span class="dt">group.by =</span> <span class="st">&quot;media&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb101-1" data-line-number="1"><span class="kw">DimPlot</span>(seurat, <span class="dt">reduction =</span> <span class="st">&quot;tsne&quot;</span>, <span class="dt">group.by =</span> <span class="st">&quot;media&quot;</span>)</a></code></pre></div>
 <p><img src="csf_pat_med_files/figure-html/clustering-5.png" width="672" /></p>
 </div>
 <div id="convert-seurat-to-sce" class="section level1">
 <h1>Convert seurat to sce</h1>
-<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb101-1" data-line-number="1">sce &lt;-<span class="st"> </span>sce[, <span class="kw">colnames</span>(seurat)]</a>
-<a class="sourceLine" id="cb101-2" data-line-number="2">counts &lt;-<span class="st"> </span><span class="kw">assays</span>(sce)[[<span class="st">&quot;counts&quot;</span>]]</a>
-<a class="sourceLine" id="cb101-3" data-line-number="3">sce &lt;-<span class="st"> </span><span class="kw">as.SingleCellExperiment</span>(seurat)</a>
-<a class="sourceLine" id="cb101-4" data-line-number="4"><span class="kw">assays</span>(sce)[[<span class="st">&quot;counts&quot;</span>]] &lt;-<span class="st"> </span>counts</a>
-<a class="sourceLine" id="cb101-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb101-6" data-line-number="6"><span class="co"># Save data</span></a>
-<a class="sourceLine" id="cb101-7" data-line-number="7"><span class="kw">saveRDS</span>(sce, <span class="dt">file =</span> <span class="kw">paste0</span>(out_path, <span class="st">&quot;/sce_csf_media.rds&quot;</span>))</a>
-<a class="sourceLine" id="cb101-8" data-line-number="8"><span class="co"># Save  without media effect </span></a>
-<a class="sourceLine" id="cb101-9" data-line-number="9">sce &lt;-<span class="st"> </span>sce[,<span class="op">!</span>sce<span class="op">$</span>patient <span class="op">%in%</span><span class="st"> &quot;pat3&quot;</span>]</a>
-<a class="sourceLine" id="cb101-10" data-line-number="10"><span class="kw">saveRDS</span>(sce, <span class="dt">file =</span> <span class="kw">paste0</span>(out_path, <span class="st">&quot;/sce_csf_patient.rds&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb102-1" data-line-number="1">sce &lt;-<span class="st"> </span>sce[, <span class="kw">colnames</span>(seurat)]</a>
+<a class="sourceLine" id="cb102-2" data-line-number="2">counts &lt;-<span class="st"> </span><span class="kw">assays</span>(sce)[[<span class="st">&quot;counts&quot;</span>]]</a>
+<a class="sourceLine" id="cb102-3" data-line-number="3">sce &lt;-<span class="st"> </span><span class="kw">as.SingleCellExperiment</span>(seurat)</a>
+<a class="sourceLine" id="cb102-4" data-line-number="4"><span class="kw">assays</span>(sce)[[<span class="st">&quot;counts&quot;</span>]] &lt;-<span class="st"> </span>counts</a>
+<a class="sourceLine" id="cb102-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb102-6" data-line-number="6"><span class="co"># Save data</span></a>
+<a class="sourceLine" id="cb102-7" data-line-number="7"><span class="kw">saveRDS</span>(sce, <span class="dt">file =</span> <span class="kw">paste0</span>(out_path, <span class="st">&quot;/sce_csf_media.rds&quot;</span>))</a>
+<a class="sourceLine" id="cb102-8" data-line-number="8"><span class="co"># Save  without media effect </span></a>
+<a class="sourceLine" id="cb102-9" data-line-number="9">sce &lt;-<span class="st"> </span>sce[,<span class="op">!</span>sce<span class="op">$</span>patient <span class="op">%in%</span><span class="st"> &quot;pat3&quot;</span>]</a>
+<a class="sourceLine" id="cb102-10" data-line-number="10"><span class="kw">saveRDS</span>(sce, <span class="dt">file =</span> <span class="kw">paste0</span>(out_path, <span class="st">&quot;/sce_csf_patient.rds&quot;</span>))</a></code></pre></div>
 <p>#Add random batch label</p>
-<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb102-1" data-line-number="1"><span class="co">#normalize to get rid of seurat integrated slot in logcounts and redDims</span></a>
-<a class="sourceLine" id="cb102-2" data-line-number="2">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce, <span class="dt">use.ranks=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb102-3" data-line-number="3"><span class="kw">table</span>(clusters)</a></code></pre></div>
+<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb103-1" data-line-number="1"><span class="co">#normalize to get rid of seurat integrated slot in logcounts and redDims</span></a>
+<a class="sourceLine" id="cb103-2" data-line-number="2">clusters &lt;-<span class="st"> </span><span class="kw">quickCluster</span>(sce, <span class="dt">use.ranks=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb103-3" data-line-number="3"><span class="kw">table</span>(clusters)</a></code></pre></div>
 <pre><code>## clusters
-##   1   2   3   4   5   6   7   8 
-## 214 387 430 128 684 256 164 105</code></pre>
-<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb104-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce, <span class="dt">min.mean=</span><span class="fl">0.1</span>, <span class="dt">cluster=</span>clusters)</a>
-<a class="sourceLine" id="cb104-2" data-line-number="2">sce &lt;-<span class="st">  </span><span class="kw">logNormCounts</span>(sce)</a>
-<a class="sourceLine" id="cb104-3" data-line-number="3">sce &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce, <span class="dt">ncomponents =</span> <span class="dv">10</span>, <span class="dt">ntop =</span> <span class="dv">1000</span>)</a>
-<a class="sourceLine" id="cb104-4" data-line-number="4">sce &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce)</a>
-<a class="sourceLine" id="cb104-5" data-line-number="5">sce &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce)</a>
-<a class="sourceLine" id="cb104-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb104-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb104-8" data-line-number="8">label &lt;-<span class="st"> </span><span class="kw">as.factor</span>(<span class="kw">colData</span>(sce)<span class="op">$</span>patient)</a>
-<a class="sourceLine" id="cb104-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb104-10" data-line-number="10">batch_label &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
-<a class="sourceLine" id="cb104-11" data-line-number="11">names_list &lt;-<span class="st"> </span><span class="kw">c</span>()</a>
-<a class="sourceLine" id="cb104-12" data-line-number="12">seed &lt;-<span class="st"> </span><span class="dv">1234</span></a>
-<a class="sourceLine" id="cb104-13" data-line-number="13"><span class="cf">for</span>(i <span class="cf">in</span> <span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>,<span class="dv">40</span>,<span class="dv">50</span>,<span class="dv">60</span>,<span class="dv">70</span>,<span class="dv">80</span>,<span class="dv">90</span>)){</a>
-<a class="sourceLine" id="cb104-14" data-line-number="14">  label_new &lt;-<span class="st"> </span>label</a>
-<a class="sourceLine" id="cb104-15" data-line-number="15">  lab_pc &lt;-<span class="st"> </span><span class="kw">sample_frac</span>(<span class="kw">as.data.frame</span>(label), i<span class="op">/</span><span class="dv">100</span>)</a>
-<a class="sourceLine" id="cb104-16" data-line-number="16">  label_new[<span class="kw">as.numeric</span>(<span class="kw">rownames</span>(lab_pc))] &lt;-<span class="st"> </span><span class="kw">sample</span>(label, <span class="kw">length</span>(<span class="kw">rownames</span>(lab_pc)), <span class="dt">replace =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb104-17" data-line-number="17">  batch_label[[i<span class="op">/</span><span class="dv">10</span>]] &lt;-<span class="st"> </span>label_new</a>
-<a class="sourceLine" id="cb104-18" data-line-number="18">  names_list[i<span class="op">/</span><span class="dv">10</span>] &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;batch&quot;</span>, i)</a>
-<a class="sourceLine" id="cb104-19" data-line-number="19">}</a>
-<a class="sourceLine" id="cb104-20" data-line-number="20"><span class="kw">names</span>(batch_label) &lt;-<span class="st"> </span>names_list</a>
-<a class="sourceLine" id="cb104-21" data-line-number="21"></a>
-<a class="sourceLine" id="cb104-22" data-line-number="22"><span class="kw">colData</span>(sce)<span class="op">$</span>batch0 &lt;-<span class="st"> </span>label</a>
-<a class="sourceLine" id="cb104-23" data-line-number="23"><span class="kw">colData</span>(sce)<span class="op">$</span>batch90 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch90</a>
-<a class="sourceLine" id="cb104-24" data-line-number="24"><span class="kw">colData</span>(sce)<span class="op">$</span>batch80 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch80</a>
-<a class="sourceLine" id="cb104-25" data-line-number="25"><span class="kw">colData</span>(sce)<span class="op">$</span>batch70 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch70</a>
-<a class="sourceLine" id="cb104-26" data-line-number="26"><span class="kw">colData</span>(sce)<span class="op">$</span>batch60 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch60</a>
-<a class="sourceLine" id="cb104-27" data-line-number="27"><span class="kw">colData</span>(sce)<span class="op">$</span>batch50 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch50</a>
-<a class="sourceLine" id="cb104-28" data-line-number="28"><span class="kw">colData</span>(sce)<span class="op">$</span>batch40 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch40</a>
-<a class="sourceLine" id="cb104-29" data-line-number="29"><span class="kw">colData</span>(sce)<span class="op">$</span>batch30 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch30</a>
-<a class="sourceLine" id="cb104-30" data-line-number="30"><span class="kw">colData</span>(sce)<span class="op">$</span>batch20 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch20</a>
-<a class="sourceLine" id="cb104-31" data-line-number="31"><span class="kw">colData</span>(sce)<span class="op">$</span>batch10 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch10</a>
-<a class="sourceLine" id="cb104-32" data-line-number="32"><span class="kw">colData</span>(sce)<span class="op">$</span>batch100 &lt;-<span class="st"> </span><span class="kw">sample</span>(label, <span class="kw">length</span>(label), <span class="dt">replace =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb104-33" data-line-number="33"></a>
-<a class="sourceLine" id="cb104-34" data-line-number="34">## Visualize randomization</a>
-<a class="sourceLine" id="cb104-35" data-line-number="35">batch_list &lt;-<span class="st"> </span><span class="kw">str_subset</span>(<span class="kw">names</span>(<span class="kw">colData</span>(sce)), <span class="st">&quot;batch&quot;</span>)</a>
-<a class="sourceLine" id="cb104-36" data-line-number="36"></a>
-<a class="sourceLine" id="cb104-37" data-line-number="37"><span class="kw">lapply</span>(batch_list, <span class="cf">function</span>(feature_name){</a>
-<a class="sourceLine" id="cb104-38" data-line-number="38">  <span class="kw">visGroup</span>(sce, feature_name, <span class="dt">dim_red=</span> <span class="st">&quot;TSNE&quot;</span>)</a>
-<a class="sourceLine" id="cb104-39" data-line-number="39">})</a></code></pre></div>
+##   1   2   3   4   5   6   7   8   9 
+## 345 470 436 200 243 162 128 161 223</code></pre>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb105-1" data-line-number="1">sce &lt;-<span class="st"> </span><span class="kw">computeSumFactors</span>(sce, <span class="dt">min.mean=</span><span class="fl">0.1</span>, <span class="dt">cluster=</span>clusters)</a>
+<a class="sourceLine" id="cb105-2" data-line-number="2">sce &lt;-<span class="st">  </span><span class="kw">logNormCounts</span>(sce)</a>
+<a class="sourceLine" id="cb105-3" data-line-number="3">sce &lt;-<span class="st"> </span><span class="kw">runPCA</span>(sce, <span class="dt">ncomponents =</span> <span class="dv">10</span>, <span class="dt">ntop =</span> <span class="dv">1000</span>)</a>
+<a class="sourceLine" id="cb105-4" data-line-number="4">sce &lt;-<span class="st"> </span><span class="kw">runUMAP</span>(sce)</a>
+<a class="sourceLine" id="cb105-5" data-line-number="5">sce &lt;-<span class="st"> </span><span class="kw">runTSNE</span>(sce)</a>
+<a class="sourceLine" id="cb105-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb105-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb105-8" data-line-number="8">label &lt;-<span class="st"> </span><span class="kw">as.factor</span>(<span class="kw">colData</span>(sce)<span class="op">$</span>patient)</a>
+<a class="sourceLine" id="cb105-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb105-10" data-line-number="10">batch_label &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb105-11" data-line-number="11">names_list &lt;-<span class="st"> </span><span class="kw">c</span>()</a>
+<a class="sourceLine" id="cb105-12" data-line-number="12">seed &lt;-<span class="st"> </span><span class="dv">1234</span></a>
+<a class="sourceLine" id="cb105-13" data-line-number="13"><span class="cf">for</span>(i <span class="cf">in</span> <span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>,<span class="dv">40</span>,<span class="dv">50</span>,<span class="dv">60</span>,<span class="dv">70</span>,<span class="dv">80</span>,<span class="dv">90</span>)){</a>
+<a class="sourceLine" id="cb105-14" data-line-number="14">  label_new &lt;-<span class="st"> </span>label</a>
+<a class="sourceLine" id="cb105-15" data-line-number="15">  lab_pc &lt;-<span class="st"> </span><span class="kw">sample_frac</span>(<span class="kw">as.data.frame</span>(label), i<span class="op">/</span><span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb105-16" data-line-number="16">  label_new[<span class="kw">as.numeric</span>(<span class="kw">rownames</span>(lab_pc))] &lt;-<span class="st"> </span><span class="kw">sample</span>(label, <span class="kw">length</span>(<span class="kw">rownames</span>(lab_pc)), <span class="dt">replace =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb105-17" data-line-number="17">  batch_label[[i<span class="op">/</span><span class="dv">10</span>]] &lt;-<span class="st"> </span>label_new</a>
+<a class="sourceLine" id="cb105-18" data-line-number="18">  names_list[i<span class="op">/</span><span class="dv">10</span>] &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;batch&quot;</span>, i)</a>
+<a class="sourceLine" id="cb105-19" data-line-number="19">}</a>
+<a class="sourceLine" id="cb105-20" data-line-number="20"><span class="kw">names</span>(batch_label) &lt;-<span class="st"> </span>names_list</a>
+<a class="sourceLine" id="cb105-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb105-22" data-line-number="22"><span class="kw">colData</span>(sce)<span class="op">$</span>batch0 &lt;-<span class="st"> </span>label</a>
+<a class="sourceLine" id="cb105-23" data-line-number="23"><span class="kw">colData</span>(sce)<span class="op">$</span>batch90 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch90</a>
+<a class="sourceLine" id="cb105-24" data-line-number="24"><span class="kw">colData</span>(sce)<span class="op">$</span>batch80 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch80</a>
+<a class="sourceLine" id="cb105-25" data-line-number="25"><span class="kw">colData</span>(sce)<span class="op">$</span>batch70 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch70</a>
+<a class="sourceLine" id="cb105-26" data-line-number="26"><span class="kw">colData</span>(sce)<span class="op">$</span>batch60 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch60</a>
+<a class="sourceLine" id="cb105-27" data-line-number="27"><span class="kw">colData</span>(sce)<span class="op">$</span>batch50 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch50</a>
+<a class="sourceLine" id="cb105-28" data-line-number="28"><span class="kw">colData</span>(sce)<span class="op">$</span>batch40 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch40</a>
+<a class="sourceLine" id="cb105-29" data-line-number="29"><span class="kw">colData</span>(sce)<span class="op">$</span>batch30 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch30</a>
+<a class="sourceLine" id="cb105-30" data-line-number="30"><span class="kw">colData</span>(sce)<span class="op">$</span>batch20 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch20</a>
+<a class="sourceLine" id="cb105-31" data-line-number="31"><span class="kw">colData</span>(sce)<span class="op">$</span>batch10 &lt;-<span class="st"> </span>batch_label<span class="op">$</span>batch10</a>
+<a class="sourceLine" id="cb105-32" data-line-number="32"><span class="kw">colData</span>(sce)<span class="op">$</span>batch100 &lt;-<span class="st"> </span><span class="kw">sample</span>(label, <span class="kw">length</span>(label), <span class="dt">replace =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb105-33" data-line-number="33"></a>
+<a class="sourceLine" id="cb105-34" data-line-number="34">## Visualize randomization</a>
+<a class="sourceLine" id="cb105-35" data-line-number="35">batch_list &lt;-<span class="st"> </span><span class="kw">str_subset</span>(<span class="kw">names</span>(<span class="kw">colData</span>(sce)), <span class="st">&quot;batch&quot;</span>)</a>
+<a class="sourceLine" id="cb105-36" data-line-number="36"></a>
+<a class="sourceLine" id="cb105-37" data-line-number="37"><span class="kw">lapply</span>(batch_list, <span class="cf">function</span>(feature_name){</a>
+<a class="sourceLine" id="cb105-38" data-line-number="38">  <span class="kw">visGroup</span>(sce, feature_name, <span class="dt">dim_red=</span> <span class="st">&quot;TSNE&quot;</span>)</a>
+<a class="sourceLine" id="cb105-39" data-line-number="39">})</a></code></pre></div>
 <pre><code>## [[1]]</code></pre>
 <p><img src="csf_pat_med_files/figure-html/random%20batch%20label-1.png" width="672" /></p>
 <pre><code>## 
@@ -834,9 +838,79 @@ div.tocify {
 <pre><code>## 
 ## [[11]]</code></pre>
 <p><img src="csf_pat_med_files/figure-html/random%20batch%20label-11.png" width="672" /></p>
-<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb116-1" data-line-number="1"><span class="co"># Save data</span></a>
-<a class="sourceLine" id="cb116-2" data-line-number="2"><span class="kw">saveRDS</span>(sce, <span class="dt">file =</span> <span class="kw">paste0</span>(out_path, <span class="st">&quot;/sce_csf_patient_random.rds&quot;</span>))</a></code></pre></div>
-<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb117-1" data-line-number="1"><span class="kw">sessionInfo</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb117-1" data-line-number="1"><span class="co"># Save data</span></a>
+<a class="sourceLine" id="cb117-2" data-line-number="2"><span class="kw">saveRDS</span>(sce, <span class="dt">file =</span> <span class="kw">paste0</span>(out_path, <span class="st">&quot;/sce_csf_patient_random.rds&quot;</span>))</a></code></pre></div>
+<div id="generate-figure-plot" class="section level4">
+<h4>Generate figure plot</h4>
+<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb118-1" data-line-number="1">## Visualize randomization</a>
+<a class="sourceLine" id="cb118-2" data-line-number="2"><span class="co">#To debug: sce &lt;- readRDS(&quot;/run/user/1000/gvfs/sftp:host=imlstaupo.uzh.ch/home/aluetg/batch_dataset/out/sce_csf_patient_random.rds&quot;)</span></a>
+<a class="sourceLine" id="cb118-3" data-line-number="3">batch_list &lt;-<span class="st"> </span><span class="kw">str_subset</span>(<span class="kw">names</span>(<span class="kw">colData</span>(sce)), <span class="st">&quot;batch&quot;</span>)</a>
+<a class="sourceLine" id="cb118-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb118-5" data-line-number="5"><span class="co">#generate figure random</span></a>
+<a class="sourceLine" id="cb118-6" data-line-number="6">tsne_long &lt;-<span class="st"> </span><span class="kw">lapply</span>(batch_list, <span class="cf">function</span>(batch_nam){</a>
+<a class="sourceLine" id="cb118-7" data-line-number="7">  tab &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="st">&quot;tsne1&quot;</span> =<span class="st"> </span><span class="kw">reducedDims</span>(sce)[[<span class="st">&quot;TSNE&quot;</span>]][,<span class="dv">1</span>],</a>
+<a class="sourceLine" id="cb118-8" data-line-number="8">                    <span class="st">&quot;tsne2&quot;</span> =<span class="st"> </span><span class="kw">reducedDims</span>(sce)[[<span class="st">&quot;TSNE&quot;</span>]][,<span class="dv">2</span>],</a>
+<a class="sourceLine" id="cb118-9" data-line-number="9">                   <span class="st">&quot;patient&quot;</span> =<span class="st"> </span><span class="kw">as.factor</span>(<span class="kw">colData</span>(sce)[ ,batch_nam]),</a>
+<a class="sourceLine" id="cb118-10" data-line-number="10">                   <span class="st">&quot;randomness&quot;</span> =<span class="st"> </span>batch_nam)</a>
+<a class="sourceLine" id="cb118-11" data-line-number="11">}) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">bind_rows</span>()</a></code></pre></div>
+<pre><code>## Warning in bind_rows_(x, .id): Unequal factor levels: coercing to character</code></pre>
+<pre><code>## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector</code></pre>
+<div class="sourceCode" id="cb121"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb121-1" data-line-number="1">batch_order &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;batch0&quot;</span>, <span class="st">&quot;batch10&quot;</span>, <span class="st">&quot;batch20&quot;</span>,<span class="st">&quot;batch30&quot;</span>, <span class="st">&quot;batch40&quot;</span>, <span class="st">&quot;batch50&quot;</span>, </a>
+<a class="sourceLine" id="cb121-2" data-line-number="2">                 <span class="st">&quot;batch60&quot;</span>, <span class="st">&quot;batch70&quot;</span>, <span class="st">&quot;batch80&quot;</span>, <span class="st">&quot;batch90&quot;</span>, <span class="st">&quot;batch100&quot;</span>)</a>
+<a class="sourceLine" id="cb121-3" data-line-number="3">cols_pat &lt;-<span class="st"> </span>cols_data[<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(<span class="kw">levels</span>(<span class="kw">as.factor</span>(tsne_long<span class="op">$</span>patient)))] <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb121-4" data-line-number="4"><span class="st">  </span><span class="kw">set_names</span>(<span class="kw">levels</span>(<span class="kw">as.factor</span>(tsne_long<span class="op">$</span>patient)))</a>
+<a class="sourceLine" id="cb121-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb121-6" data-line-number="6">tsne_long<span class="op">$</span>randomness &lt;-<span class="st"> </span><span class="kw">factor</span>(tsne_long<span class="op">$</span>randomness, <span class="dt">levels =</span> batch_order)</a>
+<a class="sourceLine" id="cb121-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb121-8" data-line-number="8">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(tsne_long, <span class="kw">aes</span>(<span class="dt">x =</span> tsne1, <span class="dt">y =</span> tsne2, <span class="dt">color =</span> patient)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb121-9" data-line-number="9"><span class="st">      </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="fl">0.4</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb121-10" data-line-number="10"><span class="st">      </span><span class="kw">scale_color_manual</span>(<span class="dt">values =</span> cols_pat) <span class="op">+</span></a>
+<a class="sourceLine" id="cb121-11" data-line-number="11"><span class="st">      </span><span class="kw">theme_ipsum</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb121-12" data-line-number="12"><span class="st">      </span><span class="kw">theme</span>(</a>
+<a class="sourceLine" id="cb121-13" data-line-number="13">        <span class="dt">legend.position=</span><span class="st">&quot;top&quot;</span>,</a>
+<a class="sourceLine" id="cb121-14" data-line-number="14">        <span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">14</span>),</a>
+<a class="sourceLine" id="cb121-15" data-line-number="15">        <span class="dt">panel.grid.major =</span> <span class="kw">element_blank</span>(),</a>
+<a class="sourceLine" id="cb121-16" data-line-number="16">        <span class="dt">axis.text.x =</span> <span class="kw">element_blank</span>(),</a>
+<a class="sourceLine" id="cb121-17" data-line-number="17">        <span class="dt">axis.text.y =</span> <span class="kw">element_blank</span>(),</a>
+<a class="sourceLine" id="cb121-18" data-line-number="18">      ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb121-19" data-line-number="19"><span class="st">      </span><span class="kw">ggtitle</span>(<span class="st">&quot;Gradual increased randomness&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb121-20" data-line-number="20"><span class="st">      </span><span class="kw">facet_wrap</span>(<span class="op">~</span>randomness) </a>
+<a class="sourceLine" id="cb121-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb121-22" data-line-number="22">p</a></code></pre></div>
+<p><img src="csf_pat_med_files/figure-html/fig%20plot-1.png" width="960" /></p>
+<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb122-1" data-line-number="1"><span class="kw">saveRDS</span>(p, <span class="dt">file =</span> <span class="kw">paste0</span>(out_path, <span class="st">&quot;/fig_obj/tsne_csf_patient_random.rds&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb123"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb123-1" data-line-number="1"><span class="kw">sessionInfo</span>()</a></code></pre></div>
 <pre><code>## R version 3.6.1 (2019-07-05)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
 ## Running under: Ubuntu 16.04.6 LTS
@@ -858,68 +932,72 @@ div.tocify {
 ## [8] methods   base     
 ## 
 ## other attached packages:
-##  [1] plyr_1.8.5                  scDblFinder_1.1.5          
-##  [3] here_0.1                    tibble_2.1.3               
-##  [5] CellMixS_1.2.3              kSamples_1.2-9             
-##  [7] SuppDists_1.1-9.5           LSD_4.0-0                  
-##  [9] DropletUtils_1.6.1          readxl_1.3.1               
-## [11] sctransform_0.2.1           Seurat_3.1.3               
-## [13] scran_1.14.6                Matrix_1.2-17              
-## [15] cowplot_1.0.0               reshape2_1.4.3             
-## [17] dplyr_0.8.4                 scater_1.14.6              
-## [19] SingleCellExperiment_1.8.0  SummarizedExperiment_1.16.1
-## [21] DelayedArray_0.12.2         BiocParallel_1.20.1        
-## [23] matrixStats_0.55.0          Biobase_2.46.0             
-## [25] GenomicRanges_1.38.0        GenomeInfoDb_1.22.0        
-## [27] IRanges_2.20.2              S4Vectors_0.24.3           
-## [29] BiocGenerics_0.32.0         purrr_0.3.3                
-## [31] pheatmap_1.0.12             edgeR_3.28.0               
-## [33] limma_3.42.2                stringr_1.4.0              
-## [35] readr_1.3.1                 plotly_4.9.2               
-## [37] ggplot2_3.2.1              
+##  [1] jcolors_0.0.4               hrbrthemes_0.8.0           
+##  [3] plyr_1.8.5                  scDblFinder_1.1.5          
+##  [5] here_0.1                    tibble_2.1.3               
+##  [7] CellMixS_1.2.3              kSamples_1.2-9             
+##  [9] SuppDists_1.1-9.5           LSD_4.0-0                  
+## [11] DropletUtils_1.6.1          readxl_1.3.1               
+## [13] sctransform_0.2.1           Seurat_3.1.3               
+## [15] scran_1.14.6                Matrix_1.2-17              
+## [17] cowplot_1.0.0               reshape2_1.4.3             
+## [19] dplyr_0.8.4                 scater_1.14.6              
+## [21] SingleCellExperiment_1.8.0  SummarizedExperiment_1.16.1
+## [23] DelayedArray_0.12.2         BiocParallel_1.20.1        
+## [25] matrixStats_0.55.0          Biobase_2.46.0             
+## [27] GenomicRanges_1.38.0        GenomeInfoDb_1.22.0        
+## [29] IRanges_2.20.2              S4Vectors_0.24.3           
+## [31] BiocGenerics_0.32.0         purrr_0.3.3                
+## [33] pheatmap_1.0.12             edgeR_3.28.0               
+## [35] limma_3.42.2                stringr_1.4.0              
+## [37] readr_1.3.1                 plotly_4.9.2               
+## [39] ggplot2_3.3.2              
 ## 
 ## loaded via a namespace (and not attached):
-##   [1] backports_1.1.5          sn_1.5-5                 igraph_1.2.4.2          
-##   [4] lazyeval_0.2.2           splines_3.6.1            listenv_0.8.0           
-##   [7] TH.data_1.0-10           digest_0.6.25            htmltools_0.4.0         
-##  [10] viridis_0.5.1            gdata_2.18.0             magrittr_1.5            
-##  [13] cluster_2.1.0            ROCR_1.0-7               globals_0.12.5          
-##  [16] RcppParallel_4.4.4       R.utils_2.9.2            sandwich_2.5-1          
-##  [19] colorspace_1.4-1         rappdirs_0.3.1           ggrepel_0.8.1           
-##  [22] xfun_0.12                crayon_1.3.4             RCurl_1.98-1.1          
-##  [25] jsonlite_1.6.1           survival_3.1-8           zoo_1.8-7               
-##  [28] ape_5.3                  glue_1.3.1               gtable_0.3.0            
-##  [31] zlibbioc_1.32.0          XVector_0.26.0           listarrays_0.3.0        
-##  [34] leiden_0.3.3             BiocSingular_1.2.2       Rhdf5lib_1.8.0          
-##  [37] future.apply_1.4.0       HDF5Array_1.14.2         scales_1.1.0            
-##  [40] mvtnorm_1.1-0            bibtex_0.4.2.2           Rcpp_1.0.3              
-##  [43] metap_1.3                plotrix_3.7-7            viridisLite_0.3.0       
-##  [46] reticulate_1.14          dqrng_0.2.1              rsvd_1.0.3              
-##  [49] tsne_0.1-3               htmlwidgets_1.5.1        httr_1.4.1              
-##  [52] FNN_1.1.3                gplots_3.0.3             RColorBrewer_1.1-2      
-##  [55] TFisher_0.2.0            ica_1.0-2                farver_2.0.3            
-##  [58] R.methodsS3_1.8.0        pkgconfig_2.0.3          uwot_0.1.5              
-##  [61] locfit_1.5-9.1           labeling_0.3             tidyselect_1.0.0        
-##  [64] rlang_0.4.4              cellranger_1.1.0         munsell_0.5.0           
-##  [67] tools_3.6.1              ggridges_0.5.2           evaluate_0.14           
-##  [70] yaml_2.2.1               npsurv_0.4-0             knitr_1.28              
-##  [73] fitdistrplus_1.0-14      caTools_1.18.0           randomForest_4.6-14     
-##  [76] RANN_2.6.1               pbapply_1.4-2            future_1.16.0           
-##  [79] nlme_3.1-144             R.oo_1.23.0              compiler_3.6.1          
-##  [82] beeswarm_0.2.3           png_0.1-7                lsei_1.2-0              
-##  [85] statmod_1.4.34           stringi_1.4.6            RSpectra_0.16-0         
-##  [88] lattice_0.20-38          multtest_2.42.0          vctrs_0.2.3             
-##  [91] mutoss_0.1-12            pillar_1.4.3             lifecycle_0.1.0         
-##  [94] Rdpack_0.11-1            lmtest_0.9-37            RcppAnnoy_0.0.14        
-##  [97] BiocNeighbors_1.4.1      data.table_1.12.8        bitops_1.0-6            
-## [100] irlba_2.3.3              gbRd_0.4-11              R6_2.4.1                
-## [103] KernSmooth_2.23-16       gridExtra_2.3            vipor_0.4.5             
-## [106] codetools_0.2-16         MASS_7.3-51.4            gtools_3.8.1            
-## [109] assertthat_0.2.1         rhdf5_2.30.1             rprojroot_1.3-2         
-## [112] withr_2.1.2              mnormt_1.5-6             multcomp_1.4-12         
-## [115] GenomeInfoDbData_1.2.2   hms_0.5.3                grid_3.6.1              
-## [118] tidyr_1.0.2              rmarkdown_2.1            DelayedMatrixStats_1.8.0
-## [121] Rtsne_0.15               numDeriv_2016.8-1.1      ggbeeswarm_0.6.0</code></pre>
+##   [1] reticulate_1.14          R.utils_2.9.2            tidyselect_1.0.0        
+##   [4] htmlwidgets_1.5.1        grid_3.6.1               Rtsne_0.15              
+##   [7] munsell_0.5.0            codetools_0.2-16         mutoss_0.1-12           
+##  [10] ica_1.0-2                statmod_1.4.34           future_1.16.0           
+##  [13] withr_2.1.2              colorspace_1.4-1         knitr_1.28              
+##  [16] ROCR_1.0-7               Rttf2pt1_1.3.8           gbRd_0.4-11             
+##  [19] listenv_0.8.0            labeling_0.3             Rdpack_0.11-1           
+##  [22] GenomeInfoDbData_1.2.2   mnormt_1.5-6             farver_2.0.3            
+##  [25] rhdf5_2.30.1             rprojroot_1.3-2          vctrs_0.2.3             
+##  [28] TH.data_1.0-10           xfun_0.12                randomForest_4.6-14     
+##  [31] R6_2.4.1                 ggbeeswarm_0.6.0         rsvd_1.0.3              
+##  [34] isoband_0.2.2            locfit_1.5-9.1           bitops_1.0-6            
+##  [37] assertthat_0.2.1         scales_1.1.0             multcomp_1.4-12         
+##  [40] beeswarm_0.2.3           gtable_0.3.0             npsurv_0.4-0            
+##  [43] globals_0.12.5           sandwich_2.5-1           rlang_0.4.4             
+##  [46] systemfonts_0.2.3        splines_3.6.1            extrafontdb_1.0         
+##  [49] lazyeval_0.2.2           yaml_2.2.1               backports_1.1.5         
+##  [52] extrafont_0.17           tools_3.6.1              gplots_3.0.3            
+##  [55] RColorBrewer_1.1-2       ggridges_0.5.2           TFisher_0.2.0           
+##  [58] Rcpp_1.0.3               zlibbioc_1.32.0          RCurl_1.98-1.1          
+##  [61] pbapply_1.4-2            viridis_0.5.1            zoo_1.8-7               
+##  [64] ggrepel_0.8.1            cluster_2.1.0            magrittr_1.5            
+##  [67] RSpectra_0.16-0          data.table_1.12.8        lmtest_0.9-37           
+##  [70] RANN_2.6.1               mvtnorm_1.1-0            fitdistrplus_1.0-14     
+##  [73] hms_0.5.3                lsei_1.2-0               evaluate_0.14           
+##  [76] gridExtra_2.3            compiler_3.6.1           KernSmooth_2.23-16      
+##  [79] crayon_1.3.4             R.oo_1.23.0              htmltools_0.4.0         
+##  [82] tidyr_1.0.2              RcppParallel_4.4.4       MASS_7.3-51.4           
+##  [85] rappdirs_0.3.1           R.methodsS3_1.8.0        gdata_2.18.0            
+##  [88] metap_1.3                igraph_1.2.4.2           pkgconfig_2.0.3         
+##  [91] sn_1.5-5                 numDeriv_2016.8-1.1      vipor_0.4.5             
+##  [94] dqrng_0.2.1              multtest_2.42.0          XVector_0.26.0          
+##  [97] bibtex_0.4.2.2           digest_0.6.25            RcppAnnoy_0.0.14        
+## [100] tsne_0.1-3               rmarkdown_2.1            cellranger_1.1.0        
+## [103] leiden_0.3.3             uwot_0.1.5               DelayedMatrixStats_1.8.0
+## [106] gdtools_0.2.2            listarrays_0.3.0         gtools_3.8.1            
+## [109] lifecycle_0.1.0          nlme_3.1-144             jsonlite_1.6.1          
+## [112] Rhdf5lib_1.8.0           BiocNeighbors_1.4.1      viridisLite_0.3.0       
+## [115] pillar_1.4.3             lattice_0.20-38          httr_1.4.1              
+## [118] plotrix_3.7-7            survival_3.1-8           glue_1.3.1              
+## [121] FNN_1.1.3                png_0.1-7                stringi_1.4.6           
+## [124] HDF5Array_1.14.2         BiocSingular_1.2.2       caTools_1.18.0          
+## [127] irlba_2.3.3              future.apply_1.4.0       ape_5.3</code></pre>
+</div>
 </div>
 
 
