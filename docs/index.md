@@ -41,3 +41,6 @@ Dataset collection to characterize and simulate batch effects.
 + [Kang_patient](kang.html)
 + [csf_patient](csf_pat_med.html)
 
+# Dataset specific analysis
++ [DE genes in pbmc_roche](roche_de.html)
+
