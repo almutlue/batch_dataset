@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Almut Lütge" />
+
+<meta name="date" content="2021-03-14" />
+
+<title>pbmc_roche</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-sm-12 col-md-4 col-lg-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-sm-12 col-md-8 col-lg-9">
+
+
+
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">pbmc_roche</h1>
+<h4 class="author">Almut Lütge</h4>
+<h4 class="date">14 March 2021</h4>
+
+</div>
+
+
+<div id="pbmc-dataset-roche" class="section level1">
+<h1>Pbmc dataset Roche</h1>
+<p>This datset has been prepared by Roche. It contains pbmc from 4 different sample. Sample are derived from the same patient, have been processed in the same way and have been sequenced together. Experimental differences are due to different storage conditions. One sample was sequenced from fresh cells, the other ones have been stored in different media and frozen for a week.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">suppressPackageStartupMessages</span>({
+  <span class="kw">library</span>(pheatmap)
+  <span class="kw">library</span>(purrr)
+  <span class="kw">library</span>(scater)
+  <span class="kw">library</span>(dplyr)
+  <span class="kw">library</span>(ggplot2)
+  <span class="kw">library</span>(cowplot)
+  <span class="kw">library</span>(scran)
+  <span class="kw">library</span>(CellMixS)
+  <span class="kw">library</span>(magrittr)
+  <span class="kw">library</span>(here)
+  <span class="kw">library</span>(SingleR)
+  <span class="kw">library</span>(celldex)
+  <span class="kw">library</span>(Seurat)
+  <span class="kw">library</span>(broom)
+  <span class="kw">library</span>(tidyr)
+  <span class="kw">library</span>(ggridges)
+})
+
+seed &lt;-<span class="st"> </span><span class="dv">1000</span></code></pre></div>
+<div id="data" class="section level3">
+<h3>Data</h3>
+<p>Load data For processing check datasets: <a href="https://almutlue.github.io/batch_dataset/pbmc_roche.html">pbmc_roche</a></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data_path &lt;-<span class="st"> </span>here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;out&quot;</span>)
+sce &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="dt">file =</span> <span class="kw">paste0</span>(data_path, <span class="st">&quot;/sce_pbmc_roche.rds&quot;</span>))
+
+<span class="kw">dim</span>(sce)</code></pre></div>
+<pre><code>## [1]  4756 10096</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#show data</span>
+<span class="kw">visGroup</span>(sce, <span class="dt">group =</span> <span class="st">&quot;batch&quot;</span>, <span class="dt">dim_red =</span> <span class="st">&quot;tsne&quot;</span>)</code></pre></div>
+<p><img src="roche_de_files/figure-html/data-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">visGroup</span>(sce, <span class="dt">group =</span> <span class="st">&quot;cluster&quot;</span>, <span class="dt">dim_red =</span> <span class="st">&quot;tsne&quot;</span>)</code></pre></div>
+<p><img src="roche_de_files/figure-html/data-2.png" width="672" /></p>
+</div>
+</div>
+<div id="celltype-assignment-singler" class="section level1">
+<h1>Celltype assignment singleR</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ref &lt;-<span class="st"> </span><span class="kw">BlueprintEncodeData</span>()
+<span class="kw">rowData</span>(sce)<span class="op">$</span>ENS_ID &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">..*&quot;</span>,<span class="st">&quot;&quot;</span>, <span class="kw">rownames</span>(sce))
+<span class="kw">rownames</span>(sce) &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;.*</span><span class="ch">\\</span><span class="st">.&quot;</span>,<span class="st">&quot;&quot;</span>, <span class="kw">rownames</span>(sce))
+pred &lt;-<span class="st"> </span><span class="kw">SingleR</span>(<span class="dt">test=</span>sce, <span class="dt">ref=</span>ref, <span class="dt">labels=</span>ref<span class="op">$</span>label.main)
+<span class="kw">table</span>(pred<span class="op">$</span>labels)</code></pre></div>
+<pre><code>## 
+##           B-cells      CD4+ T-cells      CD8+ T-cells Endothelial cells 
+##               641              3732              3005                 1 
+##      Erythrocytes               HSC       Macrophages         Monocytes 
+##                 5                43                 2              1426 
+##          NK cells 
+##              1241</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotScoreHeatmap</span>(pred)</code></pre></div>
+<p><img src="roche_de_files/figure-html/singleR-1.png" width="672" /></p>
+<div id="compare-singler-assignments-with-clustering" class="section level3">
+<h3>Compare singleR assignments with clustering</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tab &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="dt">Assigned=</span>pred<span class="op">$</span>pruned.labels, <span class="dt">Cluster=</span>sce<span class="op">$</span>cluster)
+<span class="kw">pheatmap</span>(<span class="kw">log2</span>(tab<span class="op">+</span><span class="dv">10</span>), <span class="dt">color=</span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;blue&quot;</span>))(<span class="dv">101</span>))</code></pre></div>
+<p><img src="roche_de_files/figure-html/control%20cluster-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sce<span class="op">$</span>singleR &lt;-<span class="st"> </span>pred<span class="op">$</span>pruned.labels
+<span class="kw">visGroup</span>(sce, <span class="dt">group=</span><span class="st">&quot;singleR&quot;</span>, <span class="dt">dim_red =</span> <span class="st">&quot;tsne&quot;</span>)</code></pre></div>
+<p><img src="roche_de_files/figure-html/control%20cluster-2.png" width="672" /></p>
+</div>
+<div id="check-marker-genes" class="section level2">
+<h2>Check marker genes</h2>
+<div id="marker-genes-for-seurat-clustering" class="section level3 tabset">
+<h3>Marker genes for &quot;seurat clustering&quot;</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">marker_s &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce, sce<span class="op">$</span>cluster)
+
+<span class="co">#plot summarized counts</span>
+plot_aggregated_expr &lt;-<span class="st"> </span><span class="cf">function</span>(sce, genes, group_var, title){
+  logNormExpres &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">t</span>(<span class="kw">as.matrix</span>(<span class="kw">logcounts</span>(sce)[genes,]))) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">cluster_all=</span> <span class="kw">colData</span>(sce)[,group_var]) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">group_by</span>(cluster_all) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarise_all</span>(mean)
+  logNormExpresMa &lt;-<span class="st"> </span>logNormExpres <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">set_rownames</span>(logNormExpres<span class="op">$</span>cluster_all) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span>cluster_all) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.matrix</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">t</span>()
+  <span class="kw">colnames</span>(logNormExpresMa) &lt;-<span class="st"> </span><span class="kw">levels</span>(<span class="kw">as.factor</span>(<span class="kw">colData</span>(sce)[,group_var]))
+  <span class="kw">rownames</span>(logNormExpresMa) &lt;-<span class="st"> </span><span class="kw">rownames</span>(logNormExpresMa)
+  p &lt;-<span class="st"> </span><span class="kw">pheatmap</span>(logNormExpresMa, <span class="dt">scale=</span><span class="st">&quot;row&quot;</span> ,<span class="dt">treeheight_row =</span> <span class="dv">0</span>, 
+           <span class="dt">cluster_cols =</span> F, <span class="dt">cluster_rows =</span> F, 
+           <span class="dt">color =</span> <span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;#2166AC&quot;</span>, <span class="st">&quot;#F7F7F7&quot;</span>, <span class="st">&quot;#B2182B&quot;</span>))(<span class="dv">50</span>), 
+           <span class="dt">main=</span>title, <span class="dt">cellwidth=</span><span class="dv">15</span>, <span class="dt">cellheight=</span><span class="dv">10</span>)
+}
+
+
+<span class="co">#plot marker</span>
+clust_names &lt;-<span class="st"> </span><span class="kw">names</span>(marker_s)
+
+<span class="cf">for</span> (clust <span class="cf">in</span> clust_names) {
+  <span class="kw">cat</span>(<span class="st">&quot;#### &quot;</span>, clust, <span class="st">&quot;{-}</span><span class="ch">\n</span><span class="st">&quot;</span>)
+  cluster_res &lt;-<span class="st"> </span>marker_s[[clust]]
+  top_marker &lt;-<span class="st"> </span>cluster_res[cluster_res<span class="op">$</span>Top <span class="op">&lt;=</span><span class="st"> </span><span class="dv">6</span>,]
+  <span class="kw">print</span>(p &lt;-<span class="st"> </span><span class="kw">plot_aggregated_expr</span>(sce, <span class="kw">rownames</span>(top_marker), 
+                      <span class="dt">group_var =</span> <span class="st">&quot;cluster&quot;</span>, 
+                      <span class="dt">title =</span> <span class="kw">paste0</span>(<span class="st">&quot;pbmc_seurat_&quot;</span>, clust)))
+  <span class="kw">cat</span>(<span class="st">&quot;</span><span class="ch">\n\n</span><span class="st">&quot;</span>)
+}</code></pre></div>
+<div id="section" class="section level4 unnumbered">
+<h4>0</h4>
+<p><img src="roche_de_files/figure-html/marker%20seurat-1.png" width="480" /></p>
+</div>
+<div id="section-1" class="section level4 unnumbered">
+<h4>1</h4>
+<p><img src="roche_de_files/figure-html/marker%20seurat-2.png" width="480" /></p>
+</div>
+<div id="section-2" class="section level4 unnumbered">
+<h4>2</h4>
+<p><img src="roche_de_files/figure-html/marker%20seurat-3.png" width="480" /></p>
+</div>
+<div id="section-3" class="section level4 unnumbered">
+<h4>3</h4>
+<p><img src="roche_de_files/figure-html/marker%20seurat-4.png" width="480" /></p>
+</div>
+<div id="section-4" class="section level4 unnumbered">
+<h4>4</h4>
+<p><img src="roche_de_files/figure-html/marker%20seurat-5.png" width="480" /></p>
+</div>
+<div id="section-5" class="section level4 unnumbered">
+<h4>5</h4>
+<p><img src="roche_de_files/figure-html/marker%20seurat-6.png" width="480" /></p>
+</div>
+<div id="section-6" class="section level4 unnumbered">
+<h4>6</h4>
+<p><img src="roche_de_files/figure-html/marker%20seurat-7.png" width="480" /></p>
+</div>
+<div id="section-7" class="section level4 unnumbered">
+<h4>7</h4>
+<p><img src="roche_de_files/figure-html/marker%20seurat-8.png" width="480" /></p>
+</div>
+<div id="section-8" class="section level4 unnumbered">
+<h4>8</h4>
+<p><img src="roche_de_files/figure-html/marker%20seurat-9.png" width="480" /></p>
+</div>
+</div>
+<div id="marker-genes-for-singler-annotations" class="section level3 tabset">
+<h3>Marker genes for &quot;SingleR annotations&quot;</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#filter cell types with less than 10 cells</span>
+ct_filter &lt;-<span class="st"> </span><span class="kw">names</span>(<span class="kw">which</span>(<span class="kw">table</span>(sce<span class="op">$</span>singleR) <span class="op">&lt;</span><span class="st"> </span><span class="dv">10</span>))
+sce &lt;-<span class="st"> </span>sce[,<span class="op">!</span>sce<span class="op">$</span>singleR <span class="op">%in%</span><span class="st"> </span>ct_filter]
+sce &lt;-<span class="st"> </span>sce[,<span class="kw">which</span>(<span class="op">!</span><span class="kw">is.na</span>(sce<span class="op">$</span>singleR))]
+
+marker_single &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce, sce<span class="op">$</span>singleR)
+
+<span class="co">#plot marker</span>
+clust_names &lt;-<span class="st"> </span><span class="kw">names</span>(marker_single)
+
+<span class="cf">for</span> (clust <span class="cf">in</span> clust_names) {
+  <span class="kw">cat</span>(<span class="st">&quot;#### &quot;</span>, clust, <span class="st">&quot;{-}</span><span class="ch">\n</span><span class="st">&quot;</span>)
+  cluster_res &lt;-<span class="st"> </span>marker_single[[clust]]
+  top_marker &lt;-<span class="st"> </span>cluster_res[cluster_res<span class="op">$</span>Top <span class="op">&lt;=</span><span class="st"> </span><span class="dv">6</span>,]
+  <span class="kw">print</span>(p &lt;-<span class="st"> </span><span class="kw">plot_aggregated_expr</span>(sce, <span class="kw">rownames</span>(top_marker), 
+                      <span class="dt">group_var =</span> <span class="st">&quot;singleR&quot;</span>, 
+                      <span class="dt">title =</span> <span class="kw">paste0</span>(<span class="st">&quot;pbmc_singleR_&quot;</span>, clust)))
+  
+  <span class="kw">cat</span>(<span class="st">&quot;</span><span class="ch">\n\n</span><span class="st">&quot;</span>)
+}</code></pre></div>
+<div id="b-cells" class="section level4 unnumbered">
+<h4>B-cells</h4>
+<p><img src="roche_de_files/figure-html/marker%20singelR-1.png" width="384" /></p>
+</div>
+<div id="cd4-t-cells" class="section level4 unnumbered">
+<h4>CD4+ T-cells</h4>
+<p><img src="roche_de_files/figure-html/marker%20singelR-2.png" width="384" /></p>
+</div>
+<div id="cd8-t-cells" class="section level4 unnumbered">
+<h4>CD8+ T-cells</h4>
+<p><img src="roche_de_files/figure-html/marker%20singelR-3.png" width="384" /></p>
+</div>
+<div id="hsc" class="section level4 unnumbered">
+<h4>HSC</h4>
+<p><img src="roche_de_files/figure-html/marker%20singelR-4.png" width="384" /></p>
+</div>
+<div id="monocytes" class="section level4 unnumbered">
+<h4>Monocytes</h4>
+<p><img src="roche_de_files/figure-html/marker%20singelR-5.png" width="384" /></p>
+</div>
+<div id="nk-cells" class="section level4 unnumbered">
+<h4>NK cells</h4>
+<p><img src="roche_de_files/figure-html/marker%20singelR-6.png" width="384" /></p>
+</div>
+</div>
+</div>
+</div>
+<div id="de-analysis" class="section level1">
+<h1>DE analysis</h1>
+<div id="wilcoxon-and-t-test" class="section level2">
+<h2>Wilcoxon and t-test</h2>
+<div id="de-genes-between-all-cells" class="section level3">
+<h3>DE genes between all cells</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># All conditions , blocking for celltypes</span>
+de_wilcox &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce, <span class="dt">groups =</span> sce<span class="op">$</span>batch, 
+                      <span class="dt">test.type =</span> <span class="st">&quot;wilcox&quot;</span>, <span class="dt">block =</span> sce<span class="op">$</span>singleR,
+                      <span class="dt">full.stats =</span> <span class="ot">TRUE</span>, <span class="dt">log.p =</span> <span class="ot">TRUE</span>)
+
+de_ttest &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce, <span class="dt">groups =</span> sce<span class="op">$</span>batch, <span class="dt">test.type=</span> <span class="st">&quot;t&quot;</span>, <span class="dt">block =</span> sce<span class="op">$</span>singleR,
+                    <span class="dt">full.stats =</span> <span class="ot">TRUE</span>)
+
+summarize_de &lt;-<span class="st"> </span><span class="cf">function</span>(de_list, target){
+  all_res &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">names</span>(de_list), <span class="cf">function</span>(cond){
+    cond2_list &lt;-<span class="st"> </span><span class="kw">names</span>(de_list)[<span class="op">!</span><span class="kw">names</span>(de_list) <span class="op">%in%</span><span class="st"> </span>cond]
+    cond_res &lt;-<span class="st"> </span><span class="kw">lapply</span>(cond2_list, <span class="cf">function</span>(cond2){
+      de_all &lt;-<span class="st"> </span>de_list[[cond]][[<span class="kw">paste0</span>(<span class="st">&quot;stats.&quot;</span>, cond2)]]
+      <span class="cf">if</span>( target <span class="op">%in%</span><span class="st"> &quot;AUC&quot;</span>){
+        de_filterted &lt;-<span class="st"> </span>de_all[<span class="kw">abs</span>(de_all<span class="op">$</span>AUC <span class="op">-</span><span class="st"> </span><span class="fl">0.5</span>) <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.05</span> <span class="op">&amp;</span><span class="st"> </span><span class="kw">exp</span>(de_all<span class="op">$</span>log.FDR) <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.01</span>,]
+      }<span class="cf">else</span>{
+        de_filterted &lt;-<span class="st"> </span>de_all[ <span class="kw">exp</span>(de_all<span class="op">$</span>log.FDR) <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.01</span>,]
+      }
+      n_de &lt;-<span class="st"> </span><span class="kw">nrow</span>(de_filterted)
+    }) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">unlist</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">cbind</span>(.,cond2_list) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.data.frame</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">set_colnames</span>(<span class="kw">c</span>(<span class="st">&quot;DE&quot;</span>, <span class="st">&quot;batch2&quot;</span>))
+  }) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">set_names</span>(<span class="kw">names</span>(de_list)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">bind_rows</span>(<span class="dt">.id =</span> <span class="st">&quot;batch1&quot;</span>)
+}
+
+summarize_dist &lt;-<span class="st"> </span><span class="cf">function</span>(de_list, target){
+  all_res &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">names</span>(de_list), <span class="cf">function</span>(cond){
+    cond2_list &lt;-<span class="st"> </span><span class="kw">names</span>(de_list)[<span class="op">!</span><span class="kw">names</span>(de_list) <span class="op">%in%</span><span class="st"> </span>cond]
+    cond_res &lt;-<span class="st"> </span><span class="kw">lapply</span>(cond2_list, <span class="cf">function</span>(cond2){
+      de_all &lt;-<span class="st"> </span>de_list[[cond]][[<span class="kw">paste0</span>(<span class="st">&quot;stats.&quot;</span>, cond2)]]
+      <span class="cf">if</span>( target <span class="op">%in%</span><span class="st"> &quot;AUC&quot;</span>){
+        dist &lt;-<span class="st"> </span>de_all<span class="op">$</span>AUC
+      }<span class="cf">else</span>{
+        dist &lt;-<span class="st"> </span>de_all<span class="op">$</span>logFC
+      }
+      dist
+    }) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">set_names</span>(cond2_list)  <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">bind_cols</span>()
+  }) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">set_names</span>(<span class="kw">names</span>(de_list))
+}
+
+sum_de_wilcox &lt;-<span class="st"> </span><span class="kw">summarize_de</span>(de_wilcox, <span class="dt">target =</span> <span class="st">&quot;AUC&quot;</span>)
+sum_de_t &lt;-<span class="st"> </span><span class="kw">summarize_de</span>(de_ttest, <span class="dt">target =</span> <span class="st">&quot;logFC&quot;</span>)
+sum_dist_wilcox &lt;-<span class="st"> </span><span class="kw">summarize_dist</span>(de_wilcox, <span class="dt">target =</span> <span class="st">&quot;AUC&quot;</span>)
+sum_dist_t &lt;-<span class="st"> </span><span class="kw">summarize_dist</span>(de_ttest, <span class="dt">target =</span> <span class="st">&quot;logFC&quot;</span>)</code></pre></div>
+</div>
+<div id="plot-de" class="section level3 tabset">
+<h3>Plot DE</h3>
+<div id="wlicoxon" class="section level4">
+<h4>Wlicoxon</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sum_de_wilcox<span class="op">$</span>DE &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(sum_de_wilcox<span class="op">$</span>DE)
+
+<span class="co"># Plot de_genes</span>
+p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> sum_de_wilcox, <span class="kw">aes</span>(<span class="dt">x =</span> batch1, <span class="dt">y =</span> batch2, <span class="dt">colour=</span> DE)) <span class="op">+</span>
+<span class="st">      </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> DE)) <span class="op">+</span>
+<span class="st">      </span><span class="kw">theme</span>(<span class="dt">axis.title.x =</span> <span class="kw">element_blank</span>(), <span class="dt">axis.title.y =</span> <span class="kw">element_blank</span>()) <span class="op">+</span>
+<span class="st">      </span><span class="kw">scale_colour_viridis_c</span>() <span class="op">+</span>
+<span class="st">      </span><span class="kw">labs</span>(
+        <span class="dt">x =</span> <span class="st">&#39;Batch&#39;</span>,
+        <span class="dt">y =</span> <span class="st">&#39;Batch&#39;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">guides</span>(<span class="dt">color=</span> <span class="kw">guide_legend</span>(), <span class="dt">size=</span><span class="kw">guide_legend</span>()) <span class="op">+</span>
+<span class="st">      </span><span class="kw">theme_cowplot</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">scale_size</span>(<span class="dt">range =</span> <span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">14</span>)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;Filtered DE genes using Wilcoxon test&quot;</span>)
+
+p </code></pre></div>
+<p><img src="roche_de_files/figure-html/plot%20DE%20wilcox-1.png" width="672" /></p>
+</div>
+<div id="t-test" class="section level4">
+<h4>t-test</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sum_de_t<span class="op">$</span>DE &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(sum_de_t<span class="op">$</span>DE)
+
+<span class="co"># Plot de_genes</span>
+p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> sum_de_t, <span class="kw">aes</span>(<span class="dt">x =</span> batch1, <span class="dt">y =</span> batch2, <span class="dt">colour=</span> DE)) <span class="op">+</span>
+<span class="st">      </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> DE)) <span class="op">+</span>
+<span class="st">      </span><span class="kw">theme</span>(<span class="dt">axis.title.x =</span> <span class="kw">element_blank</span>(), <span class="dt">axis.title.y =</span> <span class="kw">element_blank</span>()) <span class="op">+</span>
+<span class="st">      </span><span class="kw">scale_colour_viridis_c</span>() <span class="op">+</span>
+<span class="st">      </span><span class="kw">labs</span>(
+        <span class="dt">x =</span> <span class="st">&#39;Batch&#39;</span>,
+        <span class="dt">y =</span> <span class="st">&#39;Batch&#39;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">guides</span>(<span class="dt">color=</span> <span class="kw">guide_legend</span>(), <span class="dt">size=</span><span class="kw">guide_legend</span>()) <span class="op">+</span>
+<span class="st">      </span><span class="kw">theme_cowplot</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">scale_size</span>(<span class="dt">range =</span> <span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">14</span>)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;DE t-test&quot;</span>)
+
+p </code></pre></div>
+<p><img src="roche_de_files/figure-html/de%20ttest-1.png" width="672" /></p>
+</div>
+</div>
+<div id="plot-logfc-distributions" class="section level3 tabset">
+<h3>Plot logFC distributions</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plot_dist &lt;-<span class="st"> </span><span class="cf">function</span>(batch_nam, tab){
+  tab_dist &lt;-<span class="st"> </span>tab[[batch_nam]]
+  gathercols &lt;-<span class="st"> </span><span class="kw">colnames</span>(tab_dist)
+  dist_long &lt;-<span class="st"> </span><span class="kw">gather</span>(tab_dist, <span class="st">&quot;batch&quot;</span>, <span class="st">&quot;valuecol&quot;</span>, <span class="kw">all_of</span>(gathercols),
+                           <span class="dt">factor_key=</span><span class="ot">TRUE</span>)
+  <span class="kw">ggplot</span>(dist_long, <span class="kw">aes_string</span>(<span class="dt">x=</span><span class="st">&quot;batch&quot;</span>, <span class="dt">y=</span><span class="st">&quot;valuecol&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;batch&quot;</span>)) <span class="op">+</span>
+<span class="st">            </span><span class="kw">geom_violin</span>()  <span class="op">+</span>
+<span class="st">            </span><span class="kw">labs</span>(<span class="dt">title=</span><span class="kw">paste0</span>(<span class="st">&quot;Expression differences compared to &quot;</span>, batch_nam),
+                 <span class="dt">x=</span><span class="st">&quot;batch&quot;</span>,
+                 <span class="dt">y =</span> <span class="st">&quot;logFC&quot;</span>) <span class="op">+</span>
+<span class="st">            </span><span class="kw">scale_fill_brewer</span>(<span class="dt">palette=</span><span class="st">&quot;Dark2&quot;</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">theme_cowplot</span>()
+}
+
+<span class="cf">for</span> (batch <span class="cf">in</span> <span class="kw">names</span>(sum_dist_t)) {
+  <span class="kw">cat</span>(<span class="st">&quot;#### &quot;</span>, batch, <span class="st">&quot;{-}</span><span class="ch">\n</span><span class="st">&quot;</span>)
+  ps &lt;-<span class="st"> </span><span class="kw">plot_dist</span>(batch, <span class="dt">tab =</span> sum_dist_t)
+  <span class="kw">print</span>(ps)
+  <span class="kw">cat</span>(<span class="st">&quot;</span><span class="ch">\n\n</span><span class="st">&quot;</span>)
+}</code></pre></div>
+<div id="cs10" class="section level4 unnumbered">
+<h4>CS10</h4>
+<p><img src="roche_de_files/figure-html/ggranges-1.png" width="672" /></p>
+</div>
+<div id="dmso" class="section level4 unnumbered">
+<h4>DMSO</h4>
+<p><img src="roche_de_files/figure-html/ggranges-2.png" width="672" /></p>
+</div>
+<div id="fresh" class="section level4 unnumbered">
+<h4>fresh</h4>
+<p><img src="roche_de_files/figure-html/ggranges-3.png" width="672" /></p>
+</div>
+<div id="psc" class="section level4 unnumbered">
+<h4>PSC</h4>
+<p><img src="roche_de_files/figure-html/ggranges-4.png" width="672" /></p>
+</div>
+</div>
+<div id="cell-type-wise-de" class="section level3 tabset">
+<h3>Cell-type-wise DE</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="cf">for</span> (ct <span class="cf">in</span> <span class="kw">levels</span>(<span class="kw">as.factor</span>(sce<span class="op">$</span>singleR))) {
+  <span class="kw">cat</span>(<span class="st">&quot;#### &quot;</span>, ct, <span class="st">&quot;{-}</span><span class="ch">\n</span><span class="st">&quot;</span>)
+  sce_new &lt;-<span class="st"> </span>sce[, sce<span class="op">$</span>singleR <span class="op">%in%</span><span class="st"> </span>ct]
+  de_wilcox &lt;-<span class="st"> </span><span class="kw">findMarkers</span>(sce_new, <span class="dt">groups =</span> sce_new<span class="op">$</span>batch, 
+                      <span class="dt">test.type =</span> <span class="st">&quot;wilcox&quot;</span>,
+                      <span class="dt">full.stats =</span> <span class="ot">TRUE</span>, <span class="dt">log.p =</span> <span class="ot">TRUE</span>)
+  sum_de_wilcox &lt;-<span class="st"> </span><span class="kw">summarize_de</span>(de_wilcox, <span class="dt">target =</span> <span class="st">&quot;AUC&quot;</span>)
+  sum_de_wilcox<span class="op">$</span>DE &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(sum_de_wilcox<span class="op">$</span>DE)
+  p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> sum_de_wilcox, <span class="kw">aes</span>(<span class="dt">x =</span> batch1, <span class="dt">y =</span> batch2, <span class="dt">colour=</span> DE)) <span class="op">+</span>
+<span class="st">      </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> DE)) <span class="op">+</span>
+<span class="st">      </span><span class="kw">theme</span>(<span class="dt">axis.title.x =</span> <span class="kw">element_blank</span>(), <span class="dt">axis.title.y =</span> <span class="kw">element_blank</span>()) <span class="op">+</span>
+<span class="st">      </span><span class="kw">scale_colour_viridis_c</span>() <span class="op">+</span>
+<span class="st">      </span><span class="kw">labs</span>(
+        <span class="dt">x =</span> <span class="st">&#39;Batch&#39;</span>,
+        <span class="dt">y =</span> <span class="st">&#39;Batch&#39;</span>) <span class="op">+</span>
+<span class="st">      </span><span class="kw">guides</span>(<span class="dt">color=</span> <span class="kw">guide_legend</span>(), <span class="dt">size=</span><span class="kw">guide_legend</span>()) <span class="op">+</span>
+<span class="st">      </span><span class="kw">theme_cowplot</span>() <span class="op">+</span>
+<span class="st">      </span><span class="kw">scale_size</span>(<span class="dt">range =</span> <span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">14</span>)) <span class="op">+</span>
+<span class="st">      </span><span class="kw">ggtitle</span>(<span class="kw">paste0</span>(<span class="st">&quot;filtered DE Wilcoxon test in &quot;</span>, ct))
+  <span class="kw">print</span>(p)
+  <span class="kw">cat</span>(<span class="st">&quot;</span><span class="ch">\n\n</span><span class="st">&quot;</span>)
+}</code></pre></div>
+<div id="b-cells-1" class="section level4 unnumbered">
+<h4>B-cells</h4>
+<p><img src="roche_de_files/figure-html/ct%20de-1.png" width="672" /></p>
+</div>
+<div id="cd4-t-cells-1" class="section level4 unnumbered">
+<h4>CD4+ T-cells</h4>
+<p><img src="roche_de_files/figure-html/ct%20de-2.png" width="672" /></p>
+</div>
+<div id="cd8-t-cells-1" class="section level4 unnumbered">
+<h4>CD8+ T-cells</h4>
+<p><img src="roche_de_files/figure-html/ct%20de-3.png" width="672" /></p>
+</div>
+<div id="hsc-1" class="section level4 unnumbered">
+<h4>HSC</h4>
+<p><img src="roche_de_files/figure-html/ct%20de-4.png" width="672" /></p>
+</div>
+<div id="monocytes-1" class="section level4 unnumbered">
+<h4>Monocytes</h4>
+<p><img src="roche_de_files/figure-html/ct%20de-5.png" width="672" /></p>
+</div>
+<div id="nk-cells-1" class="section level4 unnumbered">
+<h4>NK cells</h4>
+<p><img src="roche_de_files/figure-html/ct%20de-6.png" width="672" /> ### session Info</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sessionInfo</span>()</code></pre></div>
+<pre><code>## R version 4.0.3 (2020-10-10)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 18.04.5 LTS
+## 
+## Matrix products: default
+## BLAS:   /usr/lib/x86_64-linux-gnu/openblas/libblas.so.3
+## LAPACK: /usr/lib/x86_64-linux-gnu/libopenblasp-r0.2.20.so
+## 
+## locale:
+##  [1] LC_CTYPE=de_DE.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=de_DE.UTF-8        LC_COLLATE=de_DE.UTF-8    
+##  [5] LC_MONETARY=de_DE.UTF-8    LC_MESSAGES=de_DE.UTF-8   
+##  [7] LC_PAPER=de_DE.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=de_DE.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] parallel  stats4    stats     graphics  grDevices utils     datasets 
+## [8] methods   base     
+## 
+## other attached packages:
+##  [1] ggridges_0.5.3              tidyr_1.1.3                
+##  [3] broom_0.7.5                 SeuratObject_4.0.0         
+##  [5] Seurat_4.0.0                celldex_1.0.0              
+##  [7] SingleR_1.4.1               here_1.0.1                 
+##  [9] magrittr_2.0.1              CellMixS_1.6.1             
+## [11] kSamples_1.2-9              SuppDists_1.1-9.5          
+## [13] scran_1.18.5                cowplot_1.1.1              
+## [15] dplyr_1.0.5                 scater_1.18.6              
+## [17] ggplot2_3.3.3               SingleCellExperiment_1.12.0
+## [19] SummarizedExperiment_1.20.0 Biobase_2.50.0             
+## [21] GenomicRanges_1.42.0        GenomeInfoDb_1.26.2        
+## [23] IRanges_2.24.1              S4Vectors_0.28.1           
+## [25] BiocGenerics_0.36.0         MatrixGenerics_1.2.1       
+## [27] matrixStats_0.58.0          purrr_0.3.4                
+## [29] pheatmap_1.0.12            
+## 
+## loaded via a namespace (and not attached):
+##   [1] utf8_1.1.4                    reticulate_1.18              
+##   [3] tidyselect_1.1.0              RSQLite_2.2.3                
+##   [5] AnnotationDbi_1.52.0          htmlwidgets_1.5.3            
+##   [7] grid_4.0.3                    BiocParallel_1.24.1          
+##   [9] Rtsne_0.15                    munsell_0.5.0                
+##  [11] codetools_0.2-18              ica_1.0-2                    
+##  [13] statmod_1.4.35                future_1.21.0                
+##  [15] miniUI_0.1.1.1                withr_2.4.1                  
+##  [17] colorspace_2.0-0              highr_0.8                    
+##  [19] knitr_1.31                    ROCR_1.0-11                  
+##  [21] tensor_1.5                    listenv_0.8.0                
+##  [23] labeling_0.4.2                GenomeInfoDbData_1.2.4       
+##  [25] polyclip_1.10-0               farver_2.1.0                 
+##  [27] bit64_4.0.5                   rprojroot_2.0.2              
+##  [29] parallelly_1.23.0             vctrs_0.3.6                  
+##  [31] generics_0.1.0                xfun_0.22                    
+##  [33] BiocFileCache_1.14.0          R6_2.5.0                     
+##  [35] ggbeeswarm_0.6.0              rsvd_1.0.3                   
+##  [37] locfit_1.5-9.4                bitops_1.0-6                 
+##  [39] spatstat.utils_2.0-0          cachem_1.0.4                 
+##  [41] DelayedArray_0.16.2           assertthat_0.2.1             
+##  [43] promises_1.2.0.1              scales_1.1.1                 
+##  [45] beeswarm_0.3.1                gtable_0.3.0                 
+##  [47] beachmat_2.6.4                globals_0.14.0               
+##  [49] goftest_1.2-2                 rlang_0.4.10                 
+##  [51] splines_4.0.3                 lazyeval_0.2.2               
+##  [53] BiocManager_1.30.10           yaml_2.2.1                   
+##  [55] reshape2_1.4.4                abind_1.4-5                  
+##  [57] backports_1.2.1               httpuv_1.5.5                 
+##  [59] tools_4.0.3                   ellipsis_0.3.1               
+##  [61] jquerylib_0.1.3               RColorBrewer_1.1-2           
+##  [63] Rcpp_1.0.6                    plyr_1.8.6                   
+##  [65] sparseMatrixStats_1.2.1       zlibbioc_1.36.0              
+##  [67] RCurl_1.98-1.2                rpart_4.1-15                 
+##  [69] deldir_0.2-10                 pbapply_1.4-3                
+##  [71] viridis_0.5.1                 zoo_1.8-9                    
+##  [73] ggrepel_0.9.1                 cluster_2.1.1                
+##  [75] data.table_1.14.0             scattermore_0.7              
+##  [77] lmtest_0.9-38                 RANN_2.6.1                   
+##  [79] fitdistrplus_1.1-3            patchwork_1.1.1              
+##  [81] mime_0.10                     evaluate_0.14                
+##  [83] xtable_1.8-4                  gridExtra_2.3                
+##  [85] compiler_4.0.3                tibble_3.1.0                 
+##  [87] KernSmooth_2.23-18            crayon_1.4.1                 
+##  [89] htmltools_0.5.1.1             mgcv_1.8-34                  
+##  [91] later_1.1.0.1                 DBI_1.1.1                    
+##  [93] ExperimentHub_1.16.0          dbplyr_2.1.0                 
+##  [95] MASS_7.3-53.1                 rappdirs_0.3.3               
+##  [97] Matrix_1.3-2                  igraph_1.2.6                 
+##  [99] pkgconfig_2.0.3               plotly_4.9.3                 
+## [101] scuttle_1.0.4                 vipor_0.4.5                  
+## [103] bslib_0.2.4                   dqrng_0.2.1                  
+## [105] XVector_0.30.0                stringr_1.4.0                
+## [107] digest_0.6.27                 sctransform_0.3.2            
+## [109] RcppAnnoy_0.0.18              spatstat.data_2.0-0          
+## [111] rmarkdown_2.7                 leiden_0.3.7                 
+## [113] uwot_0.1.10                   edgeR_3.32.1                 
+## [115] DelayedMatrixStats_1.12.3     curl_4.3                     
+## [117] shiny_1.6.0                   lifecycle_1.0.0              
+## [119] nlme_3.1-152                  jsonlite_1.7.2               
+## [121] BiocNeighbors_1.8.2           viridisLite_0.3.0            
+## [123] limma_3.46.0                  fansi_0.4.2                  
+## [125] pillar_1.5.1                  lattice_0.20-41              
+## [127] fastmap_1.1.0                 httr_1.4.2                   
+## [129] survival_3.2-7                interactiveDisplayBase_1.28.0
+## [131] glue_1.4.2                    spatstat_1.64-1              
+## [133] png_0.1-7                     bluster_1.0.0                
+## [135] BiocVersion_3.12.0            bit_4.0.4                    
+## [137] stringi_1.5.3                 sass_0.3.1                   
+## [139] blob_1.2.1                    BiocSingular_1.6.0           
+## [141] AnnotationHub_2.22.0          memoise_2.0.0                
+## [143] irlba_2.3.3                   future.apply_1.7.0</code></pre>
+</div>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

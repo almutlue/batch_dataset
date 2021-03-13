@@ -1,0 +1,314 @@
+---
+title: "pbmc_roche"
+author: "Almut Lütge"
+date: "14 March 2021"
+output:
+  html_document:
+    self_contained: no
+    lib_dir: '../docs/site_libs'
+    code_folding: show
+    theme: journal
+    highlight: tango
+    number_sections: no
+    toc: yes
+    toc_depth: 3
+    toc_float: true
+    collapsed: no
+    smooth_scroll: yes
+    dev: 'png'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Pbmc dataset Roche
+This datset has been prepared by Roche. It contains pbmc from 4 different sample. 
+Sample are derived from the same patient, have been processed in the same way and have been sequenced together. Experimental differences are due to different storage conditions. One sample was sequenced from fresh cells, the other ones have been stored in different media and frozen for a week.
+
+
+```{r libraries}
+suppressPackageStartupMessages({
+  library(pheatmap)
+  library(purrr)
+  library(scater)
+  library(dplyr)
+  library(ggplot2)
+  library(cowplot)
+  library(scran)
+  library(CellMixS)
+  library(magrittr)
+  library(here)
+  library(SingleR)
+  library(celldex)
+  library(Seurat)
+  library(broom)
+  library(tidyr)
+  library(ggridges)
+})
+
+seed <- 1000
+```
+
+
+### Data
+Load data
+For processing check datasets: [pbmc_roche](https://almutlue.github.io/batch_dataset/pbmc_roche.html)
+```{r data}
+data_path <- here::here("out")
+sce <- readRDS(file = paste0(data_path, "/sce_pbmc_roche.rds"))
+
+dim(sce)
+
+#show data
+visGroup(sce, group = "batch", dim_red = "tsne")
+visGroup(sce, group = "cluster", dim_red = "tsne")
+
+```
+
+# Celltype assignment singleR 
+```{r singleR, warning=FALSE, message=FALSE}
+ref <- BlueprintEncodeData()
+rowData(sce)$ENS_ID <- gsub("\\..*","", rownames(sce))
+rownames(sce) <- gsub(".*\\.","", rownames(sce))
+pred <- SingleR(test=sce, ref=ref, labels=ref$label.main)
+table(pred$labels)
+
+plotScoreHeatmap(pred)
+```
+
+
+### Compare singleR assignments with clustering
+```{r control cluster, warning = FALSE}
+tab <- table(Assigned=pred$pruned.labels, Cluster=sce$cluster)
+pheatmap(log2(tab+10), color=colorRampPalette(c("white", "blue"))(101))
+sce$singleR <- pred$pruned.labels
+visGroup(sce, group="singleR", dim_red = "tsne")
+```
+
+
+## Check marker genes
+
+### Marker genes for "seurat clustering" {.tabset}
+
+```{r marker seurat, fig.width = 5, fig.height=7, warning = FALSE, results = "asis"}
+marker_s <- findMarkers(sce, sce$cluster)
+
+#plot summarized counts
+plot_aggregated_expr <- function(sce, genes, group_var, title){
+  logNormExpres <- as.data.frame(t(as.matrix(logcounts(sce)[genes,]))) %>% 
+    dplyr::mutate(cluster_all= colData(sce)[,group_var]) %>%
+    group_by(cluster_all) %>% summarise_all(mean)
+  logNormExpresMa <- logNormExpres %>% set_rownames(logNormExpres$cluster_all) %>% 
+    dplyr::select(-cluster_all) %>% as.matrix() %>% t()
+  colnames(logNormExpresMa) <- levels(as.factor(colData(sce)[,group_var]))
+  rownames(logNormExpresMa) <- rownames(logNormExpresMa)
+  p <- pheatmap(logNormExpresMa, scale="row" ,treeheight_row = 0, 
+           cluster_cols = F, cluster_rows = F, 
+           color = colorRampPalette(c("#2166AC", "#F7F7F7", "#B2182B"))(50), 
+           main=title, cellwidth=15, cellheight=10)
+}
+
+
+#plot marker
+clust_names <- names(marker_s)
+
+for (clust in clust_names) {
+  cat("#### ", clust, "{-}\n")
+  cluster_res <- marker_s[[clust]]
+  top_marker <- cluster_res[cluster_res$Top <= 6,]
+  print(p <- plot_aggregated_expr(sce, rownames(top_marker), 
+                      group_var = "cluster", 
+                      title = paste0("pbmc_seurat_", clust)))
+  cat("\n\n")
+}
+
+```
+
+
+### Marker genes for "SingleR annotations" {.tabset}
+```{r marker singelR, fig.width = 4, fig.height=6, results = "asis", warning = FALSE}
+#filter cell types with less than 10 cells
+ct_filter <- names(which(table(sce$singleR) < 10))
+sce <- sce[,!sce$singleR %in% ct_filter]
+sce <- sce[,which(!is.na(sce$singleR))]
+
+marker_single <- findMarkers(sce, sce$singleR)
+
+#plot marker
+clust_names <- names(marker_single)
+
+for (clust in clust_names) {
+  cat("#### ", clust, "{-}\n")
+  cluster_res <- marker_single[[clust]]
+  top_marker <- cluster_res[cluster_res$Top <= 6,]
+  print(p <- plot_aggregated_expr(sce, rownames(top_marker), 
+                      group_var = "singleR", 
+                      title = paste0("pbmc_singleR_", clust)))
+  
+  cat("\n\n")
+}
+
+
+```
+
+# DE analysis
+
+## Wilcoxon and t-test 
+
+### DE genes between all cells
+```{r de wilcox all}
+# All conditions , blocking for celltypes
+de_wilcox <- findMarkers(sce, groups = sce$batch, 
+                      test.type = "wilcox", block = sce$singleR,
+                      full.stats = TRUE, log.p = TRUE)
+
+de_ttest <- findMarkers(sce, groups = sce$batch, test.type= "t", block = sce$singleR,
+                    full.stats = TRUE)
+
+summarize_de <- function(de_list, target){
+  all_res <- lapply(names(de_list), function(cond){
+    cond2_list <- names(de_list)[!names(de_list) %in% cond]
+    cond_res <- lapply(cond2_list, function(cond2){
+      de_all <- de_list[[cond]][[paste0("stats.", cond2)]]
+      if( target %in% "AUC"){
+        de_filterted <- de_all[abs(de_all$AUC - 0.5) > 0.05 & exp(de_all$log.FDR) < 0.01,]
+      }else{
+        de_filterted <- de_all[ exp(de_all$log.FDR) < 0.01,]
+      }
+      n_de <- nrow(de_filterted)
+    }) %>% unlist() %>% cbind(.,cond2_list) %>% as.data.frame() %>% set_colnames(c("DE", "batch2"))
+  }) %>% set_names(names(de_list)) %>% bind_rows(.id = "batch1")
+}
+
+summarize_dist <- function(de_list, target){
+  all_res <- lapply(names(de_list), function(cond){
+    cond2_list <- names(de_list)[!names(de_list) %in% cond]
+    cond_res <- lapply(cond2_list, function(cond2){
+      de_all <- de_list[[cond]][[paste0("stats.", cond2)]]
+      if( target %in% "AUC"){
+        dist <- de_all$AUC
+      }else{
+        dist <- de_all$logFC
+      }
+      dist
+    }) %>% set_names(cond2_list)  %>% bind_cols()
+  }) %>% set_names(names(de_list))
+}
+
+sum_de_wilcox <- summarize_de(de_wilcox, target = "AUC")
+sum_de_t <- summarize_de(de_ttest, target = "logFC")
+sum_dist_wilcox <- summarize_dist(de_wilcox, target = "AUC")
+sum_dist_t <- summarize_dist(de_ttest, target = "logFC")
+
+
+```
+
+### Plot DE {.tabset}
+
+#### Wlicoxon
+```{r plot DE wilcox}
+
+sum_de_wilcox$DE <- as.numeric(sum_de_wilcox$DE)
+
+# Plot de_genes
+p <- ggplot(data = sum_de_wilcox, aes(x = batch1, y = batch2, colour= DE)) +
+      geom_point(aes(size = DE)) +
+      theme(axis.title.x = element_blank(), axis.title.y = element_blank()) +
+      scale_colour_viridis_c() +
+      labs(
+        x = 'Batch',
+        y = 'Batch') +
+    guides(color= guide_legend(), size=guide_legend()) +
+      theme_cowplot() +
+    scale_size(range = c(4,14)) +
+    ggtitle("Filtered DE genes using Wilcoxon test")
+
+p 
+
+
+```
+
+#### t-test
+
+```{r de ttest}
+sum_de_t$DE <- as.numeric(sum_de_t$DE)
+
+# Plot de_genes
+p <- ggplot(data = sum_de_t, aes(x = batch1, y = batch2, colour= DE)) +
+      geom_point(aes(size = DE)) +
+      theme(axis.title.x = element_blank(), axis.title.y = element_blank()) +
+      scale_colour_viridis_c() +
+      labs(
+        x = 'Batch',
+        y = 'Batch') +
+    guides(color= guide_legend(), size=guide_legend()) +
+      theme_cowplot() +
+    scale_size(range = c(4,14)) +
+    ggtitle("DE t-test")
+
+p 
+```
+
+### Plot logFC distributions {.tabset}
+
+```{r ggranges, results="asis"}
+
+plot_dist <- function(batch_nam, tab){
+  tab_dist <- tab[[batch_nam]]
+  gathercols <- colnames(tab_dist)
+  dist_long <- gather(tab_dist, "batch", "valuecol", all_of(gathercols),
+                           factor_key=TRUE)
+  ggplot(dist_long, aes_string(x="batch", y="valuecol", fill="batch")) +
+            geom_violin()  +
+            labs(title=paste0("Expression differences compared to ", batch_nam),
+                 x="batch",
+                 y = "logFC") +
+            scale_fill_brewer(palette="Dark2") + 
+  theme_cowplot()
+}
+
+for (batch in names(sum_dist_t)) {
+  cat("#### ", batch, "{-}\n")
+  ps <- plot_dist(batch, tab = sum_dist_t)
+  print(ps)
+  cat("\n\n")
+}
+
+
+```
+
+
+### Cell-type-wise DE {.tabset}
+
+```{r ct de, results="asis"}
+
+for (ct in levels(as.factor(sce$singleR))) {
+  cat("#### ", ct, "{-}\n")
+  sce_new <- sce[, sce$singleR %in% ct]
+  de_wilcox <- findMarkers(sce_new, groups = sce_new$batch, 
+                      test.type = "wilcox",
+                      full.stats = TRUE, log.p = TRUE)
+  sum_de_wilcox <- summarize_de(de_wilcox, target = "AUC")
+  sum_de_wilcox$DE <- as.numeric(sum_de_wilcox$DE)
+  p <- ggplot(data = sum_de_wilcox, aes(x = batch1, y = batch2, colour= DE)) +
+      geom_point(aes(size = DE)) +
+      theme(axis.title.x = element_blank(), axis.title.y = element_blank()) +
+      scale_colour_viridis_c() +
+      labs(
+        x = 'Batch',
+        y = 'Batch') +
+      guides(color= guide_legend(), size=guide_legend()) +
+      theme_cowplot() +
+      scale_size(range = c(4,14)) +
+      ggtitle(paste0("filtered DE Wilcoxon test in ", ct))
+  print(p)
+  cat("\n\n")
+}
+
+```
+### session Info
+```{r session info}
+sessionInfo()
+```
+
